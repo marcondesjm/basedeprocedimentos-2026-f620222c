@@ -22,6 +22,7 @@ interface WorkOrder {
 export const WorkTimer = () => {
   const [workOrders, setWorkOrders] = useState<WorkOrder[]>([]);
   const [newWO, setNewWO] = useState("");
+  const [alarmIntervalId, setAlarmIntervalId] = useState<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -45,7 +46,7 @@ export const WorkTimer = () => {
 
           // Timer finalizado
           if (timeLeft === 0 && !wo.hasFinished) {
-            playAlert();
+            startContinuousAlarm(wo.number);
             toast.error(`⏰ WO ${wo.number}: Tempo Esgotado!`, {
               description: "Adicione uma nova nota no sistema agora!",
               duration: 15000,
@@ -61,8 +62,7 @@ export const WorkTimer = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const playAlert = () => {
-    // Cria um alerta sonoro usando Web Audio API
+  const playBeep = () => {
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
@@ -78,27 +78,30 @@ export const WorkTimer = () => {
 
     oscillator.start(audioContext.currentTime);
     oscillator.stop(audioContext.currentTime + 0.5);
-
-    // Repete o som 3 vezes
-    setTimeout(() => playBeep(audioContext), 600);
-    setTimeout(() => playBeep(audioContext), 1200);
   };
 
-  const playBeep = (audioContext: AudioContext) => {
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
+  const startContinuousAlarm = (woNumber: string) => {
+    // Para qualquer alarme anterior
+    if (alarmIntervalId) {
+      clearInterval(alarmIntervalId);
+    }
 
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
+    // Toca o primeiro beep imediatamente
+    playBeep();
 
-    oscillator.frequency.value = 800;
-    oscillator.type = "sine";
+    // Continua tocando a cada 2 segundos
+    const intervalId = setInterval(() => {
+      playBeep();
+    }, 2000);
 
-    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+    setAlarmIntervalId(intervalId);
+  };
 
-    oscillator.start(audioContext.currentTime);
-    oscillator.stop(audioContext.currentTime + 0.5);
+  const stopAlarm = () => {
+    if (alarmIntervalId) {
+      clearInterval(alarmIntervalId);
+      setAlarmIntervalId(null);
+    }
   };
 
   const addWorkOrder = () => {
@@ -128,6 +131,10 @@ export const WorkTimer = () => {
   };
 
   const removeWorkOrder = (id: string) => {
+    const woToRemove = workOrders.find(wo => wo.id === id);
+    if (woToRemove?.hasFinished) {
+      stopAlarm();
+    }
     setWorkOrders(workOrders.filter(wo => wo.id !== id));
     toast.success("WO removida");
   };
@@ -162,6 +169,7 @@ export const WorkTimer = () => {
   };
 
   const resetTimer = (id: string) => {
+    stopAlarm();
     setWorkOrders(
       workOrders.map((wo) =>
         wo.id === id
@@ -279,14 +287,26 @@ export const WorkTimer = () => {
 
                   <div className="flex flex-col sm:flex-row gap-2">
                     {wo.hasFinished ? (
-                      <Button
-                        onClick={() => resetTimer(wo.id)}
-                        size="sm"
-                        className="w-full"
-                      >
-                        <RotateCcw className="w-4 h-4 mr-2" />
-                        Reiniciar
-                      </Button>
+                      <>
+                        <Button
+                          onClick={() => stopAlarm()}
+                          size="sm"
+                          variant="destructive"
+                          className="flex-1"
+                        >
+                          <AlertCircle className="w-4 h-4 mr-2" />
+                          Silenciar Alarme
+                        </Button>
+                        <Button
+                          onClick={() => resetTimer(wo.id)}
+                          size="sm"
+                          variant="outline"
+                          className="flex-1"
+                        >
+                          <RotateCcw className="w-4 h-4 mr-2" />
+                          Reiniciar
+                        </Button>
+                      </>
                     ) : (
                       <>
                         <Button
