@@ -198,24 +198,25 @@ export const WorkTimer = () => {
   };
 
   return (
-    <Card className="p-6 bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
+    <Card className="p-4 md:p-6 bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
       <div className="space-y-4">
         <div className="flex items-center gap-2">
           <Clock className="w-5 h-5 text-primary" />
-          <h3 className="font-semibold text-foreground">Timer de Ordens de Serviço</h3>
+          <h3 className="font-semibold text-foreground text-base md:text-lg">Timer de Ordens de Serviço</h3>
         </div>
 
         {/* Adicionar nova WO */}
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <div className="flex-1">
             <Input
               placeholder="Digite o número da WO"
               value={newWO}
               onChange={(e) => setNewWO(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && addWorkOrder()}
+              className="w-full"
             />
           </div>
-          <Button onClick={addWorkOrder}>
+          <Button onClick={addWorkOrder} className="w-full sm:w-auto">
             <Plus className="w-4 h-4 mr-2" />
             Adicionar
           </Button>
@@ -223,15 +224,15 @@ export const WorkTimer = () => {
 
         {/* Lista de WOs */}
         {workOrders.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
-            <Clock className="w-12 h-12 mx-auto mb-3 opacity-50" />
-            <p className="text-sm">Nenhuma ordem de serviço adicionada</p>
+          <div className="text-center py-6 md:py-8 text-muted-foreground">
+            <Clock className="w-10 h-10 md:w-12 md:h-12 mx-auto mb-3 opacity-50" />
+            <p className="text-sm font-medium">Nenhuma ordem de serviço adicionada</p>
             <p className="text-xs mt-1">Adicione WOs para iniciar a contagem</p>
           </div>
         ) : (
           <div className="space-y-3">
             {workOrders.map((wo) => (
-              <Card key={wo.id} className="p-4 bg-background/50">
+              <Card key={wo.id} className="p-3 md:p-4 bg-background/50">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -253,7 +254,7 @@ export const WorkTimer = () => {
 
                   <div className="text-center">
                     <div
-                      className={`text-3xl font-bold tabular-nums ${
+                      className={`text-2xl md:text-3xl font-bold tabular-nums ${
                         wo.hasFinished
                           ? "text-destructive animate-pulse"
                           : getTimeLeft(wo) <= 300
@@ -263,7 +264,7 @@ export const WorkTimer = () => {
                     >
                       {formatTime(getTimeLeft(wo))}
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-xs md:text-sm text-muted-foreground mt-1">
                       {wo.hasFinished
                         ? "⏰ Tempo esgotado! Adicione uma nota."
                         : getTimeLeft(wo) <= 300
@@ -274,9 +275,9 @@ export const WorkTimer = () => {
                     </p>
                   </div>
 
-                  <Progress value={getProgress(wo)} className="h-1.5" />
+                  <Progress value={getProgress(wo)} className="h-2" />
 
-                  <div className="flex gap-2">
+                  <div className="flex flex-col sm:flex-row gap-2">
                     {wo.hasFinished ? (
                       <Button
                         onClick={() => resetTimer(wo.id)}
@@ -292,17 +293,17 @@ export const WorkTimer = () => {
                           onClick={() => toggleTimer(wo.id)}
                           size="sm"
                           variant={wo.isRunning ? "outline" : "default"}
-                          className="flex-1"
+                          className="flex-1 min-w-0"
                         >
                           {wo.isRunning ? (
                             <>
-                              <Pause className="w-4 h-4 mr-2" />
-                              Pausar
+                              <Pause className="w-4 h-4 sm:mr-2" />
+                              <span className="hidden sm:inline">Pausar</span>
                             </>
                           ) : (
                             <>
-                              <Play className="w-4 h-4 mr-2" />
-                              Iniciar
+                              <Play className="w-4 h-4 sm:mr-2" />
+                              <span className="hidden sm:inline">Iniciar</span>
                             </>
                           )}
                         </Button>
@@ -310,6 +311,7 @@ export const WorkTimer = () => {
                           onClick={() => resetTimer(wo.id)}
                           size="sm"
                           variant="outline"
+                          className="w-auto px-3"
                         >
                           <RotateCcw className="w-4 h-4" />
                         </Button>
@@ -318,9 +320,9 @@ export const WorkTimer = () => {
                   </div>
 
                   {getTimeLeft(wo) <= 300 && getTimeLeft(wo) > 0 && !wo.hasFinished && (
-                    <div className="flex items-center gap-2 p-2 bg-orange-500/10 border border-orange-500/20 rounded text-xs">
+                    <div className="flex items-center gap-2 p-2 md:p-3 bg-orange-500/10 border border-orange-500/20 rounded text-xs md:text-sm">
                       <AlertCircle className="w-4 h-4 text-orange-500 flex-shrink-0" />
-                      <p className="text-orange-700 dark:text-orange-300">
+                      <p className="text-orange-700 dark:text-orange-300 font-medium">
                         Prepare uma nova nota!
                       </p>
                     </div>

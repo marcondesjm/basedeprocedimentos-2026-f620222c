@@ -623,12 +623,12 @@ ${proc.description}
 
           {/* Dialog de Importação */}
           <Dialog open={showImportDialog} onOpenChange={setShowImportDialog}>
-            <DialogContent>
+            <DialogContent aria-describedby="import-dialog-description">
               <DialogHeader>
                 <DialogTitle>Importar Procedimentos</DialogTitle>
               </DialogHeader>
               <div className="space-y-4 mt-4">
-                <p className="text-muted-foreground">
+                <p id="import-dialog-description" className="text-muted-foreground">
                   Você possui um backup dos seus procedimentos? Importe-o aqui para continuar de onde parou.
                 </p>
                 <div className="flex flex-col gap-3">
