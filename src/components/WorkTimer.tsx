@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Clock, Play, Pause, RotateCcw, AlertCircle, Plus, Trash2, CheckCircle } from "lucide-react";
+import { Clock, Play, Pause, RotateCcw, AlertCircle, Plus, Trash2, CheckCircle, Image as ImageIcon, X } from "lucide-react";
 
 interface WorkOrder {
   id: string;
@@ -17,12 +17,14 @@ interface WorkOrder {
   hasWarned: boolean;
   startTime?: number;
   pausedTime?: number;
+  images: string[];
 }
 
 export const WorkTimer = () => {
   const [workOrders, setWorkOrders] = useState<WorkOrder[]>([]);
   const [newWO, setNewWO] = useState("");
   const [alarmIntervalId, setAlarmIntervalId] = useState<NodeJS.Timeout | null>(null);
+  const [selectedImages, setSelectedImages] = useState<string[]>([]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -104,6 +106,27 @@ export const WorkTimer = () => {
     }
   };
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    const newImages: string[] = [];
+    Array.from(files).forEach((file) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        newImages.push(reader.result as string);
+        if (newImages.length === files.length) {
+          setSelectedImages([...selectedImages, ...newImages]);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const removeImage = (index: number) => {
+    setSelectedImages(selectedImages.filter((_, i) => i !== index));
+  };
+
   const addWorkOrder = () => {
     if (!newWO.trim()) {
       toast.error("Digite o número da WO");
@@ -123,6 +146,7 @@ export const WorkTimer = () => {
       isRunning: false,
       hasFinished: false,
       hasWarned: false,
+      images: selectedImages,
     };
 
     setWorkOrders([...workOrders, newOrder]);
@@ -170,6 +194,7 @@ export const WorkTimer = () => {
 
   const resetTimer = (id: string) => {
     stopAlarm();
+    const woToReset = workOrders.find(wo => wo.id === id);
     setWorkOrders(
       workOrders.map((wo) =>
         wo.id === id
@@ -181,6 +206,7 @@ export const WorkTimer = () => {
               hasWarned: false,
               startTime: undefined,
               pausedTime: undefined,
+              images: woToReset?.images || [],
             }
           : wo
       )
@@ -214,20 +240,63 @@ export const WorkTimer = () => {
         </div>
 
         {/* Adicionar nova WO */}
-        <div className="flex flex-col sm:flex-row gap-2">
-          <div className="flex-1">
+        <div className="flex flex-col gap-3">
+          <div className="flex gap-2">
             <Input
               placeholder="Digite o número da WO"
               value={newWO}
               onChange={(e) => setNewWO(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && addWorkOrder()}
-              className="w-full"
+              className="flex-1"
             />
+            <Button onClick={addWorkOrder} className="shrink-0">
+              <Plus className="w-4 h-4 mr-2" />
+              Adicionar
+            </Button>
           </div>
-          <Button onClick={addWorkOrder} className="w-full sm:w-auto">
-            <Plus className="w-4 h-4 mr-2" />
-            Adicionar
-          </Button>
+
+          <div className="space-y-2">
+            <label htmlFor="image-upload">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => document.getElementById('image-upload')?.click()}
+                className="w-full"
+              >
+                <ImageIcon className="w-4 h-4 mr-2" />
+                Adicionar Imagens
+              </Button>
+              <input
+                id="image-upload"
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleImageUpload}
+                className="hidden"
+              />
+            </label>
+            
+            {selectedImages.length > 0 && (
+              <div className="grid grid-cols-3 gap-2">
+                {selectedImages.map((img, idx) => (
+                  <div key={idx} className="relative group">
+                    <img
+                      src={img}
+                      alt={`Preview ${idx + 1}`}
+                      className="w-full h-20 object-cover rounded-md"
+                    />
+                    <button
+                      onClick={() => removeImage(idx)}
+                      className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Lista de WOs */}
@@ -284,6 +353,20 @@ export const WorkTimer = () => {
                   </div>
 
                   <Progress value={getProgress(wo)} className="h-2" />
+
+                  {wo.images && wo.images.length > 0 && (
+                    <div className="grid grid-cols-4 gap-2">
+                      {wo.images.map((img, idx) => (
+                        <img
+                          key={idx}
+                          src={img}
+                          alt={`WO ${wo.number} - Imagem ${idx + 1}`}
+                          className="w-full h-16 object-cover rounded-md cursor-pointer hover:opacity-80 transition-opacity"
+                          onClick={() => window.open(img, '_blank')}
+                        />
+                      ))}
+                    </div>
+                  )}
 
                   <div className="flex flex-col sm:flex-row gap-2">
                     {wo.hasFinished ? (
