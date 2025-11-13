@@ -127,6 +127,16 @@ export const WorkTimer = () => {
     setSelectedImages(selectedImages.filter((_, i) => i !== index));
   };
 
+  const downloadImage = (imageData: string, woNumber: string, imageIndex: number) => {
+    const link = document.createElement('a');
+    link.href = imageData;
+    link.download = `WO_${woNumber}_imagem_${imageIndex + 1}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success("Imagem baixada!");
+  };
+
   const addWorkOrder = () => {
     if (!newWO.trim()) {
       toast.error("Digite o número da WO");
@@ -362,7 +372,7 @@ export const WorkTimer = () => {
                           src={img}
                           alt={`WO ${wo.number} - Imagem ${idx + 1}`}
                           className="w-full h-16 object-cover rounded-md cursor-pointer hover:opacity-80 transition-opacity"
-                          onClick={() => window.open(img, '_blank')}
+                          onClick={() => downloadImage(img, wo.number, idx)}
                         />
                       ))}
                     </div>
