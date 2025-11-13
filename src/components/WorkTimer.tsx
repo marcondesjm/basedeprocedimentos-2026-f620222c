@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Clock, Play, Pause, RotateCcw, AlertCircle, Plus, Trash2, CheckCircle, Image as ImageIcon, X } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface WorkOrder {
   id: string;
@@ -164,10 +165,31 @@ export const WorkTimer = () => {
     toast.success(`WO ${newOrder.number} adicionada!`);
   };
 
-  const removeWorkOrder = (id: string) => {
+  const saveCompletedWorkOrder = async (wo: WorkOrder) => {
+    try {
+      const { error } = await supabase
+        .from("completed_work_orders")
+        .insert({
+          wo_number: wo.number,
+          total_duration: 40 * 60, // 40 minutes in seconds
+          images: wo.images,
+          completed_at: new Date().toISOString(),
+        });
+
+      if (error) throw error;
+      toast.success(`WO ${wo.number} salva no histórico!`);
+    } catch (error) {
+      console.error("Error saving completed work order:", error);
+      toast.error("Erro ao salvar no histórico");
+    }
+  };
+
+  const removeWorkOrder = async (id: string) => {
     const woToRemove = workOrders.find(wo => wo.id === id);
     if (woToRemove?.hasFinished) {
       stopAlarm();
+      // Save to history before removing
+      await saveCompletedWorkOrder(woToRemove);
     }
     setWorkOrders(workOrders.filter(wo => wo.id !== id));
     toast.success("WO removida");

@@ -24,6 +24,7 @@ import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { format } from "date-fns";
 import { WorkTimer } from "@/components/WorkTimer";
+import { CompletedWorkOrders } from "@/components/CompletedWorkOrders";
 
 interface Procedure {
   id: string;
@@ -411,6 +412,11 @@ ${proc.description}
         {/* Timer de Trabalho */}
         <div className="mb-6">
           <WorkTimer />
+        </div>
+
+        {/* Histórico de Chamados Atendidos */}
+        <div className="mb-6">
+          <CompletedWorkOrders />
         </div>
 
         {/* Aviso LGPD */}
