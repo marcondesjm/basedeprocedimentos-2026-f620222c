@@ -409,14 +409,14 @@ ${proc.description}
       </header>
 
       <main className="container mx-auto px-6 py-8">
-        {/* Timer de Trabalho */}
-        <div className="mb-6">
-          <WorkTimer />
-        </div>
-
-        {/* Histórico de Chamados Atendidos */}
-        <div className="mb-6">
-          <CompletedWorkOrders />
+        {/* Timer de Trabalho e Histórico lado a lado */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <div>
+            <WorkTimer />
+          </div>
+          <div>
+            <CompletedWorkOrders />
+          </div>
         </div>
 
         {/* Aviso LGPD */}
