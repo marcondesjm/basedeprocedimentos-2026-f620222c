@@ -354,7 +354,7 @@ export const WorkTimer = () => {
             <p className="text-xs mt-1">Adicione WOs para iniciar a contagem</p>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {workOrders.map((wo) => (
               <Card key={wo.id} className="p-3 md:p-4 bg-background/50">
                 <div className="space-y-3">
