@@ -14,7 +14,81 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      completed_work_orders: {
+        Row: {
+          completed_at: string
+          created_at: string
+          id: string
+          images: string[] | null
+          notes: string | null
+          total_duration: number
+          updated_at: string
+          wo_number: string
+        }
+        Insert: {
+          completed_at?: string
+          created_at?: string
+          id?: string
+          images?: string[] | null
+          notes?: string | null
+          total_duration: number
+          updated_at?: string
+          wo_number: string
+        }
+        Update: {
+          completed_at?: string
+          created_at?: string
+          id?: string
+          images?: string[] | null
+          notes?: string | null
+          total_duration?: number
+          updated_at?: string
+          wo_number?: string
+        }
+        Relationships: []
+      }
+      procedures: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string
+          description: string
+          id: string
+          pib_equipamento: string | null
+          solution: string
+          tags: string[] | null
+          title: string
+          updated_at: string
+          usuario_atendido: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          created_by: string
+          description: string
+          id?: string
+          pib_equipamento?: string | null
+          solution: string
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+          usuario_atendido?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string
+          description?: string
+          id?: string
+          pib_equipamento?: string | null
+          solution?: string
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+          usuario_atendido?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
