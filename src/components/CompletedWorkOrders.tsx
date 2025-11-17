@@ -24,6 +24,31 @@ export const CompletedWorkOrders = () => {
 
   useEffect(() => {
     fetchCompletedOrders();
+
+    // Subscribe to realtime changes
+    const channel = supabase
+      .channel('completed_work_orders_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'completed_work_orders'
+        },
+        (payload) => {
+          console.log('Realtime update:', payload);
+          if (payload.eventType === 'INSERT') {
+            setCompletedOrders((prev) => [payload.new as CompletedWO, ...prev]);
+          } else if (payload.eventType === 'DELETE') {
+            setCompletedOrders((prev) => prev.filter(wo => wo.id !== payload.old.id));
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const fetchCompletedOrders = async () => {
