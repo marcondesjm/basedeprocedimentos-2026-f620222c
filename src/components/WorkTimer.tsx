@@ -443,17 +443,17 @@ export const WorkTimer = () => {
                           onClick={() => toggleTimer(wo.id)}
                           size="sm"
                           variant={wo.isRunning ? "outline" : "default"}
-                          className={`flex-1 min-w-0 ${!wo.isRunning ? 'bg-green-600 hover:bg-green-700 text-white' : ''}`}
+                          className={`flex-1 ${!wo.isRunning ? 'bg-green-600 hover:bg-green-700 text-white' : ''}`}
                         >
                           {wo.isRunning ? (
                             <>
-                              <Pause className="w-4 h-4 sm:mr-2" />
-                              <span className="hidden sm:inline">Pausar</span>
+                              <Pause className="w-4 h-4 mr-2" />
+                              Pausar
                             </>
                           ) : (
                             <>
-                              <Play className="w-4 h-4 sm:mr-2" />
-                              <span className="hidden sm:inline">Iniciar</span>
+                              <Play className="w-4 h-4 mr-2" />
+                              Iniciar
                             </>
                           )}
                         </Button>
@@ -461,10 +461,10 @@ export const WorkTimer = () => {
                           onClick={() => completeWorkOrder(wo.id)}
                           size="sm"
                           variant="default"
-                          className="flex-1 min-w-0 bg-black hover:bg-gray-900 text-white"
+                          className="flex-1 bg-black hover:bg-gray-900 text-white"
                         >
-                          <CheckCircle className="w-4 h-4 sm:mr-2" />
-                          <span className="hidden sm:inline">Concluir</span>
+                          <CheckCircle className="w-4 h-4 mr-2" />
+                          Concluir
                         </Button>
                         <Button
                           onClick={() => resetTimer(wo.id)}
