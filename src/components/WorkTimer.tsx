@@ -443,7 +443,7 @@ export const WorkTimer = () => {
                           onClick={() => toggleTimer(wo.id)}
                           size="sm"
                           variant={wo.isRunning ? "outline" : "default"}
-                          className="flex-1 min-w-0"
+                          className={`flex-1 min-w-0 ${!wo.isRunning ? 'bg-green-600 hover:bg-green-700 text-white' : ''}`}
                         >
                           {wo.isRunning ? (
                             <>
@@ -461,7 +461,7 @@ export const WorkTimer = () => {
                           onClick={() => completeWorkOrder(wo.id)}
                           size="sm"
                           variant="default"
-                          className="flex-1 min-w-0"
+                          className="flex-1 min-w-0 bg-black hover:bg-gray-900 text-white"
                         >
                           <CheckCircle className="w-4 h-4 sm:mr-2" />
                           <span className="hidden sm:inline">Concluir</span>
