@@ -195,6 +195,21 @@ export const WorkTimer = () => {
     toast.success("WO removida");
   };
 
+  const completeWorkOrder = async (id: string) => {
+    const woToComplete = workOrders.find(wo => wo.id === id);
+    if (!woToComplete) return;
+
+    // Stop alarm if running
+    stopAlarm();
+
+    // Save to history
+    await saveCompletedWorkOrder(woToComplete);
+
+    // Remove from active list
+    setWorkOrders(workOrders.filter(wo => wo.id !== id));
+    toast.success(`WO ${woToComplete.number} concluída e salva!`);
+  };
+
   const toggleTimer = (id: string) => {
     const now = Date.now();
     setWorkOrders(
@@ -441,6 +456,15 @@ export const WorkTimer = () => {
                               <span className="hidden sm:inline">Iniciar</span>
                             </>
                           )}
+                        </Button>
+                        <Button
+                          onClick={() => completeWorkOrder(wo.id)}
+                          size="sm"
+                          variant="default"
+                          className="flex-1 min-w-0"
+                        >
+                          <CheckCircle className="w-4 h-4 sm:mr-2" />
+                          <span className="hidden sm:inline">Concluir</span>
                         </Button>
                         <Button
                           onClick={() => resetTimer(wo.id)}
