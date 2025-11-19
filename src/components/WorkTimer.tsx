@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Clock, Play, Pause, RotateCcw, AlertCircle, Plus, Trash2, CheckCircle, Image as ImageIcon, X } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { format } from "date-fns";
 
 interface WorkOrder {
   id: string;
@@ -165,18 +165,36 @@ export const WorkTimer = () => {
     toast.success(`WO ${newOrder.number} adicionada!`);
   };
 
-  const saveCompletedWorkOrder = async (wo: WorkOrder) => {
+  const saveCompletedWorkOrder = (wo: WorkOrder, woNotes?: string) => {
     try {
-      const { error } = await supabase
-        .from("completed_work_orders")
-        .insert({
-          wo_number: wo.number,
-          total_duration: 40 * 60, // 40 minutes in seconds
-          images: wo.images,
-          completed_at: new Date().toISOString(),
-        });
-
-      if (error) throw error;
+      const now = new Date();
+      const dateKey = format(now, 'yyyy-MM-dd');
+      
+      // Get existing history from localStorage
+      const historyData = localStorage.getItem('workOrderHistory');
+      const history = historyData ? JSON.parse(historyData) : {};
+      
+      // Initialize date array if it doesn't exist
+      if (!history[dateKey]) {
+        history[dateKey] = [];
+      }
+      
+      // Add completed work order to the date's array
+      history[dateKey].push({
+        id: crypto.randomUUID(),
+        wo_number: wo.number,
+        completed_at: now.toISOString(),
+        total_duration: wo.totalSeconds,
+        images: wo.images,
+        notes: woNotes || null,
+      });
+      
+      // Save back to localStorage
+      localStorage.setItem('workOrderHistory', JSON.stringify(history));
+      
+      // Dispatch event for CompletedWorkOrders to update
+      window.dispatchEvent(new Event('historyUpdated'));
+      
       toast.success(`WO ${wo.number} salva no histórico!`);
     } catch (error) {
       console.error("Error saving completed work order:", error);
@@ -184,18 +202,18 @@ export const WorkTimer = () => {
     }
   };
 
-  const removeWorkOrder = async (id: string) => {
+  const removeWorkOrder = (id: string) => {
     const woToRemove = workOrders.find(wo => wo.id === id);
     if (woToRemove?.hasFinished) {
       stopAlarm();
       // Save to history before removing
-      await saveCompletedWorkOrder(woToRemove);
+      saveCompletedWorkOrder(woToRemove);
     }
     setWorkOrders(workOrders.filter(wo => wo.id !== id));
     toast.success("WO removida");
   };
 
-  const completeWorkOrder = async (id: string) => {
+  const completeWorkOrder = (id: string) => {
     const woToComplete = workOrders.find(wo => wo.id === id);
     if (!woToComplete) return;
 
@@ -203,11 +221,10 @@ export const WorkTimer = () => {
     stopAlarm();
 
     // Save to history
-    await saveCompletedWorkOrder(woToComplete);
+    saveCompletedWorkOrder(woToComplete);
 
     // Remove from active list
     setWorkOrders(workOrders.filter(wo => wo.id !== id));
-    toast.success(`WO ${woToComplete.number} concluída e salva!`);
   };
 
   const toggleTimer = (id: string) => {
