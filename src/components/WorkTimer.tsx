@@ -432,27 +432,38 @@ export const WorkTimer = () => {
                     </div>
                   )}
 
-                  <div className="flex flex-col sm:flex-row gap-2">
+                  <div className="flex flex-col gap-2">
                     {wo.hasFinished ? (
                       <>
                         <Button
                           onClick={() => stopAlarm()}
                           size="sm"
                           variant="destructive"
-                          className="flex-1"
+                          className="w-full"
                         >
                           <AlertCircle className="w-4 h-4 mr-2" />
                           Silenciar Alarme
                         </Button>
-                        <Button
-                          onClick={() => resetTimer(wo.id)}
-                          size="sm"
-                          variant="outline"
-                          className="flex-1"
-                        >
-                          <RotateCcw className="w-4 h-4 mr-2" />
-                          Reiniciar
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button
+                            onClick={() => completeWorkOrder(wo.id)}
+                            size="sm"
+                            variant="default"
+                            className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+                          >
+                            <CheckCircle className="w-4 h-4 mr-2" />
+                            Salvar no Histórico
+                          </Button>
+                          <Button
+                            onClick={() => resetTimer(wo.id)}
+                            size="sm"
+                            variant="outline"
+                            className="flex-1"
+                          >
+                            <RotateCcw className="w-4 h-4 mr-2" />
+                            Reiniciar
+                          </Button>
+                        </div>
                       </>
                     ) : (
                       <>
