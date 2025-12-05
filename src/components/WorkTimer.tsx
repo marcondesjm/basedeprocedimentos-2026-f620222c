@@ -419,6 +419,31 @@ export const WorkTimer = () => {
 
                   <Progress value={getProgress(wo)} className="h-2" />
 
+                  {/* Orientações - apenas lembrete visual, não salva - aparece quando timer expira */}
+                  {wo.hasFinished && (
+                    <Collapsible className="w-full">
+                      <CollapsibleTrigger className="flex items-center justify-between w-full p-2 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-md text-sm text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors">
+                        <div className="flex items-center gap-2">
+                          <Info className="w-4 h-4" />
+                          <span className="font-medium">Orientações para a Nota</span>
+                        </div>
+                        <ChevronDown className="w-4 h-4 transition-transform duration-200" />
+                      </CollapsibleTrigger>
+                      <CollapsibleContent className="mt-2 p-3 bg-blue-50/50 dark:bg-blue-950/50 border border-blue-100 dark:border-blue-900 rounded-md text-xs text-muted-foreground space-y-2">
+                        <p>• Detalhe todos os procedimentos e testes realizados</p>
+                        <p>• Informe os documentos do BC Suporte utilizados como referência</p>
+                        <p>• Anexe quaisquer print/foto em nota normal, <strong>ANTES</strong> de salvar a conclusão, pois na nota de conclusão só é possível utilizar texto</p>
+                        <p>• Em "Motivo do Status", use apenas <strong>"Utilização de procedimentos"</strong></p>
+                        <p>• Em caso de dúvidas acione a Supervisão ou Ticket Manager</p>
+                        <div className="mt-3 p-2 bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-300 dark:border-yellow-700 rounded text-yellow-800 dark:text-yellow-300 text-center">
+                          <p className="font-semibold">⚠️ Atenção ⚠️</p>
+                          <p>Notificar usuário com a solução realizada: <strong>SIM</strong></p>
+                          <p>Modo de execução: <strong>Remoto</strong></p>
+                        </div>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  )}
+
                   {wo.images && wo.images.length > 0 && (
                     <div className="grid grid-cols-4 gap-2">
                       {wo.images.map((img, idx) => (
@@ -436,29 +461,6 @@ export const WorkTimer = () => {
                   <div className="flex flex-col gap-2">
                     {wo.hasFinished ? (
                       <>
-                        {/* Orientações - apenas lembrete visual, não salva */}
-                        <Collapsible className="w-full">
-                          <CollapsibleTrigger className="flex items-center justify-between w-full p-2 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-md text-sm text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors">
-                            <div className="flex items-center gap-2">
-                              <Info className="w-4 h-4" />
-                              <span className="font-medium">Orientações para a Nota</span>
-                            </div>
-                            <ChevronDown className="w-4 h-4 transition-transform duration-200 group-data-[state=open]:rotate-180" />
-                          </CollapsibleTrigger>
-                          <CollapsibleContent className="mt-2 p-3 bg-blue-50/50 dark:bg-blue-950/50 border border-blue-100 dark:border-blue-900 rounded-md text-xs text-muted-foreground space-y-2">
-                            <p>• Detalhe todos os procedimentos e testes realizados</p>
-                            <p>• Informe os documentos do BC Suporte utilizados como referência</p>
-                            <p>• Anexe quaisquer print/foto em nota normal, <strong>ANTES</strong> de salvar a conclusão, pois na nota de conclusão só é possível utilizar texto</p>
-                            <p>• Em "Motivo do Status", use apenas <strong>"Utilização de procedimentos"</strong></p>
-                            <p>• Em caso de dúvidas acione a Supervisão ou Ticket Manager</p>
-                            <div className="mt-3 p-2 bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-300 dark:border-yellow-700 rounded text-yellow-800 dark:text-yellow-300 text-center">
-                              <p className="font-semibold">⚠️ Atenção ⚠️</p>
-                              <p>Notificar usuário com a solução realizada: <strong>SIM</strong></p>
-                              <p>Modo de execução: <strong>Remoto</strong></p>
-                            </div>
-                          </CollapsibleContent>
-                        </Collapsible>
-
                         <Button
                           onClick={() => stopAlarm()}
                           size="sm"
