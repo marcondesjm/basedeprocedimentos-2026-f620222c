@@ -421,27 +421,56 @@ export const WorkTimer = () => {
 
                   {/* Orientações - apenas lembrete visual, não salva - aparece quando timer expira */}
                   {wo.hasFinished && (
-                    <Collapsible className="w-full">
-                      <CollapsibleTrigger className="flex items-center justify-between w-full p-2 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-md text-sm text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors">
-                        <div className="flex items-center gap-2">
-                          <Info className="w-4 h-4" />
-                          <span className="font-medium">Orientações para a Nota</span>
-                        </div>
-                        <ChevronDown className="w-4 h-4 transition-transform duration-200" />
-                      </CollapsibleTrigger>
-                      <CollapsibleContent className="mt-2 p-3 bg-blue-50/50 dark:bg-blue-950/50 border border-blue-100 dark:border-blue-900 rounded-md text-xs text-muted-foreground space-y-2">
-                        <p>• Detalhe todos os procedimentos e testes realizados</p>
-                        <p>• Informe os documentos do BC Suporte utilizados como referência</p>
-                        <p>• Anexe quaisquer print/foto em nota normal, <strong>ANTES</strong> de salvar a conclusão, pois na nota de conclusão só é possível utilizar texto</p>
-                        <p>• Em "Motivo do Status", use apenas <strong>"Utilização de procedimentos"</strong></p>
-                        <p>• Em caso de dúvidas acione a Supervisão ou Ticket Manager</p>
-                        <div className="mt-3 p-2 bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-300 dark:border-yellow-700 rounded text-yellow-800 dark:text-yellow-300 text-center">
-                          <p className="font-semibold">⚠️ Atenção ⚠️</p>
-                          <p>Notificar usuário com a solução realizada: <strong>SIM</strong></p>
-                          <p>Modo de execução: <strong>Remoto</strong></p>
-                        </div>
-                      </CollapsibleContent>
-                    </Collapsible>
+                    <div className="space-y-2">
+                      {/* Orientações Gerais */}
+                      <Collapsible className="w-full">
+                        <CollapsibleTrigger className="flex items-center justify-between w-full p-2 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-md text-sm text-blue-700 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors">
+                          <div className="flex items-center gap-2">
+                            <Info className="w-4 h-4" />
+                            <span className="font-medium">Orientações Gerais</span>
+                          </div>
+                          <ChevronDown className="w-4 h-4 transition-transform duration-200" />
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="mt-2 p-3 bg-blue-50/50 dark:bg-blue-950/50 border border-blue-100 dark:border-blue-900 rounded-md text-xs text-muted-foreground space-y-2">
+                          <p>• Detalhe todos os procedimentos e testes realizados</p>
+                          <p>• Informe os documentos do BC Suporte utilizados como referência</p>
+                          <p>• Anexe quaisquer print/foto em nota normal, <strong>ANTES</strong> de salvar a conclusão, pois na nota de conclusão só é possível utilizar texto</p>
+                          <p>• Em "Motivo do Status", use apenas <strong>"Utilização de procedimentos"</strong></p>
+                          <p>• Em caso de dúvidas acione a Supervisão ou Ticket Manager</p>
+                          <div className="mt-3 p-2 bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-300 dark:border-yellow-700 rounded text-yellow-800 dark:text-yellow-300 text-center">
+                            <p className="font-semibold">⚠️ Atenção ⚠️</p>
+                            <p>Notificar usuário com a solução realizada: <strong>SIM</strong></p>
+                            <p>Modo de execução: <strong>Remoto</strong></p>
+                          </div>
+                        </CollapsibleContent>
+                      </Collapsible>
+
+                      {/* Orientações para Impressoras */}
+                      <Collapsible className="w-full">
+                        <CollapsibleTrigger className="flex items-center justify-between w-full p-2 bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-md text-sm text-green-700 dark:text-green-300 hover:bg-green-100 dark:hover:bg-green-900 transition-colors">
+                          <div className="flex items-center gap-2">
+                            <Info className="w-4 h-4" />
+                            <span className="font-medium">Orientações para Impressoras</span>
+                          </div>
+                          <ChevronDown className="w-4 h-4 transition-transform duration-200" />
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="mt-2 p-3 bg-green-50/50 dark:bg-green-950/50 border border-green-100 dark:border-green-900 rounded-md text-xs text-muted-foreground space-y-2">
+                          <p>• Para atendimento <strong>REMOTO</strong>, um único chamado abrange a instalação do equipamento NOVO e a configuração de todos os micros <strong>NO SETOR</strong></p>
+                          <p>• Abrir tarefa no OTRS para cada micro configurado</p>
+                          <p>• Detalhe todos os procedimentos e testes realizados</p>
+                          <p>• Anexe quaisquer print/foto em nota normal, <strong>ANTES</strong> de salvar a conclusão, pois na nota de conclusão só é possível utilizar texto</p>
+                          <p>• Em "Motivo do Status", use apenas <strong>"Utilização de procedimentos"</strong></p>
+                          <p>• Registre todas as PIB dos micros configurados <strong>NO SETOR</strong></p>
+                          <p className="font-semibold text-destructive">• É OBRIGATÓRIO A REALIZAÇÃO DO TESTE DE IMPRESSÃO</p>
+                          <p>• Em caso de dúvidas acione a Supervisão ou Ticket Manager</p>
+                          <div className="mt-3 p-2 bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-300 dark:border-yellow-700 rounded text-yellow-800 dark:text-yellow-300 text-center">
+                            <p className="font-semibold">⚠️ Atenção ⚠️</p>
+                            <p>Notificar usuário com a solução realizada: <strong>SIM</strong></p>
+                            <p>Modo de execução: <strong>Remoto</strong></p>
+                          </div>
+                        </CollapsibleContent>
+                      </Collapsible>
+                    </div>
                   )}
 
                   {wo.images && wo.images.length > 0 && (
