@@ -17,6 +17,7 @@ interface WorkOrder {
   isRunning: boolean;
   hasFinished: boolean;
   hasWarned: boolean;
+  showGuidance: boolean;
   startTime?: number;
   pausedTime?: number;
   images: string[];
@@ -158,6 +159,7 @@ export const WorkTimer = () => {
       isRunning: false,
       hasFinished: false,
       hasWarned: false,
+      showGuidance: false,
       images: selectedImages,
     };
 
@@ -212,6 +214,14 @@ export const WorkTimer = () => {
     }
     setWorkOrders(workOrders.filter(wo => wo.id !== id));
     toast.success("WO removida");
+  };
+
+  const showGuidanceForWO = (id: string) => {
+    // Show guidance before completing
+    setWorkOrders(workOrders.map(wo => 
+      wo.id === id ? { ...wo, showGuidance: true, isRunning: false } : wo
+    ));
+    stopAlarm();
   };
 
   const completeWorkOrder = (id: string) => {
@@ -269,6 +279,7 @@ export const WorkTimer = () => {
               isRunning: false,
               hasFinished: false,
               hasWarned: false,
+              showGuidance: false,
               startTime: undefined,
               pausedTime: undefined,
               images: woToReset?.images || [],
@@ -419,8 +430,8 @@ export const WorkTimer = () => {
 
                   <Progress value={getProgress(wo)} className="h-2" />
 
-                  {/* Orientações - apenas lembrete visual, não salva - aparece quando timer expira */}
-                  {wo.hasFinished && (
+                  {/* Orientações - apenas lembrete visual, não salva - aparece quando timer expira ou quando clica em concluir */}
+                  {(wo.hasFinished || wo.showGuidance) && (
                     <div className="space-y-2">
                       {/* Orientações Gerais */}
                       <Collapsible className="w-full">
@@ -520,6 +531,26 @@ export const WorkTimer = () => {
                           </Button>
                         </div>
                       </>
+                    ) : wo.showGuidance ? (
+                      <>
+                        <Button
+                          onClick={() => completeWorkOrder(wo.id)}
+                          size="sm"
+                          variant="default"
+                          className="w-full bg-green-600 hover:bg-green-700 text-white"
+                        >
+                          <CheckCircle className="w-4 h-4 mr-2" />
+                          Confirmar e Salvar no Histórico
+                        </Button>
+                        <Button
+                          onClick={() => setWorkOrders(workOrders.map(w => w.id === wo.id ? { ...w, showGuidance: false } : w))}
+                          size="sm"
+                          variant="outline"
+                          className="w-full"
+                        >
+                          Voltar
+                        </Button>
+                      </>
                     ) : (
                       <>
                         <Button
@@ -541,7 +572,7 @@ export const WorkTimer = () => {
                           )}
                         </Button>
                         <Button
-                          onClick={() => completeWorkOrder(wo.id)}
+                          onClick={() => showGuidanceForWO(wo.id)}
                           size="sm"
                           variant="default"
                           className="flex-1 bg-black hover:bg-gray-900 text-white"
