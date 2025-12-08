@@ -97,7 +97,7 @@ const Index = () => {
 
   const defaultProcedures: Procedure[] = [
     {
-      id: crypto.randomUUID(),
+      id: "default-pinpad-001",
       title: "Configuração PINPAD",
       description: "Pinpad atualizou as tabelas",
       category: "CONFIGURAÇÃO",
