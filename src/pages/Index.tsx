@@ -771,25 +771,25 @@ ${proc.description}
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
-                  {isEditMode && editedProcedure ? (
-                    <>
+                {isEditMode && editedProcedure ? (
+                  <div className="space-y-4 pt-4 border-t">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="edit-pib">PIB Equipamento</Label>
-                        <Input
-                          id="edit-pib"
-                          value={editedProcedure.pibEquipamento || ""}
-                          onChange={(e) => setEditedProcedure({ ...editedProcedure, pibEquipamento: e.target.value })}
-                          placeholder="Digite o PIB do equipamento"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="edit-usuario">Usuário Atendido</Label>
+                        <Label htmlFor="edit-usuario">Usuário Atendido (EM CONTATO COM)</Label>
                         <Input
                           id="edit-usuario"
                           value={editedProcedure.usuarioAtendido || ""}
                           onChange={(e) => setEditedProcedure({ ...editedProcedure, usuarioAtendido: e.target.value })}
-                          placeholder="Digite o nome do usuário atendido"
+                          placeholder="Nome do usuário atendido"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="edit-pib">PIB do Equipamento</Label>
+                        <Input
+                          id="edit-pib"
+                          value={editedProcedure.pibEquipamento || ""}
+                          onChange={(e) => setEditedProcedure({ ...editedProcedure, pibEquipamento: e.target.value })}
+                          placeholder="PIB do equipamento"
                         />
                       </div>
                       <div className="space-y-2">
@@ -801,22 +801,81 @@ ${proc.description}
                           placeholder="Nome do técnico"
                         />
                       </div>
-                      <div>
-                        <p className="text-sm text-muted-foreground">Data de Registro</p>
-                        <p className="font-medium text-foreground">
-                          {new Date(selectedProcedure.createdAt).toLocaleString('pt-BR')}
-                        </p>
+                      <div className="space-y-2">
+                        <Label htmlFor="edit-category">Categoria</Label>
+                        <Select 
+                          value={editedProcedure.category} 
+                          onValueChange={(value) => setEditedProcedure({ ...editedProcedure, category: value })}
+                        >
+                          <SelectTrigger id="edit-category">
+                            <SelectValue placeholder="Selecione a categoria" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {categories.map((cat) => (
+                              <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
-                    </>
-                  ) : (
-                    <>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="edit-title">Título</Label>
+                      <Input
+                        id="edit-title"
+                        value={editedProcedure.title}
+                        onChange={(e) => setEditedProcedure({ ...editedProcedure, title: e.target.value })}
+                        placeholder="Título do procedimento"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="edit-description">Descrição</Label>
+                      <Textarea
+                        id="edit-description"
+                        value={editedProcedure.description}
+                        onChange={(e) => setEditedProcedure({ ...editedProcedure, description: e.target.value })}
+                        placeholder="Descrição do procedimento"
+                        rows={4}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="edit-solution">Solução Aplicada</Label>
+                      <Textarea
+                        id="edit-solution"
+                        value={editedProcedure.solution}
+                        onChange={(e) => setEditedProcedure({ ...editedProcedure, solution: e.target.value })}
+                        placeholder="Solução aplicada"
+                        rows={6}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="edit-tags">Tags (separadas por vírgula)</Label>
+                      <Input
+                        id="edit-tags"
+                        value={editedProcedure.tags.join(", ")}
+                        onChange={(e) => setEditedProcedure({ 
+                          ...editedProcedure, 
+                          tags: e.target.value.split(",").map(tag => tag.trim()).filter(tag => tag)
+                        })}
+                        placeholder="Ex: VNC, Driver, Pinpad"
+                      />
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Data de Registro</p>
+                      <p className="font-medium text-foreground">
+                        {new Date(selectedProcedure.createdAt).toLocaleString('pt-BR')}
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-4 pt-4 border-t">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <p className="text-sm text-muted-foreground">PIB Equipamento</p>
-                        <p className="font-medium text-foreground">{selectedProcedure.pibEquipamento || "Não informado"}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-muted-foreground">Usuário Atendido</p>
+                        <p className="text-sm text-muted-foreground">Usuário Atendido (EM CONTATO COM)</p>
                         <p className="font-medium text-foreground">{selectedProcedure.usuarioAtendido || "Não informado"}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-muted-foreground">PIB do Equipamento</p>
+                        <p className="font-medium text-foreground">{selectedProcedure.pibEquipamento || "Não informado"}</p>
                       </div>
                       <div>
                         <p className="text-sm text-muted-foreground">Técnico Responsável</p>
@@ -828,9 +887,45 @@ ${proc.description}
                           {new Date(selectedProcedure.createdAt).toLocaleString('pt-BR')}
                         </p>
                       </div>
-                    </>
-                  )}
-                </div>
+                    </div>
+                    
+                    {/* Botão para copiar nota no formato oficial */}
+                    <div className="pt-2">
+                      <Button
+                        variant="secondary"
+                        className="w-full"
+                        onClick={() => {
+                          const notaOficial = `EM CONTATO COM O USUÁRIO: ${selectedProcedure.usuarioAtendido || '_____________'},FOI REALIZADO ACESSO REMOTO AO MICRO E 
+FORAM EXECUTADOS OS PROCEDIMENTOS DE: ${selectedProcedure.title}
+
+================== 
+
+PIB: ${selectedProcedure.pibEquipamento || '_____________'}
+
+================== 
+
+${selectedProcedure.solution}
+
+APÓS PROCEDIMENTOS FORAM REALIZADOS TESTES DE: 
+
+${selectedProcedure.description}
+
+QUE CONFIRMARAM A SOLUÇÃO DO PROBLEMA. 
+
+  
+
+ATENCIOSAMENTE, 
+SUPORTE TÉCNICO HEPTA`;
+                          navigator.clipboard.writeText(notaOficial);
+                          toast.success('Nota oficial copiada para a área de transferência!');
+                        }}
+                      >
+                        <Copy className="w-4 h-4 mr-2" />
+                        Copiar Nota no Formato Oficial
+                      </Button>
+                    </div>
+                  </div>
+                )}
 
                 <div className="flex flex-col sm:flex-row gap-3 justify-between pt-4 border-t">
                   <div className="flex gap-2 flex-wrap">
