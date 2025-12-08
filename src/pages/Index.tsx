@@ -95,11 +95,42 @@ const Index = () => {
     return () => clearInterval(timer);
   }, []);
 
+  const defaultProcedures: Procedure[] = [
+    {
+      id: crypto.randomUUID(),
+      title: "Configuração PINPAD",
+      description: "Pinpad atualizou as tabelas",
+      category: "CONFIGURAÇÃO",
+      tags: ["PINPAD", "VNC", "Driver", "SARA"],
+      solution: `- Realizado o acesso remoto via VNC, conforme autorizado pelo usuário;
+- Realizado a instalação do Driver, disponível no deploy (\\\\sac3144).
+- Realizado a importação das DLL.
+- Realizado a configuração da Porta COM do PINPAD para COM1.
+- Realizado validação junto ao usuário e orientado o mesmo a entrar em contato com a equipe do SARA para dar continuidade.
+FAVOR DEIXAR O PINPAD NA PORTA QUE SE ENCONTRA A TRÁS NO MICRO. SE REMOVER ELE VAI PERDER A CONFIGURAÇÃO.`,
+      createdAt: new Date().toISOString(),
+      createdBy: "SUPORTE TÉCNICO HEPTA",
+      pibEquipamento: "20435683",
+      usuarioAtendido: "HILTON CARDOSO LOPES",
+    }
+  ];
+
   const loadProcedures = () => {
     try {
       const savedProcedures = localStorage.getItem('procedures');
       if (savedProcedures) {
-        setProcedures(JSON.parse(savedProcedures));
+        const parsed = JSON.parse(savedProcedures);
+        if (parsed.length > 0) {
+          setProcedures(parsed);
+        } else {
+          // Se não houver procedimentos, carregar os padrões
+          setProcedures(defaultProcedures);
+          saveProcedures(defaultProcedures);
+        }
+      } else {
+        // Primeira vez - carregar procedimentos padrão
+        setProcedures(defaultProcedures);
+        saveProcedures(defaultProcedures);
       }
     } catch (error) {
       console.error('Erro ao carregar procedimentos:', error);
