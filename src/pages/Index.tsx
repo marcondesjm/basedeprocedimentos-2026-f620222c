@@ -26,6 +26,8 @@ import { format } from "date-fns";
 import { WorkTimer } from "@/components/WorkTimer";
 import { CompletedWorkOrders } from "@/components/CompletedWorkOrders";
 
+type NoteType = "procedimento" | "diagnostico";
+
 interface Procedure {
   id: string;
   title: string;
@@ -38,6 +40,11 @@ interface Procedure {
   pibEquipamento?: string;
   usuarioAtendido?: string;
   workOrder?: string;
+  noteType?: NoteType;
+  setorDirecionado?: string;
+  justificativa?: string;
+  possuiProcedimentoBC?: "sim" | "nao";
+  nomeArquivoBC?: string;
 }
 
 const Index = () => {
@@ -63,6 +70,11 @@ const Index = () => {
     pibEquipamento: "",
     usuarioAtendido: "",
     workOrder: "",
+    noteType: "procedimento" as NoteType,
+    setorDirecionado: "",
+    justificativa: "",
+    possuiProcedimentoBC: "" as "sim" | "nao" | "",
+    nomeArquivoBC: "",
   });
 
   useEffect(() => {
@@ -164,6 +176,11 @@ FAVOR DEIXAR O PINPAD NA PORTA QUE SE ENCONTRA A TRÁS NO MICRO. SE REMOVER ELE 
         createdBy: "SUPORTE TÉCNICO HEPTA",
         pibEquipamento: newProcedure.pibEquipamento,
         usuarioAtendido: newProcedure.usuarioAtendido,
+        noteType: newProcedure.noteType,
+        setorDirecionado: newProcedure.setorDirecionado,
+        justificativa: newProcedure.justificativa,
+        possuiProcedimentoBC: newProcedure.possuiProcedimentoBC || undefined,
+        nomeArquivoBC: newProcedure.nomeArquivoBC,
       };
 
       const updatedProcedures = [formattedProcedure, ...procedures];
@@ -181,6 +198,11 @@ FAVOR DEIXAR O PINPAD NA PORTA QUE SE ENCONTRA A TRÁS NO MICRO. SE REMOVER ELE 
         pibEquipamento: "",
         usuarioAtendido: "",
         workOrder: "",
+        noteType: "procedimento",
+        setorDirecionado: "",
+        justificativa: "",
+        possuiProcedimentoBC: "",
+        nomeArquivoBC: "",
       });
       toast.success("Procedimento cadastrado com sucesso!");
     } catch (error) {
@@ -540,6 +562,38 @@ ${proc.description}
                   <DialogTitle>Cadastrar Novo Procedimento</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleCreateProcedure} className="space-y-4 mt-4">
+                  {/* Tipo de Nota */}
+                  <div className="space-y-2">
+                    <Label>Tipo de Nota *</Label>
+                    <Select
+                      value={newProcedure.noteType}
+                      onValueChange={(value: NoteType) => setNewProcedure({ ...newProcedure, noteType: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione o tipo de nota" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="procedimento">Procedimento (Padrão)</SelectItem>
+                        <SelectItem value="diagnostico">Diagnóstico</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Campo específico para Diagnóstico - Setor */}
+                  {newProcedure.noteType === "diagnostico" && (
+                    <div className="space-y-2 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                      <Label htmlFor="setorDirecionado" className="text-amber-800">Setor a Direcionar *</Label>
+                      <Input
+                        id="setorDirecionado"
+                        required={newProcedure.noteType === "diagnostico"}
+                        value={newProcedure.setorDirecionado}
+                        onChange={(e) => setNewProcedure({ ...newProcedure, setorDirecionado: e.target.value })}
+                        placeholder="Ex: SUPORTE REDE, INFRAESTRUTURA, etc."
+                        className="border-amber-300"
+                      />
+                    </div>
+                  )}
+
                   <div className="space-y-2">
                     <Label htmlFor="title">Título *</Label>
                     <Input
@@ -642,6 +696,55 @@ ${proc.description}
                       className="bg-muted"
                     />
                   </div>
+
+                  {/* Campos específicos para Diagnóstico */}
+                  {newProcedure.noteType === "diagnostico" && (
+                    <div className="space-y-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                      <h4 className="font-semibold text-amber-800">Campos de Diagnóstico</h4>
+                      
+                      <div className="space-y-2">
+                        <Label htmlFor="justificativa" className="text-amber-800">Justificativa *</Label>
+                        <Textarea
+                          id="justificativa"
+                          required={newProcedure.noteType === "diagnostico"}
+                          value={newProcedure.justificativa}
+                          onChange={(e) => setNewProcedure({ ...newProcedure, justificativa: e.target.value })}
+                          placeholder="Após procedimentos foi verificado que..."
+                          rows={3}
+                          className="border-amber-300"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label className="text-amber-800">Possui procedimento no BC-Suporte?</Label>
+                        <Select
+                          value={newProcedure.possuiProcedimentoBC}
+                          onValueChange={(value: "sim" | "nao") => setNewProcedure({ ...newProcedure, possuiProcedimentoBC: value })}
+                        >
+                          <SelectTrigger className="border-amber-300">
+                            <SelectValue placeholder="Selecione..." />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="sim">SIM</SelectItem>
+                            <SelectItem value="nao">NÃO</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {newProcedure.possuiProcedimentoBC === "sim" && (
+                        <div className="space-y-2">
+                          <Label htmlFor="nomeArquivoBC" className="text-amber-800">Nome do Arquivo BC</Label>
+                          <Input
+                            id="nomeArquivoBC"
+                            value={newProcedure.nomeArquivoBC}
+                            onChange={(e) => setNewProcedure({ ...newProcedure, nomeArquivoBC: e.target.value })}
+                            placeholder="Nome do arquivo no BC-Suporte"
+                            className="border-amber-300"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   <div className="flex gap-3 justify-end pt-4">
                     <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
@@ -782,12 +885,41 @@ ${proc.description}
                 <DialogTitle className="text-xl">{selectedProcedure.title}</DialogTitle>
               </DialogHeader>
               <div className="space-y-4 mt-4">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
+                  {selectedProcedure.noteType === "diagnostico" && (
+                    <Badge className="bg-amber-500 text-white">DIAGNÓSTICO</Badge>
+                  )}
                   <Badge variant="secondary">{selectedProcedure.category}</Badge>
                   {selectedProcedure.tags.map((tag, idx) => (
                     <Badge key={idx} variant="outline">{tag}</Badge>
                   ))}
                 </div>
+
+                {/* Campos específicos de Diagnóstico */}
+                {selectedProcedure.noteType === "diagnostico" && (
+                  <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg space-y-2">
+                    <p className="text-sm text-amber-800 font-semibold">Informações de Diagnóstico</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                      <div>
+                        <span className="text-amber-700">Setor Direcionado:</span>{" "}
+                        <span className="font-medium">{selectedProcedure.setorDirecionado || "Não informado"}</span>
+                      </div>
+                      <div>
+                        <span className="text-amber-700">BC-Suporte:</span>{" "}
+                        <span className="font-medium">
+                          {selectedProcedure.possuiProcedimentoBC === "sim" ? "SIM" : selectedProcedure.possuiProcedimentoBC === "nao" ? "NÃO" : "Não informado"}
+                          {selectedProcedure.possuiProcedimentoBC === "sim" && selectedProcedure.nomeArquivoBC && ` (${selectedProcedure.nomeArquivoBC})`}
+                        </span>
+                      </div>
+                    </div>
+                    {selectedProcedure.justificativa && (
+                      <div>
+                        <span className="text-amber-700 text-sm">Justificativa:</span>
+                        <p className="text-sm mt-1">{selectedProcedure.justificativa}</p>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 <div>
                   <h3 className="font-semibold mb-2 text-foreground">Descrição</h3>
@@ -920,12 +1052,47 @@ ${proc.description}
                     </div>
                     
                     {/* Botão para copiar nota no formato oficial */}
-                    <div className="pt-2">
-                      <Button
-                        variant="secondary"
-                        className="w-full"
-                        onClick={() => {
-                          const notaOficial = `EM CONTATO COM O USUÁRIO: ${selectedProcedure.usuarioAtendido || '_____________'},FOI REALIZADO ACESSO REMOTO AO MICRO E 
+                    <div className="pt-2 space-y-2">
+                      {selectedProcedure.noteType === "diagnostico" ? (
+                        <Button
+                          variant="secondary"
+                          className="w-full bg-amber-100 hover:bg-amber-200 text-amber-800"
+                          onClick={() => {
+                            const notaDiagnostico = `FAVOR DIRECIONAR AO SETOR ${selectedProcedure.setorDirecionado || '_____________'}
+
+==================
+
+PIB indicada pelo usuário: ${selectedProcedure.pibEquipamento || '_____________'}
+
+==================
+
+EM CONTATO COM O USUÁRIO ${selectedProcedure.usuarioAtendido || '_____________'}, FORAM REALIZADOS OS PROCEDIMENTOS DE:
+
+${selectedProcedure.solution.split('\n').map(line => line.trim() ? `- ${line.trim()}` : '').filter(Boolean).join('\n')}
+
+APÓS PROCEDIMENTOS FOI VERIFICADO QUE:
+
+${selectedProcedure.justificativa || '< JUSTIFICATIVA >'}
+
+Possui procedimento no BC-Suporte? ( ${selectedProcedure.possuiProcedimentoBC === 'sim' ? 'X' : ' '} ) SIM ( ${selectedProcedure.possuiProcedimentoBC === 'nao' ? 'X' : ' '} ) Não
+
+${selectedProcedure.possuiProcedimentoBC === 'sim' && selectedProcedure.nomeArquivoBC ? `Se sim, Nome do arquivo: ${selectedProcedure.nomeArquivoBC}` : 'Se sim, Nome do arquivo:_____________________'}
+
+ATENCIOSAMENTE,
+SUPORTE TÉCNICO HEPTA`;
+                            navigator.clipboard.writeText(notaDiagnostico);
+                            toast.success('Nota de Diagnóstico copiada para a área de transferência!');
+                          }}
+                        >
+                          <Copy className="w-4 h-4 mr-2" />
+                          Copiar Nota de Diagnóstico
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="secondary"
+                          className="w-full"
+                          onClick={() => {
+                            const notaOficial = `EM CONTATO COM O USUÁRIO: ${selectedProcedure.usuarioAtendido || '_____________'},FOI REALIZADO ACESSO REMOTO AO MICRO E 
 FORAM EXECUTADOS OS PROCEDIMENTOS DE: ${selectedProcedure.title}
 
 ================== 
@@ -946,13 +1113,14 @@ QUE CONFIRMARAM A SOLUÇÃO DO PROBLEMA.
 
 ATENCIOSAMENTE, 
 SUPORTE TÉCNICO HEPTA`;
-                          navigator.clipboard.writeText(notaOficial);
-                          toast.success('Nota oficial copiada para a área de transferência!');
-                        }}
-                      >
-                        <Copy className="w-4 h-4 mr-2" />
-                        Copiar Nota no Formato Oficial
-                      </Button>
+                            navigator.clipboard.writeText(notaOficial);
+                            toast.success('Nota oficial copiada para a área de transferência!');
+                          }}
+                        >
+                          <Copy className="w-4 h-4 mr-2" />
+                          Copiar Nota no Formato Oficial
+                        </Button>
+                      )}
                     </div>
                   </div>
                 )}
