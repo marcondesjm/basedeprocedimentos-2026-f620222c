@@ -161,7 +161,7 @@ FAVOR DEIXAR O PINPAD NA PORTA QUE SE ENCONTRA A TRÁS NO MICRO. SE REMOVER ELE 
         tags: newProcedure.tags.split(",").map(tag => tag.trim()).filter(tag => tag),
         solution: newProcedure.solution,
         createdAt: new Date().toISOString(),
-        createdBy: newProcedure.createdBy,
+        createdBy: "SUPORTE TÉCNICO HEPTA",
         pibEquipamento: newProcedure.pibEquipamento,
         usuarioAtendido: newProcedure.usuarioAtendido,
       };
@@ -634,13 +634,12 @@ ${proc.description}
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="createdBy">Técnico Responsável *</Label>
+                    <Label htmlFor="createdBy">Técnico Responsável</Label>
                     <Input
                       id="createdBy"
-                      required
-                      value={newProcedure.createdBy}
-                      onChange={(e) => setNewProcedure({ ...newProcedure, createdBy: e.target.value })}
-                      placeholder="Nome do técnico"
+                      value="SUPORTE TÉCNICO HEPTA"
+                      disabled
+                      className="bg-muted"
                     />
                   </div>
 
@@ -827,9 +826,9 @@ ${proc.description}
                         <Label htmlFor="edit-tecnico">Técnico Responsável</Label>
                         <Input
                           id="edit-tecnico"
-                          value={editedProcedure.createdBy}
-                          onChange={(e) => setEditedProcedure({ ...editedProcedure, createdBy: e.target.value })}
-                          placeholder="Nome do técnico"
+                          value="SUPORTE TÉCNICO HEPTA"
+                          disabled
+                          className="bg-muted"
                         />
                       </div>
                       <div className="space-y-2">
