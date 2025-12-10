@@ -1262,6 +1262,52 @@ ${selectedProcedure.solution}`;
                             </PopoverContent>
                           </Popover>
                         )}
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button variant="outline" className="border-blue-300 text-blue-700 hover:bg-blue-50">
+                              <FileText className="w-4 h-4 mr-2" />
+                              Devolução Remoto
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-96 p-4" align="end">
+                            <div className="space-y-3">
+                              <h4 className="font-semibold text-blue-700 flex items-center gap-2">
+                                <FileText className="w-4 h-4" />
+                                Nota de Devolução Remoto → Presencial
+                              </h4>
+                              <p className="text-sm text-muted-foreground">
+                                Clique no botão abaixo para copiar o modelo de nota para direcionar à fila presencial.
+                              </p>
+                              <Button
+                                className="w-full bg-blue-600 hover:bg-blue-700"
+                                onClick={() => {
+                                  const notaDevolucao = `FAVOR DIRECIONAR AO SUPORTE PRESENCIAL
+
+EM CONTATO COM O USUÁRIO ${selectedProcedure.usuarioAtendido || '_________________'}, FOI REALIZADO ACESSO REMOTO AO MICRO E
+FORAM EXECUTADOS OS PROCEDIMENTOS DE:
+
+==================
+
+PIB: ${selectedProcedure.pibEquipamento || '_________________'}
+
+==================
+
+${selectedProcedure.solution.split('\n').map(line => line.trim() ? `- ${line.trim()}` : '').filter(Boolean).join('\n') || '- PROCEDIMENTO 1\n- PROCEDIMENTO 2\n- PROCEDIMENTO 3'}
+
+APÓS PROCEDIMENTOS FOI IDENTIFICADO A NECESSIDADE DE ATENDIMENTO IN LOCO, SENDO ASSIM, FAVOR DIRECIONAR A FILA PRESENCIAL
+
+ATENCIOSAMENTE,
+SUPORTE TÉCNICO HEPTA`;
+                                  navigator.clipboard.writeText(notaDevolucao);
+                                  toast.success('Nota de Devolução Remoto copiada!');
+                                }}
+                              >
+                                <Copy className="w-4 h-4 mr-2" />
+                                Copiar Nota
+                              </Button>
+                            </div>
+                          </PopoverContent>
+                        </Popover>
                         <Button 
                           onClick={() => {
                             setIsEditMode(true);
