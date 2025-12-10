@@ -481,6 +481,29 @@ export const WorkTimer = () => {
                           </div>
                         </CollapsibleContent>
                       </Collapsible>
+
+                      {/* Orientações para Diagnóstico */}
+                      <Collapsible className="w-full">
+                        <CollapsibleTrigger className="flex items-center justify-between w-full p-2 bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 rounded-md text-sm text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-900 transition-colors">
+                          <div className="flex items-center gap-2">
+                            <AlertCircle className="w-4 h-4" />
+                            <span className="font-medium">Orientações para Diagnóstico</span>
+                          </div>
+                          <ChevronDown className="w-4 h-4 transition-transform duration-200" />
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="mt-2 p-3 bg-red-50/50 dark:bg-red-950/50 border border-red-100 dark:border-red-900 rounded-md text-xs text-muted-foreground space-y-2">
+                          <p>• Detalhe todos os procedimentos e testes realizados e anexe os prints comprobatórios</p>
+                          <p>• Informe os documentos do BC Suporte utilizados como referência</p>
+                          <p>• <strong>Mais detalhes &gt;&gt; Bloqueado:</strong> (Sim)</p>
+                          <p>• <strong>ANTES</strong> de Devolver o chamado, ajuste a categorização em "Categorização" &gt;&gt; "Categorização Operacional"</p>
+                          <p>• Em caso de dúvidas acione a <strong>Supervisão</strong> ou <strong>Ticket Manager</strong></p>
+                          <div className="mt-3 p-2 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded text-red-800 dark:text-red-300 text-center">
+                            <p className="font-bold">!! ATENÇÃO !!</p>
+                            <p>Em "Tipo de informação de trabalho",</p>
+                            <p className="font-bold text-base">marque "DIAGNÓSTICO"</p>
+                          </div>
+                        </CollapsibleContent>
+                      </Collapsible>
                     </div>
                   )}
 
