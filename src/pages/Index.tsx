@@ -743,6 +743,25 @@ ${proc.description}
                           />
                         </div>
                       )}
+
+                      {/* Aviso de Orientações para Diagnóstico */}
+                      <Alert className="bg-red-50 border-red-300">
+                        <AlertDescription className="text-red-800 space-y-2">
+                          <p className="font-bold text-center">⚠️ ORIENTAÇÕES - LEIA ANTES DE SALVAR ⚠️</p>
+                          <ul className="list-disc list-inside space-y-1 text-sm">
+                            <li>Detalhe todos os procedimentos e testes realizados e anexe os prints comprobatórios</li>
+                            <li>Informe os documentos do BC Suporte utilizados como referência</li>
+                            <li><strong>Mais detalhes &gt;&gt; Bloqueado:</strong> (Sim)</li>
+                            <li><strong>ANTES</strong> de Devolver o chamado, ajuste a categorização em "Categorização" &gt;&gt; "Categorização Operacional"</li>
+                            <li>Em caso de dúvidas acione a <strong>Supervisão</strong> ou <strong>Ticket Manager</strong></li>
+                          </ul>
+                          <div className="mt-3 p-2 bg-red-100 rounded border border-red-400 text-center">
+                            <p className="font-bold">!! ATENÇÃO !!</p>
+                            <p>Em "Tipo de informação de trabalho",</p>
+                            <p className="font-bold text-lg">marque "DIAGNÓSTICO"</p>
+                          </div>
+                        </AlertDescription>
+                      </Alert>
                     </div>
                   )}
 
