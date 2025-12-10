@@ -19,9 +19,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search, FileText, Calendar, Tag, Download, Upload, Save, Shield, X, Copy } from "lucide-react";
+import { Plus, Search, FileText, Calendar, Tag, Download, Upload, Save, Shield, X, Copy, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { WorkTimer } from "@/components/WorkTimer";
 import { CompletedWorkOrders } from "@/components/CompletedWorkOrders";
@@ -1231,6 +1232,36 @@ ${selectedProcedure.solution}`;
                           <Copy className="w-4 h-4 mr-2" />
                           Copiar
                         </Button>
+                        {selectedProcedure.noteType === "diagnostico" && (
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button variant="outline" className="border-red-300 text-red-700 hover:bg-red-50">
+                                <AlertCircle className="w-4 h-4 mr-2" />
+                                Orientações
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-96 p-4" align="end">
+                              <div className="space-y-3">
+                                <h4 className="font-semibold text-red-700 flex items-center gap-2">
+                                  <AlertCircle className="w-4 h-4" />
+                                  Orientações para Diagnóstico
+                                </h4>
+                                <ul className="text-sm space-y-2 text-muted-foreground">
+                                  <li>• Detalhe todos os procedimentos e testes realizados e anexe os prints comprobatórios</li>
+                                  <li>• Informe os documentos do BC Suporte utilizados como referência</li>
+                                  <li>• <strong>Mais detalhes &gt;&gt; Bloqueado:</strong> (Sim)</li>
+                                  <li>• <strong>ANTES</strong> de Devolver o chamado, ajuste a categorização em "Categorização" &gt;&gt; "Categorização Operacional"</li>
+                                  <li>• Em caso de dúvidas acione a <strong>Supervisão</strong> ou <strong>Ticket Manager</strong></li>
+                                </ul>
+                                <div className="mt-3 p-2 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded text-red-800 dark:text-red-300 text-center text-sm">
+                                  <p className="font-bold">!! ATENÇÃO !!</p>
+                                  <p>Em "Tipo de informação de trabalho",</p>
+                                  <p className="font-bold">marque "DIAGNÓSTICO"</p>
+                                </div>
+                              </div>
+                            </PopoverContent>
+                          </Popover>
+                        )}
                         <Button 
                           onClick={() => {
                             setIsEditMode(true);
