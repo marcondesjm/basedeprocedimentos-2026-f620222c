@@ -1278,6 +1278,24 @@ ${selectedProcedure.solution}`;
                               <p className="text-sm text-muted-foreground">
                                 Clique no botão abaixo para copiar o modelo de nota para direcionar à fila presencial.
                               </p>
+                              <div className="bg-amber-50 border border-amber-200 rounded-md p-3 text-xs space-y-1">
+                                <p className="font-semibold text-amber-800 flex items-center gap-1">
+                                  <AlertCircle className="w-3.5 h-3.5" />
+                                  Lembrete antes de concluir:
+                                </p>
+                                <ul className="list-disc list-inside text-amber-700 space-y-0.5">
+                                  <li>Detalhe todos os procedimentos e testes realizados</li>
+                                  <li>Informe os documentos do BC Suporte utilizados como referência</li>
+                                  <li>Anexe quaisquer print/foto em nota normal, <strong>ANTES</strong> de salvar a conclusão, pois na nota de conclusão só é possível utilizar texto</li>
+                                  <li>Em "Motivo do Status", use apenas <strong>"Utilização de procedimentos"</strong></li>
+                                  <li>Em caso de dúvidas acione a Supervisão ou Ticket Manager</li>
+                                </ul>
+                                <div className="mt-1 pt-1 border-t border-amber-300">
+                                  <p className="text-amber-800 font-bold">⚠️ Atenção ⚠️</p>
+                                  <p className="text-amber-700">Notificar usuário com a solução realizada: <strong>SIM</strong></p>
+                                  <p className="text-amber-700">Modo de execução: <strong>Remoto</strong></p>
+                                </div>
+                              </div>
                               <Button
                                 className="w-full bg-blue-600 hover:bg-blue-700"
                                 onClick={() => {
