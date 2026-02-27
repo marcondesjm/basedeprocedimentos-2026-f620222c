@@ -903,9 +903,33 @@ ${proc.description}
                   Procedimentos e orientações para atendimento remoto.
                 </p>
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  <Card className="p-4 border-2 border-dashed border-muted-foreground/20 flex flex-col items-center justify-center min-h-[120px]">
-                    <Plus className="w-8 h-8 text-muted-foreground/40 mb-2" />
-                    <p className="text-sm text-muted-foreground">Adicionar conteúdo em breve</p>
+                  <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary">
+                    <h3 className="font-semibold">Conclusão - Remoto</h3>
+                    <p className="text-sm text-muted-foreground mt-1">Procedimento de conclusão remota</p>
+                  </Card>
+                  <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary">
+                    <h3 className="font-semibold">Conclusão - Impressora</h3>
+                    <p className="text-sm text-muted-foreground mt-1">Conclusão para chamados de impressora</p>
+                  </Card>
+                  <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary">
+                    <h3 className="font-semibold">Conclusão - Compartilhamento</h3>
+                    <p className="text-sm text-muted-foreground mt-1">Conclusão para compartilhamento de rede</p>
+                  </Card>
+                  <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-amber-500">
+                    <h3 className="font-semibold">Diagnóstico - Remoto</h3>
+                    <p className="text-sm text-muted-foreground mt-1">Diagnóstico remoto de equipamento</p>
+                  </Card>
+                  <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-blue-500">
+                    <h3 className="font-semibold">Devolução - Remoto &gt; Presencial</h3>
+                    <p className="text-sm text-muted-foreground mt-1">Devolução para fila presencial</p>
+                  </Card>
+                  <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-red-500">
+                    <h3 className="font-semibold">Improdutivo - Remoto</h3>
+                    <p className="text-sm text-muted-foreground mt-1">Chamado improdutivo remoto</p>
+                  </Card>
+                  <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-red-500">
+                    <h3 className="font-semibold">Improdutivo – Outras Situações</h3>
+                    <p className="text-sm text-muted-foreground mt-1">Outras situações improdutivas</p>
                   </Card>
                 </div>
               </div>
