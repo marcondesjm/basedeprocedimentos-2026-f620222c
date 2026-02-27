@@ -1365,12 +1365,6 @@ SUPORTE TÉCNICO HEPTA`;
                                   onClick={() => {
                                     const notaDiagRemoto = `FAVOR DIRECIONAR AO SETOR ${selectedProcedure.setorDirecionado || '__________'}
 
-==================
-
-PIB indicada pelo usuário: ${selectedProcedure.pibEquipamento || '_________________'}
-
-==================
-
 EM CONTATO COM O USUÁRIO ${selectedProcedure.usuarioAtendido || '_________________'}, FORAM REALIZADOS OS PROCEDIMENTOS DE:
 
 ${selectedProcedure.solution.split('\n').map(line => line.trim() ? `- ${line.trim()}` : '').filter(Boolean).join('\n') || '- PROCEDIMENTO 1\n- PROCEDIMENTO 2\n- PROCEDIMENTO 3'}
