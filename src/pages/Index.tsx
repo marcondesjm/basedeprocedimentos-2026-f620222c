@@ -1326,6 +1326,77 @@ SUPORTE TÉCNICO HEPTA`;
                             </div>
                           </PopoverContent>
                         </Popover>
+                        {selectedProcedure.noteType === "diagnostico" && (
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button variant="outline" className="border-amber-300 text-amber-700 hover:bg-amber-50">
+                                <FileText className="w-4 h-4 mr-2" />
+                                Diagnóstico - Remoto
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-96 p-4" align="end">
+                              <div className="space-y-3">
+                                <h4 className="font-semibold text-amber-700 flex items-center gap-2">
+                                  <FileText className="w-4 h-4" />
+                                  Nota de Diagnóstico - Remoto
+                                </h4>
+                                <p className="text-sm text-muted-foreground">
+                                  Clique no botão abaixo para copiar o modelo de nota de diagnóstico remoto.
+                                </p>
+                                <div className="bg-amber-50 border border-amber-200 rounded-md p-3 text-xs space-y-1">
+                                  <p className="font-semibold text-amber-800 flex items-center gap-1">
+                                    <AlertCircle className="w-3.5 h-3.5" />
+                                    Lembrete antes de concluir:
+                                  </p>
+                                  <ul className="list-disc list-inside text-amber-700 space-y-0.5">
+                                    <li>Detalhe todos os procedimentos e testes realizados</li>
+                                    <li>Informe os documentos do BC Suporte utilizados como referência</li>
+                                    <li>Anexe quaisquer print/foto em nota normal, <strong>ANTES</strong> de salvar a conclusão</li>
+                                    <li>Em "Motivo do Status", use apenas <strong>"Utilização de procedimentos"</strong></li>
+                                    <li>Em caso de dúvidas acione a Supervisão ou Ticket Manager</li>
+                                  </ul>
+                                  <div className="mt-1 pt-1 border-t border-amber-300">
+                                    <p className="text-amber-800 font-bold">⚠️ Atenção ⚠️</p>
+                                    <p className="text-amber-700">Notificar usuário com a solução realizada: <strong>SIM</strong></p>
+                                    <p className="text-amber-700">Modo de execução: <strong>Remoto</strong></p>
+                                  </div>
+                                </div>
+                                <Button
+                                  className="w-full bg-amber-600 hover:bg-amber-700"
+                                  onClick={() => {
+                                    const notaDiagRemoto = `FAVOR DIRECIONAR AO SETOR ${selectedProcedure.setorDirecionado || '__________'}
+
+==================
+
+PIB indicada pelo usuário: ${selectedProcedure.pibEquipamento || '_________________'}
+
+==================
+
+EM CONTATO COM O USUÁRIO ${selectedProcedure.usuarioAtendido || '_________________'}, FORAM REALIZADOS OS PROCEDIMENTOS DE:
+
+${selectedProcedure.solution.split('\n').map(line => line.trim() ? `- ${line.trim()}` : '').filter(Boolean).join('\n') || '- PROCEDIMENTO 1\n- PROCEDIMENTO 2\n- PROCEDIMENTO 3'}
+
+APÓS PROCEDIMENTOS FOI VERIFICADO QUE:
+
+${selectedProcedure.justificativa || '< JUSTIFICATIVA >'}
+
+Possui procedimento no BC-Suporte? ( ${selectedProcedure.possuiProcedimentoBC === 'sim' ? 'X' : ' '} ) SIM ( ${selectedProcedure.possuiProcedimentoBC === 'nao' ? 'X' : ' '} ) Não
+
+${selectedProcedure.possuiProcedimentoBC === 'sim' && selectedProcedure.nomeArquivoBC ? `Se sim, Nome do arquivo: ${selectedProcedure.nomeArquivoBC}` : 'Se sim, Nome do arquivo:_____________________'}
+
+ATENCIOSAMENTE,
+SUPORTE TÉCNICO HEPTA`;
+                                    navigator.clipboard.writeText(notaDiagRemoto);
+                                    toast.success('Nota de Diagnóstico Remoto copiada!');
+                                  }}
+                                >
+                                  <Copy className="w-4 h-4 mr-2" />
+                                  Copiar Nota
+                                </Button>
+                              </div>
+                            </PopoverContent>
+                          </Popover>
+                        )}
                         <Button 
                           onClick={() => {
                             setIsEditMode(true);
