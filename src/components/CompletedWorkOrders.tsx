@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Calendar, Clock, Image as ImageIcon, Trash2, ChevronDown, ChevronUp, Download, Upload } from "lucide-react";
+import { Calendar, Clock, Image as ImageIcon, Trash2, ChevronDown, ChevronUp, Download, Upload, Archive, Search, RotateCcw } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -22,11 +23,15 @@ interface HistoryByDate {
 
 export const CompletedWorkOrders = () => {
   const [historyByDate, setHistoryByDate] = useState<HistoryByDate>({});
+  const [archivedByDate, setArchivedByDate] = useState<HistoryByDate>({});
   const [loading, setLoading] = useState(true);
   const [expandedOrders, setExpandedOrders] = useState<Set<string>>(new Set());
+  const [showArchive, setShowArchive] = useState(false);
+  const [archiveSearch, setArchiveSearch] = useState("");
 
   useEffect(() => {
     loadHistory();
+    loadArchive();
 
     const handleHistoryUpdate = () => {
       loadHistory();
@@ -51,21 +56,91 @@ export const CompletedWorkOrders = () => {
     }
   };
 
-  const deleteOrder = (dateKey: string, orderId: string) => {
+  const loadArchive = () => {
+    try {
+      const archiveData = localStorage.getItem('workOrderArchive');
+      const archive = archiveData ? JSON.parse(archiveData) : {};
+      setArchivedByDate(archive);
+    } catch (error) {
+      console.error("Error loading archive:", error);
+    }
+  };
+
+  const archiveOrder = (dateKey: string, orderId: string) => {
     try {
       const historyData = localStorage.getItem('workOrderHistory');
       const history = historyData ? JSON.parse(historyData) : {};
-      
-      if (history[dateKey]) {
-        history[dateKey] = history[dateKey].filter((wo: CompletedWO) => wo.id !== orderId);
-        
-        if (history[dateKey].length === 0) {
-          delete history[dateKey];
+      const archiveData = localStorage.getItem('workOrderArchive');
+      const archive = archiveData ? JSON.parse(archiveData) : {};
+
+      const order = history[dateKey]?.find((wo: CompletedWO) => wo.id === orderId);
+      if (!order) return;
+
+      // Add to archive
+      if (!archive[dateKey]) archive[dateKey] = [];
+      archive[dateKey].push(order);
+
+      // Remove from history
+      history[dateKey] = history[dateKey].filter((wo: CompletedWO) => wo.id !== orderId);
+      if (history[dateKey].length === 0) delete history[dateKey];
+
+      localStorage.setItem('workOrderHistory', JSON.stringify(history));
+      localStorage.setItem('workOrderArchive', JSON.stringify(archive));
+      setHistoryByDate(history);
+      setArchivedByDate(archive);
+      toast.success("Chamado arquivado!");
+    } catch (error) {
+      console.error("Error archiving order:", error);
+      toast.error("Erro ao arquivar chamado");
+    }
+  };
+
+  const restoreOrder = (dateKey: string, orderId: string) => {
+    try {
+      const historyData = localStorage.getItem('workOrderHistory');
+      const history = historyData ? JSON.parse(historyData) : {};
+      const archiveData = localStorage.getItem('workOrderArchive');
+      const archive = archiveData ? JSON.parse(archiveData) : {};
+
+      const order = archive[dateKey]?.find((wo: CompletedWO) => wo.id === orderId);
+      if (!order) return;
+
+      // Add back to history
+      if (!history[dateKey]) history[dateKey] = [];
+      history[dateKey].push(order);
+
+      // Remove from archive
+      archive[dateKey] = archive[dateKey].filter((wo: CompletedWO) => wo.id !== orderId);
+      if (archive[dateKey].length === 0) delete archive[dateKey];
+
+      localStorage.setItem('workOrderHistory', JSON.stringify(history));
+      localStorage.setItem('workOrderArchive', JSON.stringify(archive));
+      setHistoryByDate(history);
+      setArchivedByDate(archive);
+      toast.success("Chamado restaurado ao histórico!");
+    } catch (error) {
+      console.error("Error restoring order:", error);
+      toast.error("Erro ao restaurar chamado");
+    }
+  };
+
+  const deleteOrder = (dateKey: string, orderId: string, fromArchive = false) => {
+    try {
+      const storageKey = fromArchive ? 'workOrderArchive' : 'workOrderHistory';
+      const data = localStorage.getItem(storageKey);
+      const parsed = data ? JSON.parse(data) : {};
+
+      if (parsed[dateKey]) {
+        parsed[dateKey] = parsed[dateKey].filter((wo: CompletedWO) => wo.id !== orderId);
+        if (parsed[dateKey].length === 0) delete parsed[dateKey];
+        localStorage.setItem(storageKey, JSON.stringify(parsed));
+
+        if (fromArchive) {
+          setArchivedByDate(parsed);
+        } else {
+          setHistoryByDate(parsed);
         }
-        
-        localStorage.setItem('workOrderHistory', JSON.stringify(history));
-        setHistoryByDate(history);
-        toast.success("Chamado removido do histórico");
+        toast.success("Chamado removido");
       }
     } catch (error) {
       console.error("Error deleting order:", error);
@@ -77,8 +152,10 @@ export const CompletedWorkOrders = () => {
     try {
       const historyData = localStorage.getItem('workOrderHistory');
       const history = historyData ? JSON.parse(historyData) : {};
+      const archiveData = localStorage.getItem('workOrderArchive');
+      const archive = archiveData ? JSON.parse(archiveData) : {};
       
-      const dataStr = JSON.stringify(history, null, 2);
+      const dataStr = JSON.stringify({ history, archive }, null, 2);
       const dataBlob = new Blob([dataStr], { type: 'application/json' });
       const url = URL.createObjectURL(dataBlob);
       const link = document.createElement('a');
@@ -105,20 +182,37 @@ export const CompletedWorkOrders = () => {
       try {
         const importedData = JSON.parse(event.target?.result as string);
         
-        const existingData = localStorage.getItem('workOrderHistory');
-        const existing = existingData ? JSON.parse(existingData) : {};
+        // Support both old format (flat history) and new format ({ history, archive })
+        const importedHistory = importedData.history || importedData;
+        const importedArchive = importedData.archive || {};
+
+        const existingHistory = localStorage.getItem('workOrderHistory');
+        const existingH = existingHistory ? JSON.parse(existingHistory) : {};
+        const existingArchive = localStorage.getItem('workOrderArchive');
+        const existingA = existingArchive ? JSON.parse(existingArchive) : {};
         
-        const merged = { ...existing };
-        Object.keys(importedData).forEach(dateKey => {
-          if (merged[dateKey]) {
-            merged[dateKey] = [...merged[dateKey], ...importedData[dateKey]];
+        const mergedHistory = { ...existingH };
+        Object.keys(importedHistory).forEach(dateKey => {
+          if (mergedHistory[dateKey]) {
+            mergedHistory[dateKey] = [...mergedHistory[dateKey], ...importedHistory[dateKey]];
           } else {
-            merged[dateKey] = importedData[dateKey];
+            mergedHistory[dateKey] = importedHistory[dateKey];
+          }
+        });
+
+        const mergedArchive = { ...existingA };
+        Object.keys(importedArchive).forEach(dateKey => {
+          if (mergedArchive[dateKey]) {
+            mergedArchive[dateKey] = [...mergedArchive[dateKey], ...importedArchive[dateKey]];
+          } else {
+            mergedArchive[dateKey] = importedArchive[dateKey];
           }
         });
         
-        localStorage.setItem('workOrderHistory', JSON.stringify(merged));
-        setHistoryByDate(merged);
+        localStorage.setItem('workOrderHistory', JSON.stringify(mergedHistory));
+        localStorage.setItem('workOrderArchive', JSON.stringify(mergedArchive));
+        setHistoryByDate(mergedHistory);
+        setArchivedByDate(mergedArchive);
         toast.success("Backup importado com sucesso!");
       } catch (error) {
         console.error("Error importing backup:", error);
@@ -153,6 +247,22 @@ export const CompletedWorkOrders = () => {
     toast.success("Imagem baixada!");
   };
 
+  const getFilteredArchive = () => {
+    if (!archiveSearch.trim()) return archivedByDate;
+    const search = archiveSearch.toLowerCase();
+    const filtered: HistoryByDate = {};
+    Object.entries(archivedByDate).forEach(([dateKey, orders]) => {
+      const matched = orders.filter(wo =>
+        wo.wo_number.toLowerCase().includes(search) ||
+        wo.notes?.toLowerCase().includes(search)
+      );
+      if (matched.length > 0) filtered[dateKey] = matched;
+    });
+    return filtered;
+  };
+
+  const archiveCount = Object.values(archivedByDate).reduce((sum, arr) => sum + arr.length, 0);
+
   if (loading) {
     return (
       <Card className="p-4 md:p-6">
@@ -161,7 +271,148 @@ export const CompletedWorkOrders = () => {
     );
   }
 
+  const renderOrderList = (dates: string[], data: HistoryByDate, isArchive: boolean) => (
+    <div className="space-y-6">
+      {dates.map((dateKey) => {
+        const orders = data[dateKey];
+        const dateObj = new Date(dateKey + 'T12:00:00');
+        
+        return (
+          <div key={dateKey} className="space-y-3">
+            <div className="flex items-center gap-2 pb-2 border-b border-border/50">
+              <Calendar className="w-4 h-4 text-primary" />
+              <h3 className="font-semibold text-lg">
+                {format(dateObj, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
+              </h3>
+              <Badge variant="secondary" className="ml-auto">
+                {orders.length} {orders.length === 1 ? 'chamado' : 'chamados'}
+              </Badge>
+            </div>
+            
+            <div className="space-y-2 pl-4">
+              {orders.map((wo) => {
+                const isExpanded = expandedOrders.has(wo.id);
+                const completedDate = new Date(wo.completed_at);
+                
+                return (
+                  <Card key={wo.id} className="p-4 hover:shadow-md transition-shadow">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1 space-y-2">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <Badge variant="outline" className="font-mono">
+                            WO {wo.wo_number}
+                          </Badge>
+                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                            <Clock className="w-4 h-4" />
+                            {format(completedDate, "HH:mm", { locale: ptBR })}
+                          </div>
+                          <Badge variant="secondary">
+                            {formatDuration(wo.total_duration)}
+                          </Badge>
+                          {wo.images && wo.images.length > 0 && (
+                            <Badge variant="outline" className="gap-1">
+                              <ImageIcon className="w-3 h-3" />
+                              {wo.images.length}
+                            </Badge>
+                          )}
+                        </div>
+
+                        {isExpanded && (
+                          <div className="pt-2 space-y-3 border-t">
+                            {wo.notes && (
+                              <div>
+                                <p className="text-sm font-medium mb-1">Observações:</p>
+                                <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                                  {wo.notes}
+                                </p>
+                              </div>
+                            )}
+                            
+                            {wo.images && wo.images.length > 0 && (
+                              <div>
+                                <p className="text-sm font-medium mb-2">Imagens:</p>
+                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                  {wo.images.map((img, idx) => (
+                                    <div
+                                      key={idx}
+                                      className="relative aspect-square rounded-lg overflow-hidden border border-border hover:border-primary cursor-pointer transition-colors"
+                                      onClick={() => downloadImage(img, wo.wo_number, idx)}
+                                    >
+                                      <img
+                                        src={img}
+                                        alt={`WO ${wo.wo_number} - Imagem ${idx + 1}`}
+                                        className="w-full h-full object-cover"
+                                      />
+                                      <div className="absolute inset-0 bg-black/0 hover:bg-black/50 transition-colors flex items-center justify-center">
+                                        <Download className="w-6 h-6 text-white opacity-0 hover:opacity-100 transition-opacity" />
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="flex gap-1">
+                        {((wo.notes && wo.notes.length > 0) || (wo.images && wo.images.length > 0)) && (
+                          <Button
+                            onClick={() => toggleExpand(wo.id)}
+                            size="sm"
+                            variant="ghost"
+                          >
+                            {isExpanded ? (
+                              <ChevronUp className="w-4 h-4" />
+                            ) : (
+                              <ChevronDown className="w-4 h-4" />
+                            )}
+                          </Button>
+                        )}
+                        {isArchive ? (
+                          <Button
+                            onClick={() => restoreOrder(dateKey, wo.id)}
+                            size="sm"
+                            variant="ghost"
+                            className="text-primary hover:text-primary hover:bg-primary/10"
+                            title="Restaurar ao histórico"
+                          >
+                            <RotateCcw className="w-4 h-4" />
+                          </Button>
+                        ) : (
+                          <Button
+                            onClick={() => archiveOrder(dateKey, wo.id)}
+                            size="sm"
+                            variant="ghost"
+                            className="text-amber-600 hover:text-amber-700 hover:bg-amber-50"
+                            title="Arquivar"
+                          >
+                            <Archive className="w-4 h-4" />
+                          </Button>
+                        )}
+                        <Button
+                          onClick={() => deleteOrder(dateKey, wo.id, isArchive)}
+                          size="sm"
+                          variant="ghost"
+                          className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+
   const allDates = Object.keys(historyByDate).sort((a, b) => b.localeCompare(a));
+  const filteredArchive = getFilteredArchive();
+  const archiveDates = Object.keys(filteredArchive).sort((a, b) => b.localeCompare(a));
 
   return (
     <Card className="p-4 md:p-6 bg-gradient-to-br from-secondary/5 to-secondary/10 border-secondary/20">
@@ -172,7 +423,16 @@ export const CompletedWorkOrders = () => {
             <h2 className="text-xl font-bold">Histórico de Chamados</h2>
           </div>
           
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
+            <Button
+              onClick={() => setShowArchive(!showArchive)}
+              size="sm"
+              variant={showArchive ? "default" : "outline"}
+              className="gap-2"
+            >
+              <Archive className="w-4 h-4" />
+              Arquivo {archiveCount > 0 && `(${archiveCount})`}
+            </Button>
             <Button
               onClick={exportBackup}
               size="sm"
@@ -206,127 +466,37 @@ export const CompletedWorkOrders = () => {
           </div>
         </div>
 
-        {allDates.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
-            <Calendar className="w-12 h-12 mx-auto mb-2 opacity-20" />
-            <p>Nenhum chamado concluído ainda</p>
+        {showArchive ? (
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <Search className="w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Pesquisar no arquivo (WO ou observações)..."
+                value={archiveSearch}
+                onChange={(e) => setArchiveSearch(e.target.value)}
+                className="h-8 text-sm"
+              />
+            </div>
+            {archiveDates.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                <Archive className="w-12 h-12 mx-auto mb-2 opacity-20" />
+                <p>{archiveSearch ? "Nenhum resultado encontrado" : "Nenhum chamado arquivado"}</p>
+              </div>
+            ) : (
+              renderOrderList(archiveDates, filteredArchive, true)
+            )}
           </div>
         ) : (
-          <div className="space-y-6">
-            {allDates.map((dateKey) => {
-              const orders = historyByDate[dateKey];
-              const dateObj = new Date(dateKey + 'T12:00:00');
-              
-              return (
-                <div key={dateKey} className="space-y-3">
-                  <div className="flex items-center gap-2 pb-2 border-b border-border/50">
-                    <Calendar className="w-4 h-4 text-primary" />
-                    <h3 className="font-semibold text-lg">
-                      {format(dateObj, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
-                    </h3>
-                    <Badge variant="secondary" className="ml-auto">
-                      {orders.length} {orders.length === 1 ? 'chamado' : 'chamados'}
-                    </Badge>
-                  </div>
-                  
-                  <div className="space-y-2 pl-4">
-                    {orders.map((wo) => {
-                      const isExpanded = expandedOrders.has(wo.id);
-                      const completedDate = new Date(wo.completed_at);
-                      
-                      return (
-                        <Card key={wo.id} className="p-4 hover:shadow-md transition-shadow">
-                          <div className="flex items-start justify-between gap-4">
-                            <div className="flex-1 space-y-2">
-                              <div className="flex items-center gap-2 flex-wrap">
-                                <Badge variant="outline" className="font-mono">
-                                  WO {wo.wo_number}
-                                </Badge>
-                                <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                                  <Clock className="w-4 h-4" />
-                                  {format(completedDate, "HH:mm", { locale: ptBR })}
-                                </div>
-                                <Badge variant="secondary">
-                                  {formatDuration(wo.total_duration)}
-                                </Badge>
-                                {wo.images && wo.images.length > 0 && (
-                                  <Badge variant="outline" className="gap-1">
-                                    <ImageIcon className="w-3 h-3" />
-                                    {wo.images.length}
-                                  </Badge>
-                                )}
-                              </div>
-
-                              {isExpanded && (
-                                <div className="pt-2 space-y-3 border-t">
-                                  {wo.notes && (
-                                    <div>
-                                      <p className="text-sm font-medium mb-1">Observações:</p>
-                                      <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-                                        {wo.notes}
-                                      </p>
-                                    </div>
-                                  )}
-                                  
-                                  {wo.images && wo.images.length > 0 && (
-                                    <div>
-                                      <p className="text-sm font-medium mb-2">Imagens:</p>
-                                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                                        {wo.images.map((img, idx) => (
-                                          <div
-                                            key={idx}
-                                            className="relative aspect-square rounded-lg overflow-hidden border border-border hover:border-primary cursor-pointer transition-colors"
-                                            onClick={() => downloadImage(img, wo.wo_number, idx)}
-                                          >
-                                            <img
-                                              src={img}
-                                              alt={`WO ${wo.wo_number} - Imagem ${idx + 1}`}
-                                              className="w-full h-full object-cover"
-                                            />
-                                            <div className="absolute inset-0 bg-black/0 hover:bg-black/50 transition-colors flex items-center justify-center">
-                                              <Download className="w-6 h-6 text-white opacity-0 hover:opacity-100 transition-opacity" />
-                                            </div>
-                                          </div>
-                                        ))}
-                                      </div>
-                                    </div>
-                                  )}
-                                </div>
-                              )}
-                            </div>
-
-                            <div className="flex gap-2">
-                              {((wo.notes && wo.notes.length > 0) || (wo.images && wo.images.length > 0)) && (
-                                <Button
-                                  onClick={() => toggleExpand(wo.id)}
-                                  size="sm"
-                                  variant="ghost"
-                                >
-                                  {isExpanded ? (
-                                    <ChevronUp className="w-4 h-4" />
-                                  ) : (
-                                    <ChevronDown className="w-4 h-4" />
-                                  )}
-                                </Button>
-                              )}
-                              <Button
-                                onClick={() => deleteOrder(dateKey, wo.id)}
-                                size="sm"
-                                variant="ghost"
-                                className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
-                            </div>
-                          </div>
-                        </Card>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <>
+            {allDates.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                <Calendar className="w-12 h-12 mx-auto mb-2 opacity-20" />
+                <p>Nenhum chamado concluído ainda</p>
+              </div>
+            ) : (
+              renderOrderList(allDates, historyByDate, false)
+            )}
+          </>
         )}
       </div>
     </Card>
