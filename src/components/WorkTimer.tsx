@@ -487,7 +487,7 @@ export const WorkTimer = () => {
                           className="w-full bg-green-600 hover:bg-green-700 text-white"
                         >
                           <CheckCircle className="w-4 h-4 mr-2" />
-                          Confirmar e Salvar no Histórico
+                          Salvar
                         </Button>
                         <Button
                           onClick={() => setWorkOrders(workOrders.map(w => w.id === wo.id ? { ...w, showGuidance: false } : w))}
