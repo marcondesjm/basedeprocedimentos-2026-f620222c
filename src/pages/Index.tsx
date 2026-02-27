@@ -582,22 +582,6 @@ ${proc.description}
                 onChange={handleImportBackup}
                 className="hidden"
               />
-              <Button variant="outline" onClick={handleDownloadDescriptions}>
-                <Download className="w-4 h-4 mr-2" />
-                Descrições
-              </Button>
-              <Button variant="outline" onClick={handleDownloadTXT}>
-                <Download className="w-4 h-4 mr-2" />
-                TXT Completo
-              </Button>
-              <Button variant="outline" onClick={handleDownloadCSV}>
-                <Download className="w-4 h-4 mr-2" />
-                CSV
-              </Button>
-              <Button variant="outline" onClick={handleDownloadJSON}>
-                <Download className="w-4 h-4 mr-2" />
-                JSON
-              </Button>
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
                   <Button>
