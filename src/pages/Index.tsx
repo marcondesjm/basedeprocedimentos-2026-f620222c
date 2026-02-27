@@ -2221,6 +2221,62 @@ SUPORTE TÉCNICO HEPTA`;
                             </Button>
                           </div>
                         )}
+                        {cat.id === "improdutivo-presencial" && (
+                          <div className="mt-3 space-y-2">
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button variant="outline" size="sm" className="w-full border-red-300 text-red-700 hover:bg-red-50">
+                                  <AlertCircle className="w-4 h-4 mr-2" />
+                                  Orientações
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-96 p-4" align="start">
+                                <div className="space-y-3">
+                                  <h4 className="font-semibold text-red-700 flex items-center gap-2">
+                                    <AlertCircle className="w-4 h-4" />
+                                    Orientações
+                                  </h4>
+                                  <ul className="text-sm space-y-1.5 text-muted-foreground list-disc list-inside">
+                                    <li>Realize a tentativa de contato e tentativa de atendimento remoto previamente</li>
+                                    <li><strong>O envio do e-mail da tentativa de contato é obrigatório</strong></li>
+                                    <li>Utilizar o modelo de e-mail específico do PO – Improdutivo Presencial</li>
+                                    <li>Ao chegar na unidade/setor caso seja impedido de iniciar o atendimento prossiga com o fechamento de imediato</li>
+                                    <li>Caso não possa realizar o envio do e-mail de fechamento e/ou a conclusão do chamado, solicite a um colega no Teams para fazer por você ou acione a Supervisão ou Ticket Manager</li>
+                                    <li><strong>Atenção!</strong> A conclusão sem o envio prévio dos e-mails gera bloqueio</li>
+                                    <li>Anexe quaisquer print/foto em nota normal, <strong>ANTES</strong> de salvar a conclusão, pois na nota de conclusão só é possível utilizar texto</li>
+                                    <li>Em <strong>"Motivo do Status"</strong>, use apenas <strong>"Utilização de procedimentos"</strong></li>
+                                    <li>Em caso de dúvidas acione a <strong>Supervisão</strong> ou <strong>Ticket Manager</strong></li>
+                                  </ul>
+                                  <div className="mt-2 p-2 bg-red-100 border border-red-300 rounded text-red-800 text-center text-sm">
+                                    <p className="font-bold">!! Atenção !!</p>
+                                    <p>Notificar usuário com a solução realizada: <strong>SIM</strong></p>
+                                    <p>Modo de execução: <strong>presencial</strong></p>
+                                  </div>
+                                </div>
+                              </PopoverContent>
+                            </Popover>
+                            <Button
+                              size="sm"
+                              className="w-full bg-red-600 hover:bg-red-700"
+                              onClick={() => {
+                                const nota = `IMPRODUTIVO
+
+Este chamado necessita de realização de contato telefônico com o usuário para confirmação dos dados do chamado.
+
+Foi realizada tentativa de contato telefônico, assim como foi encaminhado e-mail notificando que um técnico desta empresa se deslocou para atendimento da demanda presencial. Ao chegar na unidade, o usuário ou algum outro colaborador indicado não se encontrava presente ou não tinha disponibilidade para o atendimento.
+
+Desta forma, este chamado será fechado como improdutivo, e sua reabertura será considerada indevida.
+
+Caso ainda necessite do suporte técnico, solicitamos que registre um novo chamado.`;
+                                navigator.clipboard.writeText(nota);
+                                toast.success('Nota de Improdutivo - Presencial copiada!');
+                              }}
+                            >
+                              <Copy className="w-4 h-4 mr-2" />
+                              Copiar Nota
+                            </Button>
+                          </div>
+                        )}
                       </Card>
                     );
                   })}
