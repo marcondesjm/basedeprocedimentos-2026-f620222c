@@ -78,6 +78,7 @@ const Index = () => {
   const [analiseProblemasOpen, setAnaliseProblemasOpen] = useState(false);
   const [analiseChecks, setAnaliseChecks] = useState<Record<string, boolean>>({});
   const [milestoneOpen, setMilestoneOpen] = useState(false);
+  const [formatacaoRemotaOpen, setFormatacaoRemotaOpen] = useState(false);
   const [compartNome, setCompartNome] = useState("");
   const [compartPib, setCompartPib] = useState("");
   const [compartLink, setCompartLink] = useState("");
@@ -2634,8 +2635,56 @@ SUPORTE TÉCNICO HEPTA`;
                       </div>
                     )}
                   </Card>
-                  <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary">
-                    <h3 className="font-semibold">Formatação Remota</h3>
+                  <Card className={`p-4 border-l-4 border-l-primary ${formatacaoRemotaOpen ? 'col-span-full' : 'hover:shadow-md cursor-pointer'}`}>
+                    {!formatacaoRemotaOpen ? (
+                      <div onClick={() => setFormatacaoRemotaOpen(true)}>
+                        <h3 className="font-semibold">Formatação Remota</h3>
+                        <p className="text-xs text-muted-foreground mt-1">Requisitos e procedimentos para formatação remota</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h3 className="font-semibold text-lg">Formatação Remota</h3>
+                          <Button variant="ghost" size="sm" onClick={() => setFormatacaoRemotaOpen(false)}>✕</Button>
+                        </div>
+
+                        <div className="space-y-2">
+                          <h4 className="font-semibold text-sm text-primary border-b pb-1">Verificar Requisitos</h4>
+                          <ul className="text-sm space-y-1.5 list-disc list-inside text-foreground">
+                            <li>Micro em rede e acessível remotamente?</li>
+                            <li>Micro possui o recovery?</li>
+                            <li>O recovery está, ou foi possível configurar, para acessar remotamente?</li>
+                            <li>Qual a versão do recovery?</li>
+                          </ul>
+                        </div>
+
+                        <div className="grid md:grid-cols-2 gap-3">
+                          <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg space-y-2">
+                            <p className="font-semibold text-amber-800 text-sm">Se Recovery 8 ou anterior</p>
+                            <ul className="text-sm space-y-1 list-disc list-inside text-amber-900">
+                              <li>Só é possível formatar utilizando um <strong>deploy antigo</strong></li>
+                              <li>Verifique se a unidade possui um deploy local</li>
+                              <li>Para confirmar a versão do deploy, cheque a pasta <code className="bg-amber-100 px-1 py-0.5 rounded font-mono text-xs">\operating systems</code></li>
+                              <li>Se tiver uma pasta com <strong>Win7</strong> significa que o deploy é antigo e pode ser usado</li>
+                            </ul>
+                            <p className="text-xs text-amber-700 mt-2 font-medium">📄 POP - Formatação de micros no ambiente Correios.pdf</p>
+                          </div>
+
+                          <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg space-y-2">
+                            <p className="font-semibold text-blue-800 text-sm">Se Recovery 9 ou superior</p>
+                            <ul className="text-sm space-y-1 list-disc list-inside text-blue-900">
+                              <li>É possível usar o deploy de <strong>qualquer SE</strong> que tenha o deploy atualizado</li>
+                            </ul>
+                            <p className="text-xs text-blue-700 mt-2 font-medium">📄 [v2.0]-Windows 10 e 11 - POP - Baixa de Master no Ambiente Correios.pdf</p>
+                          </div>
+                        </div>
+
+                        <div className="p-3 bg-red-50 border border-red-300 rounded-lg">
+                          <p className="text-sm text-red-800 font-semibold">⚠️ Atenção</p>
+                          <p className="text-sm text-red-700">Utilizar um deploy incompatível para o recovery disponível pode ocasionar <strong>falha no processo de formatação</strong>, o indisponibilizando para nova tentativa remota.</p>
+                        </div>
+                      </div>
+                    )}
                   </Card>
                   <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-amber-500">
                     <h3 className="font-semibold">Ferramenta - Espanso</h3>
