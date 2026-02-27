@@ -989,6 +989,62 @@ ${proc.description}
                         ) : (
                           <p className="text-xs text-muted-foreground mt-1">Nenhum procedimento atribuído</p>
                         )}
+                        {cat.id === "improdutivo-remoto" && (
+                          <div className="mt-3 space-y-3">
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button variant="outline" size="sm" className="w-full border-red-300 text-red-700 hover:bg-red-50">
+                                  <AlertCircle className="w-4 h-4 mr-2" />
+                                  Orientações
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-96 p-4" align="start">
+                                <div className="space-y-3">
+                                  <h4 className="font-semibold text-red-700 flex items-center gap-2">
+                                    <AlertCircle className="w-4 h-4" />
+                                    Orientações
+                                  </h4>
+                                  <ul className="text-sm space-y-1.5 text-muted-foreground list-disc list-inside">
+                                    <li>Realize a tentativa de contato e tentativa de atendimento remoto previamente</li>
+                                    <li>O envio do e-mail da tentativa de contato é <strong>obrigatório</strong></li>
+                                    <li>Utilizar o modelo de e-mail específico do PO – Improdutivo Remoto</li>
+                                    <li>Ao chegar na unidade/setor caso seja impedido de iniciar o atendimento prossiga com o fechamento de imediato</li>
+                                    <li>Caso não possa realizar o envio do e-mail de fechamento e/ou a conclusão do chamado, solicite a um colega no Teams para fazer por você ou acione a Supervisão ou Ticket Manager</li>
+                                    <li><strong>Atenção !</strong> A conclusão sem o envio prévio dos e-mails gera bloqueio</li>
+                                    <li>Anexe quaisquer print/foto em nota normal, <strong>ANTES</strong> de salvar a conclusão, pois na nota de conclusão só é possível utilizar texto</li>
+                                    <li>Em "Motivo do Status", use apenas <strong>"Utilização de procedimentos"</strong></li>
+                                    <li>Em caso de dúvidas acione a Supervisão ou Ticket Manager</li>
+                                  </ul>
+                                  <div className="mt-2 p-2 bg-red-100 border border-red-300 rounded text-red-800 text-center text-sm">
+                                    <p className="font-bold">!! Atenção !!</p>
+                                    <p>Notificar usuário com a solução realizada: <strong>SIM</strong></p>
+                                    <p>Modo de execução: <strong>Remoto</strong></p>
+                                  </div>
+                                </div>
+                              </PopoverContent>
+                            </Popover>
+                            <Button
+                              size="sm"
+                              className="w-full bg-red-600 hover:bg-red-700"
+                              onClick={() => {
+                                const nota = `IMPRODUTIVO
+
+Este chamado necessita de realização de contato direto com o usuário para autorização de procedimentos.
+
+Foram realizadas 3 tentativas de contato sem sucesso no intervalo de 40 minutos a 1 hora entre elas.
+
+Este chamado será fechado como improdutivo, e sua reabertura será considerada indevida.
+
+Caso ainda necessite do suporte técnico, solicitamos que registre um novo chamado.`;
+                                navigator.clipboard.writeText(nota);
+                                toast.success('Nota de Improdutivo copiada!');
+                              }}
+                            >
+                              <Copy className="w-4 h-4 mr-2" />
+                              Copiar Nota
+                            </Button>
+                          </div>
+                        )}
                       </Card>
                     );
                   })}
