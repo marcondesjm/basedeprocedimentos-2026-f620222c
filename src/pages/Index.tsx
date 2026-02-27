@@ -82,6 +82,7 @@ const Index = () => {
   const [espansoOpen, setEspansoOpen] = useState(false);
   const [atualizacaoFerramentaOpen, setAtualizacaoFerramentaOpen] = useState(false);
   const [preparacaoFerramentaOpen, setPreparacaoFerramentaOpen] = useState(false);
+  const [totemOpen, setTotemOpen] = useState(false);
   const [compartNome, setCompartNome] = useState("");
   const [compartPib, setCompartPib] = useState("");
   const [compartLink, setCompartLink] = useState("");
@@ -2849,8 +2850,62 @@ SUPORTE TÉCNICO HEPTA`;
                       </div>
                     )}
                   </Card>
-                  <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-blue-500">
-                    <h3 className="font-semibold">Para Atualizar o Totem Si...</h3>
+                  <Card className={`p-4 border-l-4 border-l-blue-500 ${totemOpen ? 'col-span-full' : 'hover:shadow-md cursor-pointer'}`}>
+                    {!totemOpen ? (
+                      <div onClick={() => setTotemOpen(true)}>
+                        <h3 className="font-semibold">Para Atualizar o Totem SIGESF</h3>
+                        <p className="text-xs text-muted-foreground mt-1">Procedimento de atualização do SIGESF nos totens</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h3 className="font-semibold text-lg">Para Atualizar o Totem SIGESF</h3>
+                          <Button variant="ghost" size="sm" onClick={() => setTotemOpen(false)}>✕</Button>
+                        </div>
+
+                        <div className="p-3 bg-muted/50 rounded-lg text-sm">
+                          <p className="font-medium">Caminho do atualizador:</p>
+                          <code className="bg-muted px-1.5 py-0.5 rounded font-mono text-xs block mt-1">\\sac3144\Deploy\Applications\SIGESF_12_2016_V1</code>
+                        </div>
+
+                        <div className="space-y-2">
+                          <h4 className="font-semibold text-sm text-blue-700 border-b border-blue-200 pb-1">Procedimento Padrão</h4>
+                          <ol className="text-sm space-y-2 list-decimal list-inside">
+                            <li>Copie para o totem o arquivo <code className="bg-muted px-1 py-0.5 rounded font-mono text-xs">SetupSIGESFUpdateSilent.exe</code> de um deploy atualizado (sedes ou SAC3144)
+                              <p className="text-xs text-muted-foreground ml-5 mt-0.5">(existe uma versão para instalações no D: e no C:, use a correspondente)</p>
+                            </li>
+                            <li>Execute no cmd: <code className="bg-muted px-1.5 py-0.5 rounded font-mono text-xs">taskkill -f -im javaw*</code></li>
+                            <li>Execute o <code className="bg-muted px-1 py-0.5 rounded font-mono text-xs">SetupSIGESFUpdateSilent.exe</code> <strong>como administrador</strong></li>
+                            <li>Após a conclusão, o micro será <strong>reiniciado automaticamente</strong></li>
+                          </ol>
+                        </div>
+
+                        <div className="space-y-2">
+                          <h4 className="font-semibold text-sm text-amber-700 border-b border-amber-200 pb-1">Caso o totem use impressora externa (CIS, Perto, etc)</h4>
+                          <ol className="text-sm space-y-2 list-decimal list-inside">
+                            <li>Execute no cmd: <code className="bg-muted px-1.5 py-0.5 rounded font-mono text-xs">taskkill -f -im javaw*</code></li>
+                            <li>Vá em <code className="bg-muted px-1 py-0.5 rounded font-mono text-xs">c:\sigesf\aplicacao\sigesfEmissorDeSenhas\</code></li>
+                            <li>Abra o <code className="bg-muted px-1 py-0.5 rounded font-mono text-xs">sigesfEmissorDeSenhas.jar</code> com o 7zip ("Abrir arquivo compactado")</li>
+                            <li>Edite o arquivo <code className="bg-muted px-1 py-0.5 rounded font-mono text-xs">config.properties</code></li>
+                            <li>Procure a linha começada por <code className="bg-muted px-1 py-0.5 rounded font-mono text-xs">tipoImpressao=</code> e comente colocando <strong>#</strong> no início</li>
+                            <li>Adicione uma nova linha (cuidado para não colocar espaços a mais):
+                              <code className="bg-muted px-1.5 py-0.5 rounded font-mono text-xs block mt-1 break-all">tipoImpressao=br.com.correios.gerenciadorImpressao.impressora.ImpressoraTermicaEscPos</code>
+                            </li>
+                            <li>Salve e inicie os atalhos do <strong>Emissor</strong> e <strong>Painel</strong></li>
+                            <li>Faça um <strong>teste de chamada</strong> com o usuário</li>
+                          </ol>
+                        </div>
+
+                        <div className="p-3 bg-red-50 border border-red-300 rounded-lg space-y-2">
+                          <p className="text-sm text-red-800 font-semibold">⚠️ Atenção</p>
+                          <ul className="text-sm text-red-700 space-y-1 list-disc list-inside">
+                            <li>A execução do atualizador <strong>afeta a operação</strong>. Só pode ser executada com autorização do usuário e de preferência <strong>fora do expediente</strong> da unidade.</li>
+                            <li>É recomendado fazer <strong>backup</strong> dos diretórios <code className="bg-red-100 px-1 py-0.5 rounded font-mono text-xs">\sigesf\media</code> e <code className="bg-red-100 px-1 py-0.5 rounded font-mono text-xs">\sigesf\database</code> antes da atualização, pois há chance destes arquivos serem perdidos ou desconfigurados.</li>
+                            <li>Também é recomendado executar o script <code className="bg-red-100 px-1 py-0.5 rounded font-mono text-xs">ajusta_variaveis</code> para colocar no padrão e evitar falha de comunicação.</li>
+                          </ul>
+                        </div>
+                      </div>
+                    )}
                   </Card>
                   <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-blue-500">
                     <h3 className="font-semibold">Base de Conhecimento</h3>
