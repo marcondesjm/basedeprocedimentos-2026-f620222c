@@ -68,6 +68,9 @@ const Index = () => {
   const [diagRemotoSetor, setDiagRemotoSetor] = useState("");
   const [diagRemotoNome, setDiagRemotoNome] = useState("");
   const [diagRemotoPib, setDiagRemotoPib] = useState("");
+  const [improdOutrasNome, setImprodOutrasNome] = useState("");
+  const [improdOutrasJustificativa, setImprodOutrasJustificativa] = useState("");
+
 
   const [showImportDialog, setShowImportDialog] = useState(false);
 
@@ -1224,6 +1227,18 @@ Caso ainda necessite do suporte técnico, solicitamos que registre um novo chama
                         )}
                         {cat.id === "improdutivo-outras" && (
                           <div className="mt-3 space-y-3">
+                            <Input
+                              placeholder="Nome do usuário"
+                              value={improdOutrasNome}
+                              onChange={(e) => setImprodOutrasNome(e.target.value)}
+                              className="text-sm h-8"
+                            />
+                            <Input
+                              placeholder="Justificativa"
+                              value={improdOutrasJustificativa}
+                              onChange={(e) => setImprodOutrasJustificativa(e.target.value)}
+                              className="text-sm h-8"
+                            />
                             <Popover>
                               <PopoverTrigger asChild>
                                 <Button variant="outline" size="sm" className="w-full border-red-300 text-red-700 hover:bg-red-50">
@@ -1270,11 +1285,13 @@ Caso ainda necessite do suporte técnico, solicitamos que registre um novo chama
                               size="sm"
                               className="w-full bg-red-600 hover:bg-red-700"
                               onClick={() => {
+                                const nome = improdOutrasNome || '___________';
+                                const justificativa = improdOutrasJustificativa || '<< JUSTIFICATIVA >>';
                                 const nota = `IMPRODUTIVO
 
-Conforme verificado com Usuário ___________, Não foi possível realizar o atendimento devido:
+Conforme verificado com Usuário ${nome}, Não foi possível realizar o atendimento devido:
 
-<< JUSTIFICATIVA >>
+${justificativa}
 
 Foi indicado outro colaborador para acompanhar o atendimento? SIM ( x )  NÃO ( x ) (Não se aplica)
 
