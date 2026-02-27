@@ -495,7 +495,7 @@ export const WorkTimer = () => {
                           variant="outline"
                           className="w-full"
                         >
-                          Voltar
+                          Reiniciar
                         </Button>
                       </>
                     ) : (
