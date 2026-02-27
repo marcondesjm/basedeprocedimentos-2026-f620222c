@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search, FileText, Calendar, Tag, Download, Upload, Save, Shield, X, Copy, AlertCircle } from "lucide-react";
+import { Plus, Search, FileText, Calendar, Tag, Download, Upload, Save, Shield, X, Copy, AlertCircle, Monitor, Users, CheckSquare } from "lucide-react";
 import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -484,6 +485,27 @@ ${proc.description}
           </AlertDescription>
         </Alert>
 
+        <Tabs defaultValue="procedimentos" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4 h-auto">
+            <TabsTrigger value="procedimentos" className="flex items-center gap-2 py-3">
+              <FileText className="w-4 h-4" />
+              <span className="hidden sm:inline">Procedimentos</span>
+            </TabsTrigger>
+            <TabsTrigger value="fila-remota" className="flex items-center gap-2 py-3">
+              <Monitor className="w-4 h-4" />
+              <span className="hidden sm:inline">Fila Remota</span>
+            </TabsTrigger>
+            <TabsTrigger value="fila-presencial" className="flex items-center gap-2 py-3">
+              <Users className="w-4 h-4" />
+              <span className="hidden sm:inline">Fila Presencial</span>
+            </TabsTrigger>
+            <TabsTrigger value="checklists" className="flex items-center gap-2 py-3">
+              <CheckSquare className="w-4 h-4" />
+              <span className="hidden sm:inline">Checklists</span>
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="procedimentos">
         <div className="space-y-6">
           <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
             <div className="flex-1 flex gap-3 w-full md:w-auto">
@@ -867,7 +889,69 @@ ${proc.description}
               <p className="text-muted-foreground">Nenhum procedimento encontrado</p>
             </div>
           )}
-        </div>
+         </div>
+          </TabsContent>
+
+          <TabsContent value="fila-remota">
+            <Card className="p-6">
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <Monitor className="w-6 h-6 text-primary" />
+                  <h2 className="text-xl font-bold">Fila Remota</h2>
+                </div>
+                <p className="text-muted-foreground">
+                  Procedimentos e orientações para atendimento remoto.
+                </p>
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  <Card className="p-4 border-2 border-dashed border-muted-foreground/20 flex flex-col items-center justify-center min-h-[120px]">
+                    <Plus className="w-8 h-8 text-muted-foreground/40 mb-2" />
+                    <p className="text-sm text-muted-foreground">Adicionar conteúdo em breve</p>
+                  </Card>
+                </div>
+              </div>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="fila-presencial">
+            <Card className="p-6">
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <Users className="w-6 h-6 text-primary" />
+                  <h2 className="text-xl font-bold">Fila Presencial</h2>
+                </div>
+                <p className="text-muted-foreground">
+                  Procedimentos e orientações para atendimento presencial.
+                </p>
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  <Card className="p-4 border-2 border-dashed border-muted-foreground/20 flex flex-col items-center justify-center min-h-[120px]">
+                    <Plus className="w-8 h-8 text-muted-foreground/40 mb-2" />
+                    <p className="text-sm text-muted-foreground">Adicionar conteúdo em breve</p>
+                  </Card>
+                </div>
+              </div>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="checklists">
+            <Card className="p-6">
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <CheckSquare className="w-6 h-6 text-primary" />
+                  <h2 className="text-xl font-bold">Checklists</h2>
+                </div>
+                <p className="text-muted-foreground">
+                  Checklists de verificação para procedimentos padronizados.
+                </p>
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  <Card className="p-4 border-2 border-dashed border-muted-foreground/20 flex flex-col items-center justify-center min-h-[120px]">
+                    <Plus className="w-8 h-8 text-muted-foreground/40 mb-2" />
+                    <p className="text-sm text-muted-foreground">Adicionar conteúdo em breve</p>
+                  </Card>
+                </div>
+              </div>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </main>
 
       {/* Modal de detalhes do procedimento */}
