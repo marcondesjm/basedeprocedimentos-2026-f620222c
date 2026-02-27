@@ -1127,76 +1127,6 @@ SUPORTE TÉCNICO HEPTA`;
                 )}
 
                 <div className="flex flex-col sm:flex-row gap-3 justify-between pt-4 border-t">
-                  <div className="flex gap-2 flex-wrap">
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => {
-                        const txtContent = `
-═══════════════════════════════════════════════════════════════
-PROCEDIMENTO
-═══════════════════════════════════════════════════════════════
-
-TÍTULO: ${selectedProcedure.title}
-
-CATEGORIA: ${selectedProcedure.category}
-
-DATA: ${new Date(selectedProcedure.createdAt).toLocaleString('pt-BR')}
-
-TÉCNICO RESPONSÁVEL: ${selectedProcedure.createdBy}
-
-PIB EQUIPAMENTO: ${selectedProcedure.pibEquipamento || 'Não informado'}
-
-USUÁRIO ATENDIDO: ${selectedProcedure.usuarioAtendido || 'Não informado'}
-
-TAGS: ${selectedProcedure.tags.join(', ')}
-
--------------------------------------------------------------------
-DESCRIÇÃO:
--------------------------------------------------------------------
-${selectedProcedure.description}
-
--------------------------------------------------------------------
-SOLUÇÃO APLICADA:
--------------------------------------------------------------------
-${selectedProcedure.solution}
-`;
-                        const blob = new Blob([txtContent], { type: 'text/plain;charset=utf-8' });
-                        const link = document.createElement('a');
-                        const url = URL.createObjectURL(blob);
-                        link.setAttribute('href', url);
-                        link.setAttribute('download', `procedimento_${selectedProcedure.id}.txt`);
-                        link.style.visibility = 'hidden';
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                        toast.success('Procedimento baixado em TXT!');
-                      }}
-                    >
-                      <Download className="w-4 h-4 mr-1" />
-                      TXT
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => {
-                        const jsonData = JSON.stringify(selectedProcedure, null, 2);
-                        const blob = new Blob([jsonData], { type: 'application/json' });
-                        const link = document.createElement('a');
-                        const url = URL.createObjectURL(blob);
-                        link.setAttribute('href', url);
-                        link.setAttribute('download', `procedimento_${selectedProcedure.id}.json`);
-                        link.style.visibility = 'hidden';
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                        toast.success('Procedimento baixado em JSON!');
-                      }}
-                    >
-                      <Download className="w-4 h-4 mr-1" />
-                      JSON
-                    </Button>
-                  </div>
                   <div className="flex gap-3">
                     {isEditMode ? (
                       <>
@@ -1215,23 +1145,6 @@ ${selectedProcedure.solution}
                       </>
                     ) : (
                       <>
-                        <Button 
-                          variant="outline"
-                          onClick={() => {
-                            const textToCopy = `PIB Equipamento: ${selectedProcedure.pibEquipamento || 'N/A'}
-Usuário Atendido: ${selectedProcedure.usuarioAtendido || 'N/A'}
-Técnico Responsável: ${selectedProcedure.createdBy}
-Data de Registro: ${format(new Date(selectedProcedure.createdAt), 'dd/MM/yyyy, HH:mm:ss')}
-
-Solução Aplicada:
-${selectedProcedure.solution}`;
-                            navigator.clipboard.writeText(textToCopy);
-                            toast.success('Informações copiadas para a área de transferência!');
-                          }}
-                        >
-                          <Copy className="w-4 h-4 mr-2" />
-                          Copiar
-                        </Button>
                         {selectedProcedure.noteType === "diagnostico" && (
                           <Popover>
                             <PopoverTrigger asChild>
