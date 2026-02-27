@@ -72,6 +72,8 @@ const Index = () => {
   const [improdOutrasJustificativa, setImprodOutrasJustificativa] = useState("");
   const [improdOutrasPNome, setImprodOutrasPNome] = useState("");
   const [improdOutrasPJustificativa, setImprodOutrasPJustificativa] = useState("");
+  const [devPresPib, setDevPresPib] = useState("");
+  const [devPresIp, setDevPresIp] = useState("");
   const [compartNome, setCompartNome] = useState("");
   const [compartPib, setCompartPib] = useState("");
   const [compartLink, setCompartLink] = useState("");
@@ -2353,6 +2355,94 @@ Desta forma, este chamado será fechado como improdutivo, e sua reabertura será
 Caso ainda necessite do suporte técnico, solicitamos que registre um novo chamado.`;
                                 navigator.clipboard.writeText(nota);
                                 toast.success('Nota de Improdutivo - Outras Situações (Presencial) copiada!');
+                              }}
+                            >
+                              <Copy className="w-4 h-4 mr-2" />
+                              Copiar Nota
+                            </Button>
+                          </div>
+                        )}
+                        {cat.id === "devolucao-presencial" && (
+                          <div className="mt-3 space-y-2">
+                            <Input
+                              placeholder="PIB do equipamento"
+                              value={devPresPib}
+                              onChange={(e) => setDevPresPib(e.target.value)}
+                              className="text-sm h-8"
+                            />
+                            <Input
+                              placeholder="IP do equipamento"
+                              value={devPresIp}
+                              onChange={(e) => setDevPresIp(e.target.value)}
+                              className="text-sm h-8"
+                            />
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button variant="outline" size="sm" className="w-full border-blue-300 text-blue-700 hover:bg-blue-50">
+                                  <AlertCircle className="w-4 h-4 mr-2" />
+                                  Orientações
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-96 p-4" align="start">
+                                <div className="space-y-3">
+                                  <h4 className="font-semibold text-blue-700 flex items-center gap-2">
+                                    <AlertCircle className="w-4 h-4" />
+                                    Orientações
+                                  </h4>
+                                  <ul className="text-sm space-y-1.5 text-muted-foreground list-disc list-inside">
+                                    <li>Caso seja resolvido remotamente verifique o SLA do chamado</li>
+                                    <li>Devolva apenas se a solicitação tiver menos de 10h de SLA e se já estiver resolvida e validada com o cliente</li>
+                                    <li><strong>Observação:</strong> Atenção ao SLA de chamados de Call-back – a Conclusão do chamado deve ser na mesma fila do atendimento anterior</li>
+                                    <li>Capture e conclua imediatamente ao retornar a fila, caso não possa, peça a algum colega para fazer a conclusão do chamado (anote a WO para abrir tarefa no OTRS depois)</li>
+                                    <li>Detalhe todos os procedimentos e testes realizados</li>
+                                    <li>Informe os documentos do BC Suporte utilizados como referência</li>
+                                    <li>Mais detalhes &gt;&gt; Bloqueado: <strong>(Sim)</strong></li>
+                                    <li>Ao capturar o chamado, ajuste a categorização em <strong>"Categorização"</strong> &gt;&gt; <strong>"Categorização Operacional"</strong></li>
+                                    <li>Em caso de dúvidas acione a <strong>Supervisão</strong> ou <strong>Ticket Manager</strong></li>
+                                  </ul>
+                                  <div className="mt-2 p-2 bg-red-100 border border-red-300 rounded text-red-800 text-center text-sm">
+                                    <p className="font-bold">!! Atenção !!</p>
+                                    <p>Em "Tipo de informação de trabalho", marque <strong>"Informações Gerais"</strong></p>
+                                  </div>
+                                </div>
+                              </PopoverContent>
+                            </Popover>
+                            <Button
+                              size="sm"
+                              className="w-full bg-blue-600 hover:bg-blue-700"
+                              onClick={() => {
+                                const pib = devPresPib || '';
+                                const ip = devPresIp || '';
+                                const nota = `FAVOR DIRECIONAR A FILA REMOTA
+
+ATENDIMENTO CONCLUIDO REMOTAMENTE
+
+===================
+
+PIB: ${pib}
+
+IP: ${ip}
+
+===================
+
+FORAM REALIZADOS OS PROCEDIMENTOS DE:
+
+- PROCEDIMENTO_1
+- PROCEDIMENTO_2
+- PROCEDIMENTO_3
+
+APÓS PROCEDIMENTOS FORAM REALIZADOS TESTES DE:
+
+- TESTE 1
+- TESTE 2
+- TESTE 3
+
+QUE CONFIRMARAM A SOLUÇÃO DO PROBLEMA.
+
+ATENCIOSAMENTE,
+SUPORTE TÉCNICO HEPTA`;
+                                navigator.clipboard.writeText(nota);
+                                toast.success('Nota de Devolução - Presencial copiada!');
                               }}
                             >
                               <Copy className="w-4 h-4 mr-2" />
