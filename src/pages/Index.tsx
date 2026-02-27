@@ -96,6 +96,12 @@ const Index = () => {
   const [diagGenNome, setDiagGenNome] = useState("");
   const [diagGenPib, setDiagGenPib] = useState("");
   const [diagGenSetor, setDiagGenSetor] = useState("");
+  const [sigesfDirecionar, setSigesfDirecionar] = useState("");
+  const [sigesfData, setSigesfData] = useState("");
+  const [sigesfNome, setSigesfNome] = useState("");
+  const [sigesfPib, setSigesfPib] = useState("");
+  const [sigesfIp, setSigesfIp] = useState("");
+  const [sigesfModelo, setSigesfModelo] = useState("");
 
 
   const [showImportDialog, setShowImportDialog] = useState(false);
@@ -2059,6 +2065,155 @@ ATENCIOSAMENTE,
 SUPORTE TÉCNICO HEPTA`;
                                 navigator.clipboard.writeText(nota);
                                 toast.success('Nota de Diagnóstico - Genérico copiada!');
+                              }}
+                            >
+                              <Copy className="w-4 h-4 mr-2" />
+                              Copiar Nota
+                            </Button>
+                          </div>
+                        )}
+                        {cat.id === "diagnostico-sigesf" && (
+                          <div className="mt-3 space-y-2">
+                            <Input
+                              placeholder="Direcionar a..."
+                              value={sigesfDirecionar}
+                              onChange={(e) => setSigesfDirecionar(e.target.value)}
+                              className="text-sm h-8"
+                            />
+                            <Input
+                              placeholder="Data da visita (ex: 27/02/2026)"
+                              value={sigesfData}
+                              onChange={(e) => setSigesfData(e.target.value)}
+                              className="text-sm h-8"
+                            />
+                            <Input
+                              placeholder="Nome do usuário"
+                              value={sigesfNome}
+                              onChange={(e) => setSigesfNome(e.target.value)}
+                              className="text-sm h-8"
+                            />
+                            <Input
+                              placeholder="Modelo do equipamento"
+                              value={sigesfModelo}
+                              onChange={(e) => setSigesfModelo(e.target.value)}
+                              className="text-sm h-8"
+                            />
+                            <Input
+                              placeholder="PIB do equipamento"
+                              value={sigesfPib}
+                              onChange={(e) => setSigesfPib(e.target.value)}
+                              className="text-sm h-8"
+                            />
+                            <Input
+                              placeholder="IP do equipamento"
+                              value={sigesfIp}
+                              onChange={(e) => setSigesfIp(e.target.value)}
+                              className="text-sm h-8"
+                            />
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button variant="outline" size="sm" className="w-full border-amber-300 text-amber-700 hover:bg-amber-50">
+                                  <AlertCircle className="w-4 h-4 mr-2" />
+                                  Orientações
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-80 p-4" align="center">
+                                <div className="space-y-3">
+                                  <h4 className="font-semibold text-amber-700 flex items-center gap-2">
+                                    <AlertCircle className="w-4 h-4" />
+                                    Orientações
+                                  </h4>
+                                  <ul className="text-sm space-y-1.5 text-muted-foreground list-disc list-inside">
+                                    <li>Detalhe todos os procedimentos e testes realizados e anexe os prints comprobatórios</li>
+                                    <li>Informe os documentos do BC Suporte utilizados como referência</li>
+                                    <li><strong>Mais detalhes &gt;&gt; Bloqueado:</strong> (Sim)</li>
+                                    <li>Ao capturar o chamado, ajuste a categorização em <strong>"Categorização"</strong> &gt;&gt; <strong>"Categorização Operacional"</strong></li>
+                                    <li><a href="#" className="text-blue-600 underline">Link manual</a></li>
+                                    <li><a href="#" className="text-blue-600 underline">Link Manual Correios</a></li>
+                                    <li>Em caso de dúvidas acione a <strong>Supervisão</strong> ou <strong>Ticket Manager</strong></li>
+                                  </ul>
+                                  <div className="mt-2 p-2 bg-red-100 border border-red-300 rounded text-red-800 text-center text-sm">
+                                    <p className="font-bold">!! Atenção !!</p>
+                                    <p>Em "Tipo de informação de trabalho",</p>
+                                    <p className="font-bold">marque "DIAGNÓSTICO"</p>
+                                  </div>
+                                </div>
+                              </PopoverContent>
+                            </Popover>
+                            <Button
+                              size="sm"
+                              className="w-full bg-amber-600 hover:bg-amber-700"
+                              onClick={() => {
+                                const direcionar = sigesfDirecionar || '________';
+                                const data = sigesfData || '__/__/202X';
+                                const nome = sigesfNome || '________';
+                                const modelo = sigesfModelo || '';
+                                const pib = sigesfPib || '';
+                                const ip = sigesfIp || '';
+                                const nota = `FAVOR DIRECIONAR A ${direcionar}
+
+DIAGNÓSTICO PRESENCIAL
+
+PROCEDIMENTOS REALIZADOS DURANTE VISITA TÉCNICA NO DIA ${data}
+
+USUÁRIO: ${nome}
+
+FOI REALIZADO OS PROCEDIMENTOS DE:
+
+Verificação de Hardware
+
+Cabos de energia Funcionais? SIM ( x )    NÃO ( x )
+O modelo é um Totem ou MiniPC? ( x )Totem ou ( x )MiniPC
+Estabilizador\\nobreak Funcionando? SIM ( x )    NÃO ( x )
+Fonte Ligando? SIM ( x )    NÃO ( x )
+Placa mãe funcionando? SIM ( x )    NÃO ( x )
+Ventoinhas funcionais? SIM ( x )    NÃO ( x )
+Possui placa de vídeo? SIM ( x )    NÃO ( x )
+se não, Entrada HDMI funcional na placa mãe? SIM ( x )    NÃO ( x )
+Impressora externa? SIM ( x )    NÃO ( x )
+se sim, modelo da impressora externa: __________
+Painel (TV) liga? SIM ( x )    NÃO ( x )
+Usa adaptador HDMI ou cabo HDMI completo? Adaptador ( x ) Cabo Direto ( x )
+Monitor TouchScreen funcional? SIM ( x )    NÃO ( x )
+Entradas USB funcionais? SIM ( x )    NÃO ( x )
+Teste de integridade no cabo e ponto de rede normal? SIM ( x )    NÃO ( x )
+
+Verificação de software
+
+Boot normal? __________
+Windows 7 ou 10? __________
+Autologon normal?__________
+Sigesf Atualizado? __________
+Emissor e Painel na configuração padrão?__________
+Emissor apresenta erro ou falha?__________
+Painel apresenta erro ou falha?__________
+Impressora genérica SIGESF configurada e funcionando?__________
+Configuração do Emissor para impressora interna ou externa (SIGESF ou EscPos) realizado?__________
+Impressora Externa na porta COM2 ?__________
+
+Scripts executados
+
+Sigesf_Ajusta_Variaveis ?_________
+SigesfAjustes (somente caso autologon não funcione)_________
+
+APÓS PROCEDIMENTOS FOI VERIFICADO QUE:
+
+< JUSTIFICATIVA >
+
+===================
+Equipamento indicado pelo Usuário
+===================
+
+MODELO: ${modelo}
+PIB: ${pib}
+IP: ${ip}
+
+===================
+
+ATENCIOSAMENTE,
+SUPORTE TÉCNICO HEPTA`;
+                                navigator.clipboard.writeText(nota);
+                                toast.success('Nota de Diagnóstico - Sigesf copiada!');
                               }}
                             >
                               <Copy className="w-4 h-4 mr-2" />
