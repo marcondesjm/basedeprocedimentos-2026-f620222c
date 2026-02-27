@@ -70,6 +70,10 @@ const Index = () => {
   const [diagRemotoPib, setDiagRemotoPib] = useState("");
   const [improdOutrasNome, setImprodOutrasNome] = useState("");
   const [improdOutrasJustificativa, setImprodOutrasJustificativa] = useState("");
+  const [compartNome, setCompartNome] = useState("");
+  const [compartPib, setCompartPib] = useState("");
+  const [compartLink, setCompartLink] = useState("");
+  const [compartAtalho, setCompartAtalho] = useState("");
 
 
   const [showImportDialog, setShowImportDialog] = useState(false);
@@ -998,6 +1002,98 @@ ${proc.description}
                           </div>
                         ) : (
                           <p className="text-xs text-muted-foreground mt-1">Nenhum procedimento atribuído</p>
+                        )}
+                        {cat.id === "conclusao-compartilhamento" && (
+                          <div className="mt-3 space-y-2">
+                            <Input
+                              placeholder="Nome do usuário"
+                              value={compartNome}
+                              onChange={(e) => setCompartNome(e.target.value)}
+                              className="text-sm h-8"
+                            />
+                            <Input
+                              placeholder="PIB do equipamento"
+                              value={compartPib}
+                              onChange={(e) => setCompartPib(e.target.value)}
+                              className="text-sm h-8"
+                            />
+                            <Input
+                              placeholder="Compartilhamento Link"
+                              value={compartLink}
+                              onChange={(e) => setCompartLink(e.target.value)}
+                              className="text-sm h-8"
+                            />
+                            <Input
+                              placeholder="Atalho salvo no caminho"
+                              value={compartAtalho}
+                              onChange={(e) => setCompartAtalho(e.target.value)}
+                              className="text-sm h-8"
+                            />
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button variant="outline" size="sm" className="w-full border-primary/50 text-primary hover:bg-primary/10">
+                                  <AlertCircle className="w-4 h-4 mr-2" />
+                                  Orientações
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-80 p-4" align="center">
+                                <div className="space-y-3">
+                                  <h4 className="font-semibold text-primary flex items-center gap-2">
+                                    <AlertCircle className="w-4 h-4" />
+                                    Orientações
+                                  </h4>
+                                  <ul className="text-sm space-y-1.5 text-muted-foreground list-disc list-inside">
+                                    <li>Detalhe todos os procedimentos e testes realizados</li>
+                                    <li>Inclua um print em nota normal, com o atalho criado no perfil do usuário (no print deve aparecer toda a janela do VNC, de forma que apareça o caminho, hostname e IP do micro atendido)</li>
+                                    <li>Informe os documentos do BC Suporte utilizados como referência</li>
+                                    <li>Anexe quaisquer print/foto em nota normal, <strong>ANTES</strong> de salvar a conclusão, pois na nota de conclusão só é possível utilizar texto</li>
+                                    <li>Em <strong>"Motivo do Status"</strong>, use apenas <strong>"Utilização de procedimentos"</strong></li>
+                                    <li>Ao capturar o chamado, ajuste a categorização em <strong>"Categorização"</strong> &gt;&gt; <strong>"Categorização Operacional"</strong></li>
+                                    <li>Em caso de dúvidas acione a <strong>Supervisão</strong> ou <strong>Ticket Manager</strong></li>
+                                  </ul>
+                                  <div className="mt-2 p-2 bg-red-100 border border-red-300 rounded text-red-800 text-center text-sm">
+                                    <p className="font-bold">!! Atenção !!</p>
+                                    <p>Notificar usuário com a solução realizada: <strong>SIM</strong></p>
+                                    <p>Modo de execução: <strong>Remoto</strong></p>
+                                  </div>
+                                </div>
+                              </PopoverContent>
+                            </Popover>
+                            <Button
+                              size="sm"
+                              className="w-full bg-primary hover:bg-primary/90"
+                              onClick={() => {
+                                const nome = compartNome || '_________________';
+                                const pib = compartPib || '';
+                                const link = compartLink || '';
+                                const atalho = compartAtalho || '';
+                                const nota = `EM CONTATO COM O USUÁRIO ${nome}, FOI REALIZADO ACESSO REMOTO AO MICRO E
+FORAM EXECUTADOS OS PROCEDIMENTOS DE:
+
+==================
+
+PIB: ${pib}
+
+COMPARTILHAMENTO LINK: ${link}
+
+ATALHO SALVO NO CAMINHO: ${atalho}
+
+==================
+
+- PROCEDIMENTO 1
+- PROCEDIMENTO 2
+- PROCEDIMENTO 3
+
+ATENCIOSAMENTE,
+SUPORTE TÉCNICO HEPTA`;
+                                navigator.clipboard.writeText(nota);
+                                toast.success('Nota de Conclusão - Compartilhamento copiada!');
+                              }}
+                            >
+                              <Copy className="w-4 h-4 mr-2" />
+                              Copiar Nota
+                            </Button>
+                          </div>
                         )}
                         {cat.id === "diagnostico-remoto" && (
                           <div className="mt-3 space-y-2">
