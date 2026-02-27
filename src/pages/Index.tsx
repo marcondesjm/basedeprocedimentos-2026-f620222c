@@ -1326,8 +1326,7 @@ SUPORTE TÉCNICO HEPTA`;
                             </div>
                           </PopoverContent>
                         </Popover>
-                        {selectedProcedure.noteType === "diagnostico" && (
-                          <Popover>
+                        <Popover>
                             <PopoverTrigger asChild>
                               <Button variant="outline" className="border-amber-300 text-amber-700 hover:bg-amber-50">
                                 <FileText className="w-4 h-4 mr-2" />
@@ -1396,7 +1395,6 @@ SUPORTE TÉCNICO HEPTA`;
                               </div>
                             </PopoverContent>
                           </Popover>
-                        )}
                         <Button 
                           onClick={() => {
                             setIsEditMode(true);
