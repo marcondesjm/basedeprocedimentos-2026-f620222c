@@ -1270,11 +1270,6 @@ SUPORTE TÉCNICO HEPTA`;
                                     <p className="text-amber-700">Notificar usuário com a solução realizada: <strong>SIM</strong></p>
                                     <p className="text-amber-700">Modo de execução: <strong>Remoto</strong></p>
                                   </div>
-                                  <div className="mt-2 p-2 bg-red-100 border border-red-300 rounded text-red-800 text-center text-sm">
-                                    <p className="font-bold">!! Atenção !!</p>
-                                    <p>Em "Tipo de informação de trabalho",</p>
-                                    <p className="font-bold">marque "DIAGNÓSTICO"</p>
-                                  </div>
                                 </div>
                               </div>
                             </PopoverContent>
