@@ -1371,7 +1371,7 @@ ${selectedProcedure.solution.split('\n').map(line => line.trim() ? `- ${line.tri
 
 APÓS PROCEDIMENTOS FOI VERIFICADO QUE:
 
-${selectedProcedure.justificativa || '< JUSTIFICATIVA >'}
+Micro continua com ${selectedProcedure.justificativa || '< JUSTIFICATIVA >'} favor encaminhar a troca. Obrigado
 
 Possui procedimento no BC-Suporte? ( ${selectedProcedure.possuiProcedimentoBC === 'sim' ? 'X' : ' '} ) SIM ( ${selectedProcedure.possuiProcedimentoBC === 'nao' ? 'X' : ' '} ) Não
 
