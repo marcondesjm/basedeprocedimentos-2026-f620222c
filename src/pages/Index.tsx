@@ -1360,32 +1360,6 @@ SUPORTE TÉCNICO HEPTA`;
                                     <p className="text-amber-700">Modo de execução: <strong>Remoto</strong></p>
                                   </div>
                                 </div>
-                                <Button
-                                  className="w-full bg-amber-600 hover:bg-amber-700"
-                                  onClick={() => {
-                                    const notaDiagRemoto = `FAVOR DIRECIONAR AO SETOR ${selectedProcedure.setorDirecionado || '__________'}
-
-EM CONTATO COM O USUÁRIO ${selectedProcedure.usuarioAtendido || '_________________'}, FORAM REALIZADOS OS PROCEDIMENTOS DE:
-
-${selectedProcedure.solution.split('\n').map(line => line.trim() ? `- ${line.trim()}` : '').filter(Boolean).join('\n') || '- PROCEDIMENTO 1\n- PROCEDIMENTO 2\n- PROCEDIMENTO 3'}
-
-APÓS PROCEDIMENTOS FOI VERIFICADO QUE:
-
-Micro continua com ${selectedProcedure.justificativa || '< JUSTIFICATIVA >'} favor encaminhar a troca. Obrigado
-
-Possui procedimento no BC-Suporte? ( ${selectedProcedure.possuiProcedimentoBC === 'sim' ? 'X' : ' '} ) SIM ( ${selectedProcedure.possuiProcedimentoBC === 'nao' ? 'X' : ' '} ) Não
-
-${selectedProcedure.possuiProcedimentoBC === 'sim' && selectedProcedure.nomeArquivoBC ? `Se sim, Nome do arquivo: ${selectedProcedure.nomeArquivoBC}` : 'Se sim, Nome do arquivo:_____________________'}
-
-ATENCIOSAMENTE,
-SUPORTE TÉCNICO HEPTA`;
-                                    navigator.clipboard.writeText(notaDiagRemoto);
-                                    toast.success('Nota de Diagnóstico Remoto copiada!');
-                                  }}
-                                >
-                                  <Copy className="w-4 h-4 mr-2" />
-                                  Copiar Nota
-                                </Button>
                               </div>
                             </PopoverContent>
                           </Popover>
