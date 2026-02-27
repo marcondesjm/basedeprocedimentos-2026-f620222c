@@ -1260,8 +1260,9 @@ SUPORTE TÉCNICO HEPTA`;
                                   <ul className="list-disc list-inside text-amber-700 space-y-0.5">
                                     <li>Detalhe todos os procedimentos e testes realizados</li>
                                     <li>Informe os documentos do BC Suporte utilizados como referência</li>
-                                    <li>Anexe quaisquer print/foto em nota normal, <strong>ANTES</strong> de salvar a conclusão</li>
+                                    <li>Anexe quaisquer print/foto em nota normal, <strong>ANTES</strong> de salvar a conclusão, pois na nota de conclusão só é possível utilizar texto</li>
                                     <li>Em "Motivo do Status", use apenas <strong>"Utilização de procedimentos"</strong></li>
+                                    <li>Ao capturar o chamado, ajuste a categorização do chamado em <strong>"Categorização"</strong> &gt;&gt; <strong>"Categorização Operacional"</strong></li>
                                     <li>Em caso de dúvidas acione a Supervisão ou Ticket Manager</li>
                                   </ul>
                                   <div className="mt-1 pt-1 border-t border-amber-300">
