@@ -62,6 +62,10 @@ const Index = () => {
   const [selectedProcedure, setSelectedProcedure] = useState<Procedure | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editedProcedure, setEditedProcedure] = useState<Procedure | null>(null);
+  const [devolucaoNome, setDevolucaoNome] = useState("");
+  const [devolucaoPib, setDevolucaoPib] = useState("");
+  const [devolucaoWo, setDevolucaoWo] = useState("");
+
   const [showImportDialog, setShowImportDialog] = useState(false);
 
   const [newProcedure, setNewProcedure] = useState({
@@ -990,19 +994,40 @@ ${proc.description}
                           <p className="text-xs text-muted-foreground mt-1">Nenhum procedimento atribuído</p>
                         )}
                         {cat.id === "devolucao-remoto-presencial" && (
-                          <div className="mt-3">
+                          <div className="mt-3 space-y-2">
+                            <Input
+                              placeholder="Nome do usuário"
+                              value={devolucaoNome}
+                              onChange={(e) => setDevolucaoNome(e.target.value)}
+                              className="text-sm h-8"
+                            />
+                            <Input
+                              placeholder="PIB do equipamento"
+                              value={devolucaoPib}
+                              onChange={(e) => setDevolucaoPib(e.target.value)}
+                              className="text-sm h-8"
+                            />
+                            <Input
+                              placeholder="Nº da WO"
+                              value={devolucaoWo}
+                              onChange={(e) => setDevolucaoWo(e.target.value)}
+                              className="text-sm h-8"
+                            />
                             <Button
                               size="sm"
                               className="w-full bg-blue-600 hover:bg-blue-700"
                               onClick={() => {
-                                const nota = `FAVOR DIRECIONAR AO SUPORTE PRESENCIAL
+                                const nome = devolucaoNome || '_________________';
+                                const pib = devolucaoPib || '';
+                                const wo = devolucaoWo ? `WO: ${devolucaoWo}\n\n` : '';
+                                const nota = `${wo}FAVOR DIRECIONAR AO SUPORTE PRESENCIAL
 
-EM CONTATO COM O USUÁRIO _________________, FOI REALIZADO ACESSO REMOTO AO MICRO E
+EM CONTATO COM O USUÁRIO ${nome}, FOI REALIZADO ACESSO REMOTO AO MICRO E
 FORAM EXECUTADOS OS PROCEDIMENTOS DE:
 
 ==================
 
-PIB:
+PIB: ${pib}
 
 ==================
 
