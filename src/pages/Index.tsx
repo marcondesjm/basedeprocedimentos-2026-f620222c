@@ -1266,7 +1266,7 @@ SUPORTE TÉCNICO HEPTA`;
                                     <li>Em caso de dúvidas acione a Supervisão ou Ticket Manager</li>
                                   </ul>
                                   <div className="mt-1 pt-1 border-t border-amber-300">
-                                    <p className="text-amber-800 font-bold">⚠️ Atenção ⚠️</p>
+                                    <p className="text-amber-800 font-bold text-center">!! Atenção !!</p>
                                     <p className="text-amber-700">Notificar usuário com a solução realizada: <strong>SIM</strong></p>
                                     <p className="text-amber-700">Modo de execução: <strong>Remoto</strong></p>
                                   </div>
