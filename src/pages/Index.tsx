@@ -1013,6 +1013,34 @@ ${proc.description}
                               onChange={(e) => setDevolucaoWo(e.target.value)}
                               className="text-sm h-8"
                             />
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button variant="outline" size="sm" className="w-full border-blue-300 text-blue-700 hover:bg-blue-50">
+                                  <AlertCircle className="w-4 h-4 mr-2" />
+                                  Orientações
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-80 p-4" align="center">
+                                <div className="space-y-3">
+                                  <h4 className="font-semibold text-blue-700 flex items-center gap-2">
+                                    <AlertCircle className="w-4 h-4" />
+                                    Orientações
+                                  </h4>
+                                  <ul className="text-sm space-y-1.5 text-muted-foreground list-disc list-inside">
+                                    <li>Detalhe todos os procedimentos e testes realizados e anexe os prints comprobatórios</li>
+                                    <li>Informe os documentos do BC Suporte utilizados como referência</li>
+                                    <li><strong>Mais detalhes &gt;&gt; Bloqueado:</strong> (Sim)</li>
+                                    <li>Ao capturar o chamado, ajuste a categorização do chamado em <strong>"Categorização"</strong> &gt;&gt; <strong>"Categorização Operacional"</strong></li>
+                                    <li>Em caso de dúvidas acione a <strong>Supervisão</strong> ou <strong>Ticket Manager</strong></li>
+                                  </ul>
+                                  <div className="mt-2 p-2 bg-red-100 border border-red-300 rounded text-red-800 text-center text-sm">
+                                    <p className="font-bold">!! Atenção !!</p>
+                                    <p>Em "Tipo de informação de trabalho",</p>
+                                    <p className="font-bold">marque "Informações Gerais"</p>
+                                  </div>
+                                </div>
+                              </PopoverContent>
+                            </Popover>
                             <Button
                               size="sm"
                               className="w-full bg-blue-600 hover:bg-blue-700"
