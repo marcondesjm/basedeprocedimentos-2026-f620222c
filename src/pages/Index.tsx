@@ -65,6 +65,9 @@ const Index = () => {
   const [devolucaoNome, setDevolucaoNome] = useState("");
   const [devolucaoPib, setDevolucaoPib] = useState("");
   const [devolucaoWo, setDevolucaoWo] = useState("");
+  const [diagRemotoSetor, setDiagRemotoSetor] = useState("");
+  const [diagRemotoNome, setDiagRemotoNome] = useState("");
+  const [diagRemotoPib, setDiagRemotoPib] = useState("");
 
   const [showImportDialog, setShowImportDialog] = useState(false);
 
@@ -993,6 +996,93 @@ ${proc.description}
                         ) : (
                           <p className="text-xs text-muted-foreground mt-1">Nenhum procedimento atribuído</p>
                         )}
+                        {cat.id === "diagnostico-remoto" && (
+                          <div className="mt-3 space-y-2">
+                            <Input
+                              placeholder="Setor direcionado"
+                              value={diagRemotoSetor}
+                              onChange={(e) => setDiagRemotoSetor(e.target.value)}
+                              className="text-sm h-8"
+                            />
+                            <Input
+                              placeholder="Nome do usuário"
+                              value={diagRemotoNome}
+                              onChange={(e) => setDiagRemotoNome(e.target.value)}
+                              className="text-sm h-8"
+                            />
+                            <Input
+                              placeholder="PIB do equipamento"
+                              value={diagRemotoPib}
+                              onChange={(e) => setDiagRemotoPib(e.target.value)}
+                              className="text-sm h-8"
+                            />
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button variant="outline" size="sm" className="w-full border-amber-300 text-amber-700 hover:bg-amber-50">
+                                  <AlertCircle className="w-4 h-4 mr-2" />
+                                  Orientações
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-80 p-4" align="center">
+                                <div className="space-y-3">
+                                  <h4 className="font-semibold text-amber-700 flex items-center gap-2">
+                                    <AlertCircle className="w-4 h-4" />
+                                    Orientações
+                                  </h4>
+                                  <ul className="text-sm space-y-1.5 text-muted-foreground list-disc list-inside">
+                                    <li>Detalhe todos os procedimentos e testes realizados e anexe os prints comprobatórios</li>
+                                    <li>Informe os documentos do BC Suporte utilizados como referência</li>
+                                    <li><strong>Mais detalhes &gt;&gt; Bloqueado:</strong> (Sim)</li>
+                                    <li>Ao capturar o chamado, ajuste a categorização do chamado em <strong>"Categorização"</strong> &gt;&gt; <strong>"Categorização Operacional"</strong></li>
+                                    <li>Em caso de dúvidas acione a <strong>Supervisão</strong> ou <strong>Ticket Manager</strong></li>
+                                  </ul>
+                                  <div className="mt-2 p-2 bg-red-100 border border-red-300 rounded text-red-800 text-center text-sm">
+                                    <p className="font-bold">!! Atenção !!</p>
+                                    <p>Em "Tipo de informação de trabalho",</p>
+                                    <p className="font-bold">marque "DIAGNÓSTICO"</p>
+                                  </div>
+                                </div>
+                              </PopoverContent>
+                            </Popover>
+                            <Button
+                              size="sm"
+                              className="w-full bg-amber-600 hover:bg-amber-700"
+                              onClick={() => {
+                                const setor = diagRemotoSetor || '__________';
+                                const nome = diagRemotoNome || '_________________';
+                                const pib = diagRemotoPib || '';
+                                const nota = `FAVOR DIRECIONAR AO SETOR ${setor}
+
+==================
+
+PIB indicada pelo usuário: ${pib}
+
+==================
+
+EM CONTATO COM O USUÁRIO ${nome}, FORAM REALIZADOS OS PROCEDIMENTOS DE:
+
+- PROCEDIMENTO 1
+- PROCEDIMENTO 2
+- PROCEDIMENTO 3
+
+APÓS PROCEDIMENTOS FOI VERIFICADO QUE:
+
+< JUSTIFICATIVA >
+
+Possui procedimento no BC-Suporte? ( X ) SIM ( X ) Não
+Se sim, Nome do arquivo:_____________________
+
+ATENCIOSAMENTE,
+SUPORTE TÉCNICO HEPTA`;
+                                navigator.clipboard.writeText(nota);
+                                toast.success('Nota de Diagnóstico Remoto copiada!');
+                              }}
+                            >
+                              <Copy className="w-4 h-4 mr-2" />
+                              Copiar Nota
+                            </Button>
+                          </div>
+                        )}
                         {cat.id === "devolucao-remoto-presencial" && (
                           <div className="mt-3 space-y-2">
                             <Input
@@ -1537,9 +1627,8 @@ APÓS PROCEDIMENTOS FORAM REALIZADOS TESTES DE:
 
 ${selectedProcedure.description}
 
-QUE CONFIRMARAM A SOLUÇÃO DO PROBLEMA. 
+QUE CONFIRMARAM A SOLUÇÃO DO PROBLEMA.
 
-  
 
 ATENCIOSAMENTE, 
 SUPORTE TÉCNICO HEPTA`;
