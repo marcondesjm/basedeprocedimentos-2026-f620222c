@@ -83,6 +83,7 @@ const Index = () => {
   const [atualizacaoFerramentaOpen, setAtualizacaoFerramentaOpen] = useState(false);
   const [preparacaoFerramentaOpen, setPreparacaoFerramentaOpen] = useState(false);
   const [totemOpen, setTotemOpen] = useState(false);
+  const [baseConhecimentoOpen, setBaseConhecimentoOpen] = useState(false);
   const [compartNome, setCompartNome] = useState("");
   const [compartPib, setCompartPib] = useState("");
   const [compartLink, setCompartLink] = useState("");
@@ -2907,8 +2908,30 @@ SUPORTE TÉCNICO HEPTA`;
                       </div>
                     )}
                   </Card>
-                  <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-blue-500">
-                    <h3 className="font-semibold">Base de Conhecimento</h3>
+                  <Card className={`p-4 border-l-4 border-l-blue-500 ${baseConhecimentoOpen ? 'col-span-full' : 'hover:shadow-md cursor-pointer'}`}>
+                    {!baseConhecimentoOpen ? (
+                      <div onClick={() => setBaseConhecimentoOpen(true)}>
+                        <h3 className="font-semibold">Base de Conhecimento</h3>
+                        <p className="text-xs text-muted-foreground mt-1">POPs e Informações Operacionais</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h3 className="font-semibold text-lg">Base de Conhecimento</h3>
+                          <Button variant="ghost" size="sm" onClick={() => setBaseConhecimentoOpen(false)}>✕</Button>
+                        </div>
+
+                        <div className="space-y-2">
+                          <h4 className="font-semibold text-sm text-blue-700 border-b border-blue-200 pb-1">Procedimentos Operacionais Padrão - POP</h4>
+                          <p className="text-sm text-muted-foreground">Documentos padronizados com instruções detalhadas para execução de procedimentos técnicos. Consulte a Supervisão ou Ticket Manager para acesso aos POPs atualizados.</p>
+                        </div>
+
+                        <div className="space-y-2">
+                          <h4 className="font-semibold text-sm text-blue-700 border-b border-blue-200 pb-1">Informações Operacionais</h4>
+                          <p className="text-sm text-muted-foreground">Dados e orientações operacionais relevantes para o dia a dia do suporte técnico. Consulte a Supervisão ou Ticket Manager para informações atualizadas.</p>
+                        </div>
+                      </div>
+                    )}
                   </Card>
                 </div>
               </div>
