@@ -1539,16 +1539,16 @@ SUPORTE TÉCNICO HEPTA`;
                                   Lembrete antes de concluir:
                                 </p>
                                 <ul className="list-disc list-inside text-amber-700 space-y-0.5">
-                                  <li>Detalhe todos os procedimentos e testes realizados</li>
+                                  <li>Detalhe todos os procedimentos e testes realizados e anexe os prints comprobatórios</li>
                                   <li>Informe os documentos do BC Suporte utilizados como referência</li>
-                                  <li>Anexe quaisquer print/foto em nota normal, <strong>ANTES</strong> de salvar a conclusão, pois na nota de conclusão só é possível utilizar texto</li>
-                                  <li>Em "Motivo do Status", use apenas <strong>"Utilização de procedimentos"</strong></li>
+                                  <li><strong>Mais detalhes &gt;&gt; Bloqueado:</strong> (Sim)</li>
+                                  <li>Ao capturar o chamado, ajuste a categorização do chamado em <strong>"Categorização"</strong> &gt;&gt; <strong>"Categorização Operacional"</strong></li>
                                   <li>Em caso de dúvidas acione a Supervisão ou Ticket Manager</li>
                                 </ul>
-                                <div className="mt-1 pt-1 border-t border-amber-300">
-                                  <p className="text-amber-800 font-bold">⚠️ Atenção ⚠️</p>
-                                  <p className="text-amber-700">Notificar usuário com a solução realizada: <strong>SIM</strong></p>
-                                  <p className="text-amber-700">Modo de execução: <strong>Remoto</strong></p>
+                                <div className="mt-2 p-2 bg-red-100 border border-red-300 rounded text-red-800 text-center text-sm">
+                                  <p className="font-bold">!! Atenção !!</p>
+                                  <p>Em "Tipo de informação de trabalho",</p>
+                                  <p className="font-bold">marque "Informações Gerais"</p>
                                 </div>
                               </div>
                               <Button
