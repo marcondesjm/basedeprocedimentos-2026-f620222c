@@ -70,6 +70,8 @@ const Index = () => {
   const [diagRemotoPib, setDiagRemotoPib] = useState("");
   const [improdOutrasNome, setImprodOutrasNome] = useState("");
   const [improdOutrasJustificativa, setImprodOutrasJustificativa] = useState("");
+  const [improdOutrasPNome, setImprodOutrasPNome] = useState("");
+  const [improdOutrasPJustificativa, setImprodOutrasPJustificativa] = useState("");
   const [compartNome, setCompartNome] = useState("");
   const [compartPib, setCompartPib] = useState("");
   const [compartLink, setCompartLink] = useState("");
@@ -2270,6 +2272,87 @@ Desta forma, este chamado será fechado como improdutivo, e sua reabertura será
 Caso ainda necessite do suporte técnico, solicitamos que registre um novo chamado.`;
                                 navigator.clipboard.writeText(nota);
                                 toast.success('Nota de Improdutivo - Presencial copiada!');
+                              }}
+                            >
+                              <Copy className="w-4 h-4 mr-2" />
+                              Copiar Nota
+                            </Button>
+                          </div>
+                        )}
+                        {cat.id === "improdutivo-outras-p" && (
+                          <div className="mt-3 space-y-2">
+                            <Input
+                              placeholder="Nome do usuário"
+                              value={improdOutrasPNome}
+                              onChange={(e) => setImprodOutrasPNome(e.target.value)}
+                              className="text-sm h-8"
+                            />
+                            <Input
+                              placeholder="Justificativa"
+                              value={improdOutrasPJustificativa}
+                              onChange={(e) => setImprodOutrasPJustificativa(e.target.value)}
+                              className="text-sm h-8"
+                            />
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button variant="outline" size="sm" className="w-full border-red-300 text-red-700 hover:bg-red-50">
+                                  <AlertCircle className="w-4 h-4 mr-2" />
+                                  Orientações
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-96 p-4" align="start">
+                                <div className="space-y-3">
+                                  <h4 className="font-semibold text-red-700 flex items-center gap-2">
+                                    <AlertCircle className="w-4 h-4" />
+                                    Orientações
+                                  </h4>
+                                  <ul className="text-sm space-y-1.5 text-muted-foreground list-disc list-inside">
+                                    <li><strong>(Remoto ou Presencial)</strong> Na <strong>Justificativa</strong> informe o motivo pelo qual o atendimento não pode ser realizado
+                                      <ul className="list-disc list-inside ml-4 mt-1">
+                                        <li>Detalhar o melhor possível a justificativa</li>
+                                      </ul>
+                                    </li>
+                                    <li>Utilize apenas nos seguintes casos:
+                                      <ul className="list-disc list-inside ml-4 mt-1">
+                                        <li>(Remoto ou Presencial) Recusa do atendimento pelo usuário</li>
+                                        <li>(Presencial) Acesso ao ambiente/equipamento não autorizado ou indisponível</li>
+                                        <li>(Remoto ou Presencial) Solicitação de retorno em outra data</li>
+                                        <li>(Remoto ou Presencial) Indisponibilidade da unidade</li>
+                                      </ul>
+                                    </li>
+                                    <li><strong>Exemplo:</strong> Unidade fechada no horário informado na planilha ou Nenhum colaborador disponível para acompanhar o atendimento</li>
+                                    <li><strong>(Presencial)</strong> Em caso de falta de rede ou energia na unidade, verifique com o usuário se há uma previsão para retorno; caso não houver, conclua como Improdutivo – Outras Situações</li>
+                                    <li>Caso não possa fechar o chamado no momento, solicite no Teams que algum colega feche e você abre tarefa no OTRS depois</li>
+                                    <li>Nesta situação <strong>não é necessário</strong> enviar os e-mails</li>
+                                    <li>Em caso de dúvidas acione a <strong>Supervisão</strong> ou <strong>Ticket Manager</strong></li>
+                                  </ul>
+                                  <div className="mt-2 p-2 bg-red-100 border border-red-300 rounded text-red-800 text-center text-sm">
+                                    <p className="font-bold">!! Atenção !!</p>
+                                    <p>Notificar usuário com a solução realizada: <strong>SIM</strong></p>
+                                    <p>Modo de execução: <strong>presencial</strong></p>
+                                  </div>
+                                </div>
+                              </PopoverContent>
+                            </Popover>
+                            <Button
+                              size="sm"
+                              className="w-full bg-red-600 hover:bg-red-700"
+                              onClick={() => {
+                                const nome = improdOutrasPNome || '___________';
+                                const justificativa = improdOutrasPJustificativa || '<< JUSTIFICATIVA >>';
+                                const nota = `IMPRODUTIVO
+
+Conforme verificado com Usuário ${nome}, Não foi possível realizar o atendimento devido:
+
+${justificativa}
+
+Foi indicado outro colaborador para acompanhar o atendimento? SIM ( x )    NÃO ( x ) (Não se aplica)
+
+Desta forma, este chamado será fechado como improdutivo, e sua reabertura será considerada indevida.
+
+Caso ainda necessite do suporte técnico, solicitamos que registre um novo chamado.`;
+                                navigator.clipboard.writeText(nota);
+                                toast.success('Nota de Improdutivo - Outras Situações (Presencial) copiada!');
                               }}
                             >
                               <Copy className="w-4 h-4 mr-2" />
