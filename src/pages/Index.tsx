@@ -79,6 +79,7 @@ const Index = () => {
   const [analiseChecks, setAnaliseChecks] = useState<Record<string, boolean>>({});
   const [milestoneOpen, setMilestoneOpen] = useState(false);
   const [formatacaoRemotaOpen, setFormatacaoRemotaOpen] = useState(false);
+  const [espansoOpen, setEspansoOpen] = useState(false);
   const [compartNome, setCompartNome] = useState("");
   const [compartPib, setCompartPib] = useState("");
   const [compartLink, setCompartLink] = useState("");
@@ -2686,8 +2687,48 @@ SUPORTE TÉCNICO HEPTA`;
                       </div>
                     )}
                   </Card>
-                  <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-amber-500">
-                    <h3 className="font-semibold">Ferramenta - Espanso</h3>
+                  <Card className={`p-4 border-l-4 border-l-amber-500 ${espansoOpen ? 'col-span-full' : 'hover:shadow-md cursor-pointer'}`}>
+                    {!espansoOpen ? (
+                      <div onClick={() => setEspansoOpen(true)}>
+                        <h3 className="font-semibold">Ferramenta - Espanso</h3>
+                        <p className="text-xs text-muted-foreground mt-1">Expansor de texto para produtividade</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h3 className="font-semibold text-lg">Ferramenta - Espanso</h3>
+                          <Button variant="ghost" size="sm" onClick={() => setEspansoOpen(false)}>✕</Button>
+                        </div>
+
+                        <div className="p-3 bg-muted/50 rounded-lg text-sm space-y-2">
+                          <p><strong>Espanso</strong> é um expansor de texto gratuito e de código aberto que funciona em Linux, Windows e macOS.</p>
+                          <p>Um expansor de texto é um programa que permite substituir abreviações por frases ou palavras mais longas. Por exemplo, se você digitar <code className="bg-muted px-1.5 py-0.5 rounded font-mono text-xs">:tentativa1</code> no seu editor de texto, o expansor pode substituir automaticamente pelo texto do email de primeira tentativa.</p>
+                          <p className="text-muted-foreground">Isso pode economizar muito tempo e aumentar a produtividade, especialmente para textos repetitivos usados com frequência.</p>
+                        </div>
+
+                        <div className="space-y-2">
+                          <h4 className="font-semibold text-sm text-amber-700 border-b border-amber-200 pb-1">Como Instalar e Configurar</h4>
+                          <ol className="text-sm space-y-1.5 list-decimal list-inside text-foreground">
+                            <li>Acesse <a href="https://espanso.org/install/" target="_blank" rel="noopener noreferrer" className="text-primary underline hover:no-underline">espanso.org/install</a> e baixe a versão <strong>(portable)</strong> correspondente para seu S.O.</li>
+                            <li>Descompacte no disco <code className="bg-muted px-1 py-0.5 rounded font-mono text-xs">C:\</code> (para facilitar a configuração)</li>
+                            <li>Vá em <code className="bg-muted px-1 py-0.5 rounded font-mono text-xs">C:\espanso-portable</code> e execute <code className="bg-muted px-1 py-0.5 rounded font-mono text-xs">START_ESPANSO.bat</code></li>
+                            <li>Marque para <strong>iniciar com o sistema</strong></li>
+                            <li>Vá em <code className="bg-muted px-1 py-0.5 rounded font-mono text-xs">C:\espanso-portable\.espanso\match</code></li>
+                            <li>Cole os <strong>arquivos de configuração .yml</strong></li>
+                          </ol>
+                        </div>
+
+                        <div className="space-y-2">
+                          <h4 className="font-semibold text-sm text-amber-700 border-b border-amber-200 pb-1">Utilizando o Espanso</h4>
+                          <p className="text-sm">Basta digitar o <strong>atalho correspondente</strong> em qualquer campo de texto. O Espanso irá identificar a sequência de teclas e substituirá o atalho pelo texto correspondente.</p>
+                        </div>
+
+                        <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                          <p className="text-sm font-semibold text-amber-800">📁 Arquivos de configuração</p>
+                          <p className="text-sm text-amber-700">Os arquivos <code className="bg-amber-100 px-1 py-0.5 rounded font-mono text-xs">.yml</code> de configuração prontos (Espanso-config) devem ser obtidos com a Supervisão ou Ticket Manager.</p>
+                        </div>
+                      </div>
+                    )}
                   </Card>
                   <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-amber-500">
                     <h3 className="font-semibold">Atualização da Ferramenta</h3>
