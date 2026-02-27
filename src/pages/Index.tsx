@@ -111,7 +111,7 @@ const Index = () => {
   const defaultProcedures: Procedure[] = [
     {
       id: "default-pinpad-001",
-      title: "Configuração PINPAD",
+      title: "Configuração PINPAD - Conclusão Remoto",
       description: "Pinpad atualizou as tabelas",
       category: "CONFIGURAÇÃO",
       tags: ["PINPAD", "VNC", "Driver", "SARA"],
