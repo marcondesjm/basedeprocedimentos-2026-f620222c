@@ -24,6 +24,7 @@ import { Plus, Search, FileText, Calendar, Tag, Download, Upload, Save, Shield, 
 import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Checkbox } from "@/components/ui/checkbox";
 import { format } from "date-fns";
 import { WorkTimer } from "@/components/WorkTimer";
 import { CompletedWorkOrders } from "@/components/CompletedWorkOrders";
@@ -74,6 +75,8 @@ const Index = () => {
   const [improdOutrasPJustificativa, setImprodOutrasPJustificativa] = useState("");
   const [devPresPib, setDevPresPib] = useState("");
   const [devPresIp, setDevPresIp] = useState("");
+  const [analiseProblemasOpen, setAnaliseProblemasOpen] = useState(false);
+  const [analiseChecks, setAnaliseChecks] = useState<Record<string, boolean>>({});
   const [compartNome, setCompartNome] = useState("");
   const [compartPib, setCompartPib] = useState("");
   const [compartLink, setCompartLink] = useState("");
@@ -2469,8 +2472,115 @@ SUPORTE TÉCNICO HEPTA`;
                   Checklists de verificação para procedimentos padronizados.
                 </p>
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary">
-                    <h3 className="font-semibold">Análise de Problemas de...</h3>
+                  <Card className={`p-4 border-l-4 border-l-primary ${analiseProblemasOpen ? 'col-span-full' : 'hover:shadow-md cursor-pointer'}`}>
+                    {!analiseProblemasOpen ? (
+                      <div onClick={() => setAnaliseProblemasOpen(true)}>
+                        <h3 className="font-semibold">Análise de Problemas de Rede/Internet</h3>
+                        <p className="text-xs text-muted-foreground mt-1">Confirmar padrão e identificar escopo do problema</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h3 className="font-semibold text-lg">Análise de Problemas de Rede/Internet</h3>
+                          <Button variant="ghost" size="sm" onClick={() => setAnaliseProblemasOpen(false)}>✕</Button>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          <strong>Objetivo:</strong> Confirmar se o micro está no padrão e identificar o escopo do problema.
+                        </p>
+
+                        {/* Camada física e transporte */}
+                        <div className="space-y-2">
+                          <h4 className="font-semibold text-sm text-primary border-b pb-1">Checklist - Camada Física e Transporte</h4>
+                          {[
+                            { key: 'cabo_rede', label: 'O cabo de rede apresenta rompimento ou danos? (se tiver o testador, faça um teste de continuidade)' },
+                            { key: 'continuidade_ponto', label: 'Teste a continuidade e sinal do ponto de rede e porta de rede' },
+                            { key: 'leds_porta', label: 'Os LEDs da porta de rede estão acesos quando o cabo está conectado?' },
+                            { key: 'ip_configurado', label: 'O IP está configurado corretamente? (compare com um micro funcional próximo)' },
+                          ].map(item => (
+                            <label key={item.key} className="flex items-start gap-2 text-sm cursor-pointer hover:bg-muted/50 p-1.5 rounded">
+                              <Checkbox
+                                checked={analiseChecks[item.key] || false}
+                                onCheckedChange={(checked) => setAnaliseChecks(prev => ({ ...prev, [item.key]: !!checked }))}
+                                className="mt-0.5"
+                              />
+                              <span className={analiseChecks[item.key] ? 'line-through text-muted-foreground' : ''}>{item.label}</span>
+                            </label>
+                          ))}
+                        </div>
+
+                        {/* Padrão de configuração */}
+                        <div className="space-y-2">
+                          <h4 className="font-semibold text-sm text-primary border-b pb-1">Checklist - Padrão de Configuração</h4>
+                          {[
+                            { key: 'acesso_vnc', label: 'Acesso VNC (verificar se o micro está acessível remotamente)' },
+                            { key: 'rede_dominio', label: 'Rede e domínio (verificar se não há conflito de IP e se o micro está no domínio correiosnet.int)' },
+                            { key: 'proxy_sistema', label: 'Proxy do sistema' },
+                            { key: 'acesso_correios', label: 'Acesso a internet - sites Correios (sroweb, unicorreios, etc)' },
+                            { key: 'acesso_terceiros', label: 'Acesso a internet - sites terceiros (Google, G1, etc)' },
+                            { key: 'acesso_intranet', label: 'Acesso a intranet - sites internos Correios (rastreio, SRO Monitor, etc)' },
+                          ].map(item => (
+                            <label key={item.key} className="flex items-start gap-2 text-sm cursor-pointer hover:bg-muted/50 p-1.5 rounded">
+                              <Checkbox
+                                checked={analiseChecks[item.key] || false}
+                                onCheckedChange={(checked) => setAnaliseChecks(prev => ({ ...prev, [item.key]: !!checked }))}
+                                className="mt-0.5"
+                              />
+                              <span className={analiseChecks[item.key] ? 'line-through text-muted-foreground' : ''}>{item.label}</span>
+                            </label>
+                          ))}
+                        </div>
+
+                        {/* Avançado */}
+                        <div className="space-y-2">
+                          <h4 className="font-semibold text-sm text-amber-600 border-b border-amber-200 pb-1">Checklist - Avançado (caso o problema persista)</h4>
+                          {[
+                            { key: 'limpeza_cache', label: 'Limpeza de cache dos navegadores' },
+                            { key: 'teste_navegadores', label: 'Teste de acesso nos 3 navegadores (Edge, Chrome e Firefox)' },
+                            { key: 'limpeza_temp', label: 'Limpeza de arquivos temporários do sistema' },
+                            { key: 'reboot', label: 'Reboot do micro' },
+                          ].map(item => (
+                            <label key={item.key} className="flex items-start gap-2 text-sm cursor-pointer hover:bg-muted/50 p-1.5 rounded">
+                              <Checkbox
+                                checked={analiseChecks[item.key] || false}
+                                onCheckedChange={(checked) => setAnaliseChecks(prev => ({ ...prev, [item.key]: !!checked }))}
+                                className="mt-0.5"
+                              />
+                              <span className={analiseChecks[item.key] ? 'line-through text-muted-foreground' : ''}>{item.label}</span>
+                            </label>
+                          ))}
+                        </div>
+
+                        {/* Escopo */}
+                        <div className="space-y-2">
+                          <h4 className="font-semibold text-sm text-blue-600 border-b border-blue-200 pb-1">Checklist - Escopo</h4>
+                          {[
+                            { key: 'outro_perfil', label: 'Funciona em outro perfil?' },
+                            { key: 'outro_micro', label: 'O usuário acessa normalmente em outro micro?' },
+                            { key: 'outros_usuarios', label: 'Outros usuários estão com o mesmo problema?' },
+                            { key: 'site_especifico', label: 'É um site específico ou são vários? Quais sites por exemplo?' },
+                          ].map(item => (
+                            <label key={item.key} className="flex items-start gap-2 text-sm cursor-pointer hover:bg-muted/50 p-1.5 rounded">
+                              <Checkbox
+                                checked={analiseChecks[item.key] || false}
+                                onCheckedChange={(checked) => setAnaliseChecks(prev => ({ ...prev, [item.key]: !!checked }))}
+                                className="mt-0.5"
+                              />
+                              <span className={analiseChecks[item.key] ? 'line-through text-muted-foreground' : ''}>{item.label}</span>
+                            </label>
+                          ))}
+                        </div>
+
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setAnaliseChecks({})}
+                          >
+                            Limpar
+                          </Button>
+                        </div>
+                      </div>
+                    )}
                   </Card>
                   <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary">
                     <h3 className="font-semibold">Procedimento Milestone</h3>
