@@ -84,6 +84,10 @@ const Index = () => {
   const [presencialPib, setPresencialPib] = useState("");
   const [presencialIp, setPresencialIp] = useState("");
   const [presencialData, setPresencialData] = useState("");
+  const [formatNome, setFormatNome] = useState("");
+  const [formatPib, setFormatPib] = useState("");
+  const [formatIp, setFormatIp] = useState("");
+  const [formatData, setFormatData] = useState("");
 
 
   const [showImportDialog, setShowImportDialog] = useState(false);
@@ -1731,6 +1735,116 @@ ATENCIOSAMENTE,
 SUPORTE TÉCNICO HEPTA`;
                                 navigator.clipboard.writeText(nota);
                                 toast.success('Nota de Conclusão - Presencial copiada!');
+                              }}
+                            >
+                              <Copy className="w-4 h-4 mr-2" />
+                              Copiar Nota
+                            </Button>
+                          </div>
+                        )}
+                        {cat.id === "conclusao-formatacao" && (
+                          <div className="mt-3 space-y-2">
+                            <Input
+                              placeholder="Data da visita (ex: 27/02/2026)"
+                              value={formatData}
+                              onChange={(e) => setFormatData(e.target.value)}
+                              className="text-sm h-8"
+                            />
+                            <Input
+                              placeholder="Nome do usuário"
+                              value={formatNome}
+                              onChange={(e) => setFormatNome(e.target.value)}
+                              className="text-sm h-8"
+                            />
+                            <Input
+                              placeholder="PIB do equipamento"
+                              value={formatPib}
+                              onChange={(e) => setFormatPib(e.target.value)}
+                              className="text-sm h-8"
+                            />
+                            <Input
+                              placeholder="IP do equipamento"
+                              value={formatIp}
+                              onChange={(e) => setFormatIp(e.target.value)}
+                              className="text-sm h-8"
+                            />
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button variant="outline" size="sm" className="w-full border-primary/50 text-primary hover:bg-primary/10">
+                                  <AlertCircle className="w-4 h-4 mr-2" />
+                                  Orientações
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-80 p-4" align="center">
+                                <div className="space-y-3">
+                                  <h4 className="font-semibold text-primary flex items-center gap-2">
+                                    <AlertCircle className="w-4 h-4" />
+                                    Orientações
+                                  </h4>
+                                  <ul className="text-sm space-y-1.5 text-muted-foreground list-disc list-inside">
+                                    <li>Chamados de Formatação <strong>abrangem a configuração de periféricos</strong> e instalação de softwares essenciais</li>
+                                    <li><strong>Atenção!</strong> Softwares proprietário devem ser tratados em um chamado separado pois a SLTI deve validar se o acesso aos mesmos ainda é autorizado</li>
+                                    <li>Detalhe todos os procedimentos e testes realizados</li>
+                                    <li>Informe os documentos do BC Suporte utilizados como referência</li>
+                                    <li>Anexe quaisquer print/foto em nota normal, <strong>ANTES</strong> de salvar a conclusão, pois na nota de conclusão só é possível utilizar texto</li>
+                                    <li>Ao capturar o chamado, ajuste a categorização em <strong>"Categorização"</strong> &gt;&gt; <strong>"Categorização Operacional"</strong></li>
+                                    <li>Em <strong>"Motivo do Status"</strong>, use apenas <strong>"Utilização de procedimentos"</strong></li>
+                                    <li>Em caso de dúvidas acione a <strong>Supervisão</strong> ou <strong>Ticket Manager</strong></li>
+                                  </ul>
+                                  <div className="mt-2 p-2 bg-red-100 border border-red-300 rounded text-red-800 text-center text-sm">
+                                    <p className="font-bold">!! Atenção !!</p>
+                                    <p>Notificar usuário com a solução realizada: <strong>SIM</strong></p>
+                                    <p>Modo de execução: <strong>presencial</strong></p>
+                                  </div>
+                                </div>
+                              </PopoverContent>
+                            </Popover>
+                            <Button
+                              size="sm"
+                              className="w-full bg-primary hover:bg-primary/90"
+                              onClick={() => {
+                                const data = formatData || '__/__/202X';
+                                const nome = formatNome || '________';
+                                const pib = formatPib || '';
+                                const ip = formatIp || '';
+                                const nota = `PROCEDIMENTOS REALIZADOS DURANTE VISITA TÉCNICA NO DIA ${data}
+
+USUÁRIO: ${nome}
+
+===================
+
+PIB: ${pib}
+
+IP: ${ip}
+
+===================
+
+Demais periféricos configurados
+
+===================
+
+PIB PINPAD: (Não se aplica)
+
+PIB IMPRESSORA CUPOM: (Não se aplica)
+
+PIB/IP IMPRESSORA REDE: (Não se aplica)
+
+PIB IMPRESSORA ETIQUETA: (Não se aplica)
+
+==================
+
+FORAM REALIZADOS OS PROCEDIMENTOS DE:
+
+- PROCEDIMENTO_1
+- PROCEDIMENTO_2
+- PROCEDIMENTO_3
+
+APÓS PROCEDIMENTOS FORAM REALIZADOS TESTES, QUE CONFIRMARAM A SOLUÇÃO DO PROBLEMA
+
+ATENCIOSAMENTE,
+SUPORTE TÉCNICO HEPTA`;
+                                navigator.clipboard.writeText(nota);
+                                toast.success('Nota de Conclusão - Formatação copiada!');
                               }}
                             >
                               <Copy className="w-4 h-4 mr-2" />
