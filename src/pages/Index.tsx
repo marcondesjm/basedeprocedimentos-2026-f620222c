@@ -1045,6 +1045,74 @@ Caso ainda necessite do suporte técnico, solicitamos que registre um novo chama
                             </Button>
                           </div>
                         )}
+                        {cat.id === "improdutivo-outras" && (
+                          <div className="mt-3 space-y-3">
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button variant="outline" size="sm" className="w-full border-red-300 text-red-700 hover:bg-red-50">
+                                  <AlertCircle className="w-4 h-4 mr-2" />
+                                  Orientações
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-96 p-4" align="start">
+                                <div className="space-y-3">
+                                  <h4 className="font-semibold text-red-700 flex items-center gap-2">
+                                    <AlertCircle className="w-4 h-4" />
+                                    Orientações
+                                  </h4>
+                                  <ul className="text-sm space-y-1.5 text-muted-foreground list-disc list-inside">
+                                    <li>(Remoto ou Presencial) Na Justificativa informe o motivo pelo qual o atendimento não pode ser realizado
+                                      <ul className="list-disc list-inside ml-4 mt-1">
+                                        <li>Detalhar o melhor possível a justificativa</li>
+                                      </ul>
+                                    </li>
+                                    <li>Utilize apenas nos seguintes casos:
+                                      <ul className="list-disc list-inside ml-4 mt-1">
+                                        <li>(Remoto ou Presencial) Recusa do atendimento pelo usuário</li>
+                                        <li>(Presencial) Acesso ao ambiente/equipamento indisponível</li>
+                                        <li>(Presencial) ausência ou indisponibilidade</li>
+                                        <li>(Remoto ou Presencial) Retorno em outro dia</li>
+                                        <li>(Remoto ou Presencial) Indisponibilidade da unidade</li>
+                                      </ul>
+                                    </li>
+                                    <li><strong>Exemplo:</strong> Unidade Fechada ou horário incompatível; informação na planilha ou Nenhum colaborador disponível para acompanhar o atendimento</li>
+                                    <li><strong>[Fila Remota]</strong> Em caso de falta de rede ou energia na unidade, siga o PO Improdutivo com as 3 tentativas de contato</li>
+                                    <li>Caso não possa fechar o chamado no momento, solicite no Teams que alguém faça o fechamento e abrir tarefa no OTRS depois</li>
+                                    <li>Nesta situação não é necessário enviar os e-mails</li>
+                                    <li>Em caso de dúvidas acione a <strong>Supervisão</strong> ou <strong>Ticket Manager</strong></li>
+                                  </ul>
+                                  <div className="mt-2 p-2 bg-red-100 border border-red-300 rounded text-red-800 text-center text-sm">
+                                    <p className="font-bold">!! Atenção !!</p>
+                                    <p>Notificar usuário com a solução realizada: <strong>SIM</strong></p>
+                                    <p>Modo de execução: <strong>Remoto</strong></p>
+                                  </div>
+                                </div>
+                              </PopoverContent>
+                            </Popover>
+                            <Button
+                              size="sm"
+                              className="w-full bg-red-600 hover:bg-red-700"
+                              onClick={() => {
+                                const nota = `IMPRODUTIVO
+
+Conforme verificado com Usuário ___________, Não foi possível realizar o atendimento devido:
+
+<< JUSTIFICATIVA >>
+
+Foi indicado outro colaborador para acompanhar o atendimento? SIM ( x )  NÃO ( x ) (Não se aplica)
+
+Desta forma, este chamado será fechado como improdutivo, e sua reabertura será considerada indevida.
+
+Caso ainda necessite do suporte técnico, solicitamos que registre um novo chamado.`;
+                                navigator.clipboard.writeText(nota);
+                                toast.success('Nota de Improdutivo - Outras Situações copiada!');
+                              }}
+                            >
+                              <Copy className="w-4 h-4 mr-2" />
+                              Copiar Nota
+                            </Button>
+                          </div>
+                        )}
                       </Card>
                     );
                   })}
