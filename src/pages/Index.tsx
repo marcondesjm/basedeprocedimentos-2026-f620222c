@@ -48,6 +48,7 @@ interface Procedure {
   possuiProcedimentoBC?: "sim" | "nao";
   nomeArquivoBC?: string;
   filaRemotaCategory?: string;
+  filaPresencialCategory?: string;
 }
 
 const Index = () => {
@@ -458,15 +459,38 @@ ${proc.description}
     { id: "improdutivo-outras", label: "Improdutivo – Outras Situações", color: "border-l-red-500" },
   ];
 
+  const filaPresencialCategories = [
+    { id: "conclusao-presencial", label: "Conclusão - Presencial", color: "border-l-primary" },
+    { id: "conclusao-formatacao", label: "Conclusão - Formatação", color: "border-l-primary" },
+    { id: "conclusao-impressora-p", label: "Conclusão - Impressora", color: "border-l-primary" },
+    { id: "diagnostico-generico", label: "Diagnóstico - Genérico", color: "border-l-amber-500" },
+    { id: "diagnostico-sigesf", label: "Diagnóstico - Sigesf", color: "border-l-amber-500" },
+    { id: "improdutivo-presencial", label: "Improdutivo - Presencial", color: "border-l-red-500" },
+    { id: "improdutivo-outras-p", label: "Improdutivo – Outras Situações", color: "border-l-red-500" },
+    { id: "devolucao-presencial", label: "Devolução - Presencial > ...", color: "border-l-blue-500" },
+  ];
+
+  const allFilaCategories = [
+    ...filaRemotaCategories.map(c => ({ ...c, fila: "remota" as const })),
+    ...filaPresencialCategories.map(c => ({ ...c, fila: "presencial" as const })),
+  ];
+
   const handleMoveProcedure = (procedureId: string, targetCategory: string) => {
-    const updatedProcedures = procedures.map(proc =>
-      proc.id === procedureId ? { ...proc, filaRemotaCategory: targetCategory || undefined } : proc
-    );
+    const allCat = allFilaCategories.find(c => c.id === targetCategory);
+    const updatedProcedures = procedures.map(proc => {
+      if (proc.id !== procedureId) return proc;
+      if (!targetCategory) {
+        return { ...proc, filaRemotaCategory: undefined, filaPresencialCategory: undefined };
+      }
+      if (allCat?.fila === "remota") {
+        return { ...proc, filaRemotaCategory: targetCategory, filaPresencialCategory: undefined };
+      }
+      return { ...proc, filaPresencialCategory: targetCategory, filaRemotaCategory: undefined };
+    });
     setProcedures(updatedProcedures);
     saveProcedures(updatedProcedures);
-    const cat = filaRemotaCategories.find(c => c.id === targetCategory);
     if (targetCategory) {
-      toast.success(`Procedimento movido para "${cat?.label}"`);
+      toast.success(`Procedimento movido para "${allCat?.label}"`);
     } else {
       toast.success('Procedimento removido da fila');
     }
@@ -890,7 +914,7 @@ ${proc.description}
                   <div className="flex items-center gap-2 pt-2 border-t" onClick={(e) => e.stopPropagation()}>
                     <ArrowRight className="w-4 h-4 text-muted-foreground" />
                     <Select
-                      value={procedure.filaRemotaCategory || "none"}
+                      value={procedure.filaRemotaCategory || procedure.filaPresencialCategory || "none"}
                       onValueChange={(value) => handleMoveProcedure(procedure.id, value === "none" ? "" : value)}
                     >
                       <SelectTrigger className="h-8 text-xs flex-1">
@@ -898,7 +922,12 @@ ${proc.description}
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="none">Sem fila</SelectItem>
+                        <SelectItem disabled value="__header_remota__" className="font-bold text-xs text-muted-foreground">── Fila Remota ──</SelectItem>
                         {filaRemotaCategories.map((cat) => (
+                          <SelectItem key={cat.id} value={cat.id}>{cat.label}</SelectItem>
+                        ))}
+                        <SelectItem disabled value="__header_presencial__" className="font-bold text-xs text-muted-foreground">── Fila Presencial ──</SelectItem>
+                        {filaPresencialCategories.map((cat) => (
                           <SelectItem key={cat.id} value={cat.id}>{cat.label}</SelectItem>
                         ))}
                       </SelectContent>
@@ -979,10 +1008,39 @@ ${proc.description}
                   Procedimentos e orientações para atendimento presencial.
                 </p>
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  <Card className="p-4 border-2 border-dashed border-muted-foreground/20 flex flex-col items-center justify-center min-h-[120px]">
-                    <Plus className="w-8 h-8 text-muted-foreground/40 mb-2" />
-                    <p className="text-sm text-muted-foreground">Adicionar conteúdo em breve</p>
-                  </Card>
+                  {filaPresencialCategories.map((cat) => {
+                    const assignedProcedures = procedures.filter(p => p.filaPresencialCategory === cat.id);
+                    return (
+                      <Card key={cat.id} className={`p-4 border-l-4 ${cat.color}`}>
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="font-semibold">{cat.label}</h3>
+                          <Badge variant="secondary" className="text-xs">{assignedProcedures.length}</Badge>
+                        </div>
+                        {assignedProcedures.length > 0 ? (
+                          <div className="space-y-2 mt-3">
+                            {assignedProcedures.map((proc) => (
+                              <div
+                                key={proc.id}
+                                className="bg-muted/50 p-2 rounded text-sm cursor-pointer hover:bg-muted transition-colors"
+                                onClick={() => {
+                                  const updatedProcedure = { ...proc, createdAt: new Date().toISOString() };
+                                  const updatedProcedures = procedures.map(p => p.id === proc.id ? updatedProcedure : p);
+                                  setProcedures(updatedProcedures);
+                                  saveProcedures(updatedProcedures);
+                                  setSelectedProcedure(updatedProcedure);
+                                }}
+                              >
+                                <p className="font-medium text-foreground">{proc.title}</p>
+                                <p className="text-xs text-muted-foreground truncate">{proc.description}</p>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-xs text-muted-foreground mt-1">Nenhum procedimento atribuído</p>
+                        )}
+                      </Card>
+                    );
+                  })}
                 </div>
               </div>
             </Card>
