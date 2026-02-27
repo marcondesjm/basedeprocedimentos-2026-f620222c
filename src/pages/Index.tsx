@@ -1057,9 +1057,29 @@ ${proc.description}
                   Checklists de verificação para procedimentos padronizados.
                 </p>
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  <Card className="p-4 border-2 border-dashed border-muted-foreground/20 flex flex-col items-center justify-center min-h-[120px]">
-                    <Plus className="w-8 h-8 text-muted-foreground/40 mb-2" />
-                    <p className="text-sm text-muted-foreground">Adicionar conteúdo em breve</p>
+                  <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary">
+                    <h3 className="font-semibold">Análise de Problemas de...</h3>
+                  </Card>
+                  <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary">
+                    <h3 className="font-semibold">Procedimento Milestone</h3>
+                  </Card>
+                  <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary">
+                    <h3 className="font-semibold">Formatação Remota</h3>
+                  </Card>
+                  <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-amber-500">
+                    <h3 className="font-semibold">Ferramenta - Espanso</h3>
+                  </Card>
+                  <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-amber-500">
+                    <h3 className="font-semibold">Atualização da Ferramenta</h3>
+                  </Card>
+                  <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-amber-500">
+                    <h3 className="font-semibold">Preparação da Ferramenta</h3>
+                  </Card>
+                  <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-blue-500">
+                    <h3 className="font-semibold">Para Atualizar o Totem Si...</h3>
+                  </Card>
+                  <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-blue-500">
+                    <h3 className="font-semibold">Base de Conhecimento</h3>
                   </Card>
                 </div>
               </div>
