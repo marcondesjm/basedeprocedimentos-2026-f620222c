@@ -452,7 +452,7 @@ ${proc.description}
         <div className="container mx-auto px-6 py-6">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
             <div>
-              <h1 className="text-3xl font-bold">Gestão de procedimentos by Marcondes</h1>
+              <h1 className="text-3xl font-bold">Gestão de Procedimentos</h1>
               <p className="text-white/90 mt-1">Histórico de procedimentos e soluções realizadas</p>
             </div>
             <div className="text-white/95 font-mono text-lg">
