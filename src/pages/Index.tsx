@@ -1242,19 +1242,16 @@ SUPORTE TÉCNICO HEPTA`;
                         <Popover>
                             <PopoverTrigger asChild>
                               <Button variant="outline" className="border-amber-300 text-amber-700 hover:bg-amber-50">
-                                <FileText className="w-4 h-4 mr-2" />
-                                Diagnóstico - Remoto
+                                <AlertCircle className="w-4 h-4 mr-2" />
+                                Orientações
                               </Button>
                             </PopoverTrigger>
                             <PopoverContent className="w-96 p-4" align="end">
                               <div className="space-y-3">
                                 <h4 className="font-semibold text-amber-700 flex items-center gap-2">
-                                  <FileText className="w-4 h-4" />
-                                  Nota de Diagnóstico - Remoto
+                                  <AlertCircle className="w-4 h-4" />
+                                  Orientações
                                 </h4>
-                                <p className="text-sm text-muted-foreground">
-                                  Clique no botão abaixo para copiar o modelo de nota de diagnóstico remoto.
-                                </p>
                                 <div className="bg-amber-50 border border-amber-200 rounded-md p-3 text-xs space-y-1">
                                   <p className="font-semibold text-amber-800 flex items-center gap-1">
                                     <AlertCircle className="w-3.5 h-3.5" />
