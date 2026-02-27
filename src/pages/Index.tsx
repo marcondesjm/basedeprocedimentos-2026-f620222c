@@ -989,6 +989,40 @@ ${proc.description}
                         ) : (
                           <p className="text-xs text-muted-foreground mt-1">Nenhum procedimento atribuído</p>
                         )}
+                        {cat.id === "devolucao-remoto-presencial" && (
+                          <div className="mt-3">
+                            <Button
+                              size="sm"
+                              className="w-full bg-blue-600 hover:bg-blue-700"
+                              onClick={() => {
+                                const nota = `FAVOR DIRECIONAR AO SUPORTE PRESENCIAL
+
+EM CONTATO COM O USUÁRIO _________________, FOI REALIZADO ACESSO REMOTO AO MICRO E
+FORAM EXECUTADOS OS PROCEDIMENTOS DE:
+
+==================
+
+PIB:
+
+==================
+
+- PROCEDIMENTO 1
+- PROCEDIMENTO 2
+- PROCEDIMENTO 3
+
+APÓS PROCEDIMENTOS FOI IDENTIFICADO A NECESSIDADE DE ATENDIMENTO IN LOCO, SENDO ASSIM, FAVOR DIRECIONAR A FILA PRESENCIAL
+
+ATENCIOSAMENTE,
+SUPORTE TÉCNICO HEPTA`;
+                                navigator.clipboard.writeText(nota);
+                                toast.success('Nota de Devolução Remoto copiada!');
+                              }}
+                            >
+                              <Copy className="w-4 h-4 mr-2" />
+                              Copiar Nota
+                            </Button>
+                          </div>
+                        )}
                         {cat.id === "improdutivo-remoto" && (
                           <div className="mt-3 space-y-3">
                             <Popover>
