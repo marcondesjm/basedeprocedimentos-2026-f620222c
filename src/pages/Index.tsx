@@ -77,6 +77,7 @@ const Index = () => {
   const [devPresIp, setDevPresIp] = useState("");
   const [analiseProblemasOpen, setAnaliseProblemasOpen] = useState(false);
   const [analiseChecks, setAnaliseChecks] = useState<Record<string, boolean>>({});
+  const [milestoneOpen, setMilestoneOpen] = useState(false);
   const [compartNome, setCompartNome] = useState("");
   const [compartPib, setCompartPib] = useState("");
   const [compartLink, setCompartLink] = useState("");
@@ -2582,8 +2583,56 @@ SUPORTE TÉCNICO HEPTA`;
                       </div>
                     )}
                   </Card>
-                  <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary">
-                    <h3 className="font-semibold">Procedimento Milestone</h3>
+                  <Card className={`p-4 border-l-4 border-l-primary ${milestoneOpen ? 'col-span-full' : 'hover:shadow-md cursor-pointer'}`}>
+                    {!milestoneOpen ? (
+                      <div onClick={() => setMilestoneOpen(true)}>
+                        <h3 className="font-semibold">Procedimento Milestone</h3>
+                        <p className="text-xs text-muted-foreground mt-1">Impressora Milestone não funciona no Suporte Fácil</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h3 className="font-semibold text-lg">Procedimento Milestone</h3>
+                          <Button variant="ghost" size="sm" onClick={() => setMilestoneOpen(false)}>✕</Button>
+                        </div>
+                        <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                          <p className="text-sm font-semibold text-red-800">Problema:</p>
+                          <p className="text-sm text-red-700">Impressora Milestone não funciona no Suporte Fácil – Impressora Milestone apitando.</p>
+                        </div>
+
+                        <div className="space-y-3 text-sm text-foreground">
+                          <div className="p-3 bg-muted/50 rounded-lg space-y-2">
+                            <p className="font-semibold text-primary">1. Preparação inicial</p>
+                            <p>Antes de qualquer atendimento no micro, rode o script <code className="bg-muted px-1.5 py-0.5 rounded font-mono text-xs">_basicoMicro</code> para ajustar as rotinas de acesso remoto e garantir que os scripts padronizados funcionem.</p>
+                            <p className="text-muted-foreground text-xs">O _basicoMicro também corrige outras coisas que as instalações antigas não tinham e que são necessárias para o bom funcionamento dos computadores na rede.</p>
+                          </div>
+
+                          <div className="p-3 bg-muted/50 rounded-lg space-y-2">
+                            <p className="font-semibold text-primary">2. Remover dispositivos ocultos</p>
+                            <p>Vá no <strong>Gerenciador de Dispositivos</strong>. No menu <strong>Exibir</strong>, selecione <strong>"Mostrar dispositivos ocultos"</strong>.</p>
+                            <p>Com a impressora <strong>ligada</strong>, remova os dispositivos que ficam apagados referentes à impressora Milestone. Geralmente ficam nas seções <strong>Controladores USB</strong> e/ou <strong>Portas (COM e LPT)</strong>.</p>
+                            <p className="text-amber-700 font-medium">💡 Também remova o driver da Prolific, pois o Suporte Fácil vai adicionar o que foi testado e padronizado.</p>
+                          </div>
+
+                          <div className="p-3 bg-muted/50 rounded-lg space-y-2">
+                            <p className="font-semibold text-primary">3. Reiniciar o computador</p>
+                            <p>Após remover os dispositivos, <strong>reinicie o computador</strong>.</p>
+                          </div>
+
+                          <div className="p-3 bg-muted/50 rounded-lg space-y-2">
+                            <p className="font-semibold text-primary">4. Ajustar periféricos no Suporte Fácil</p>
+                            <p>Entre no Suporte Fácil → <strong>Atendimento</strong> → <strong>Ajustes dos Periféricos</strong> → mande ajustar.</p>
+                            <p className="text-amber-700 font-medium">⚠️ Na hora de ajustar os periféricos, deixe a impressora Milestone <strong>desligada</strong>. Ele vai limpar as entradas antigas dela também. Se houver alguma incompatibilidade, ele vai limpar.</p>
+                          </div>
+
+                          <div className="p-3 bg-muted/50 rounded-lg space-y-2">
+                            <p className="font-semibold text-primary">5. Reinstalar impressora</p>
+                            <p>Refaça a instalação usando o próprio Suporte Fácil pela <strong>Instalação de Impressoras Térmicas</strong>.</p>
+                            <p className="text-muted-foreground text-xs">O Suporte Fácil entra na máquina e apaga todos os dispositivos ocultos antes de instalar, o que diminui o problema.</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </Card>
                   <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary">
                     <h3 className="font-semibold">Formatação Remota</h3>
