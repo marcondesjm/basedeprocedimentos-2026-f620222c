@@ -80,6 +80,7 @@ const Index = () => {
   const [milestoneOpen, setMilestoneOpen] = useState(false);
   const [formatacaoRemotaOpen, setFormatacaoRemotaOpen] = useState(false);
   const [espansoOpen, setEspansoOpen] = useState(false);
+  const [atualizacaoFerramentaOpen, setAtualizacaoFerramentaOpen] = useState(false);
   const [compartNome, setCompartNome] = useState("");
   const [compartPib, setCompartPib] = useState("");
   const [compartLink, setCompartLink] = useState("");
@@ -2730,8 +2731,69 @@ SUPORTE TÉCNICO HEPTA`;
                       </div>
                     )}
                   </Card>
-                  <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-amber-500">
-                    <h3 className="font-semibold">Atualização da Ferramenta</h3>
+                  <Card className={`p-4 border-l-4 border-l-amber-500 ${atualizacaoFerramentaOpen ? 'col-span-full' : 'hover:shadow-md cursor-pointer'}`}>
+                    {!atualizacaoFerramentaOpen ? (
+                      <div onClick={() => setAtualizacaoFerramentaOpen(true)}>
+                        <h3 className="font-semibold">Atualização da Ferramenta</h3>
+                        <p className="text-xs text-muted-foreground mt-1">Estrutura e atualização do pendrive de deploy</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h3 className="font-semibold text-lg">Atualização da Ferramenta</h3>
+                          <Button variant="ghost" size="sm" onClick={() => setAtualizacaoFerramentaOpen(false)}>✕</Button>
+                        </div>
+
+                        <div className="p-3 bg-muted/50 rounded-lg text-sm space-y-1">
+                          <p className="font-semibold text-primary mb-2">Estrutura de Diretórios do Pendrive</p>
+                          <div className="font-mono text-xs space-y-0.5 bg-background p-3 rounded border">
+                            <p>📁 <strong>\Deploy_Win7</strong></p>
+                            <p>📁 <strong>\DeployPendrive</strong></p>
+                            <p className="ml-4">📁 \DeployPendrive\Operating Systems</p>
+                            <p>📁 <strong>\ISOS</strong></p>
+                            <p className="text-muted-foreground">📁 \ISOS_ECT</p>
+                            <p className="text-muted-foreground">📁 \TEMP</p>
+                            <p className="text-muted-foreground">📁 \ventoy</p>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <h4 className="font-semibold text-sm text-amber-700 border-b border-amber-200 pb-1">Preparação do Pendrive</h4>
+                          <p className="text-sm">O Pendrive deve ser formatado com a ferramenta <strong>Cria_Boot_MDT</strong> dos Correios e deve possuir os seguintes arquivos e diretórios:</p>
+                        </div>
+
+                        <div className="space-y-2 text-sm">
+                          <div className="grid gap-2">
+                            <div className="flex items-start gap-2 p-2 bg-muted/50 rounded">
+                              <span className="font-mono text-xs bg-primary/10 px-2 py-0.5 rounded whitespace-nowrap">\DeployPendrive</span>
+                              <span>Deploy Padrão (Versão 0325) ~55GB</span>
+                            </div>
+                            <div className="flex items-start gap-2 p-2 bg-muted/50 rounded">
+                              <span className="font-mono text-xs bg-primary/10 px-2 py-0.5 rounded whitespace-nowrap">\Deploy_Win7</span>
+                              <span>Deploy WIN7 (Versão 0325) ~15,5GB</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <h4 className="font-semibold text-sm text-amber-700 border-b border-amber-200 pb-1">ISOs - Salvar em \ISOS</h4>
+                          <ul className="text-sm space-y-1 list-disc list-inside">
+                            <li><code className="bg-muted px-1 py-0.5 rounded font-mono text-xs">Boot_Recovery.v9.24f.ISO</code></li>
+                            <li><code className="bg-muted px-1 py-0.5 rounded font-mono text-xs">Boot_Recovery.v9.23i.ISO</code></li>
+                            <li><code className="bg-muted px-1 py-0.5 rounded font-mono text-xs">Boot_Recovery.v9.23j.ISO</code></li>
+                          </ul>
+                        </div>
+
+                        <div className="p-3 bg-red-50 border border-red-300 rounded-lg">
+                          <p className="text-sm text-red-800 font-semibold">⚠️ Atenção</p>
+                          <p className="text-sm text-red-700">Os diretórios <code className="bg-red-100 px-1 py-0.5 rounded font-mono text-xs">\ISOS_ECT</code>, <code className="bg-red-100 px-1 py-0.5 rounded font-mono text-xs">\ventoy</code> e <code className="bg-red-100 px-1 py-0.5 rounded font-mono text-xs">\TEMP</code> <strong>NÃO</strong> devem ser modificados ou removidos.</p>
+                        </div>
+
+                        <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                          <p className="text-sm text-blue-800">📄 Mais detalhes em <strong>[v2.0]-Preparação do Pendrive para Baixa de Master.pdf</strong></p>
+                        </div>
+                      </div>
+                    )}
                   </Card>
                   <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-amber-500">
                     <h3 className="font-semibold">Preparação da Ferramenta</h3>
