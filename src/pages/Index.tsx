@@ -81,6 +81,7 @@ const Index = () => {
   const [formatacaoRemotaOpen, setFormatacaoRemotaOpen] = useState(false);
   const [espansoOpen, setEspansoOpen] = useState(false);
   const [atualizacaoFerramentaOpen, setAtualizacaoFerramentaOpen] = useState(false);
+  const [preparacaoFerramentaOpen, setPreparacaoFerramentaOpen] = useState(false);
   const [compartNome, setCompartNome] = useState("");
   const [compartPib, setCompartPib] = useState("");
   const [compartLink, setCompartLink] = useState("");
@@ -2795,8 +2796,58 @@ SUPORTE TÉCNICO HEPTA`;
                       </div>
                     )}
                   </Card>
-                  <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-amber-500">
-                    <h3 className="font-semibold">Preparação da Ferramenta</h3>
+                  <Card className={`p-4 border-l-4 border-l-amber-500 ${preparacaoFerramentaOpen ? 'col-span-full' : 'hover:shadow-md cursor-pointer'}`}>
+                    {!preparacaoFerramentaOpen ? (
+                      <div onClick={() => setPreparacaoFerramentaOpen(true)}>
+                        <h3 className="font-semibold">Preparação da Ferramenta</h3>
+                        <p className="text-xs text-muted-foreground mt-1">Preparação do pendrive para baixa de master</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h3 className="font-semibold text-lg">Preparação da Ferramenta</h3>
+                          <Button variant="ghost" size="sm" onClick={() => setPreparacaoFerramentaOpen(false)}>✕</Button>
+                        </div>
+
+                        <div className="p-3 bg-muted/50 rounded-lg text-sm space-y-1">
+                          <p>📄 Documentação: <strong>Preparação do Pendrive para Baixa de Master</strong></p>
+                          <p>🎬 Passo a passo em vídeo: <strong>Preparando Pendrive - Boot_Correios.mp4</strong></p>
+                        </div>
+
+                        <div className="space-y-2">
+                          <h4 className="font-semibold text-sm text-amber-700 border-b border-amber-200 pb-1">Download Deploy Correios</h4>
+                          <div className="text-sm space-y-1">
+                            <p>🔗 Link: <strong>02 - Deploy</strong></p>
+                            <p>📋 Procedimento de download: <code className="bg-muted px-1 py-0.5 rounded font-mono text-xs">LEIA-ME_DEPLOY.txt</code></p>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <h4 className="font-semibold text-sm text-amber-700 border-b border-amber-200 pb-1">Download do Deploy para SIGESF e Windows 7</h4>
+                          <div className="text-sm space-y-1">
+                            <p>🔗 Link: <strong>Deploy_Win7-0325</strong></p>
+                            <p>Basta descompactar o diretório na raiz do pendrive com o <strong>7zip</strong>. O caminho para a raiz do deploy deve ficar: <code className="bg-muted px-1.5 py-0.5 rounded font-mono text-xs">\Deploy_Win7</code></p>
+                          </div>
+                        </div>
+
+                        <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm">
+                          <p className="text-blue-800">💡 <strong>Obs:</strong> Se tiver espaço, recomendo levar uma ISO do <strong>Hirens Boot</strong> também. Basta copiar o arquivo para <code className="bg-blue-100 px-1 py-0.5 rounded font-mono text-xs">\ISOS</code> que estará acessível pelo Ventoy.</p>
+                        </div>
+
+                        <div className="space-y-2">
+                          <h4 className="font-semibold text-sm text-primary border-b pb-1">Estrutura do Pendrive</h4>
+                          <div className="font-mono text-xs space-y-0.5 bg-background p-3 rounded border">
+                            <p>📁 <strong>\Deploy_Win7</strong> — Deploy SIGESF/Win7</p>
+                            <p>📁 <strong>\DeployPendrive</strong> — Deploy Padrão</p>
+                            <p className="ml-4">📁 \Operating Systems</p>
+                            <p>📁 <strong>\ISOS</strong> — ISOs de boot/recovery</p>
+                            <p className="text-muted-foreground">📁 \ISOS_ECT — <em>não modificar</em></p>
+                            <p className="text-muted-foreground">📁 \TEMP — <em>não modificar</em></p>
+                            <p className="text-muted-foreground">📁 \ventoy — <em>não modificar</em></p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </Card>
                   <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-blue-500">
                     <h3 className="font-semibold">Para Atualizar o Totem Si...</h3>
