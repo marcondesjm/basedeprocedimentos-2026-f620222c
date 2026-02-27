@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search, FileText, Calendar, Tag, Download, Upload, Save, Shield, X, Copy, AlertCircle, Monitor, Users, CheckSquare } from "lucide-react";
+import { Plus, Search, FileText, Calendar, Tag, Download, Upload, Save, Shield, X, Copy, AlertCircle, Monitor, Users, CheckSquare, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -47,6 +47,7 @@ interface Procedure {
   justificativa?: string;
   possuiProcedimentoBC?: "sim" | "nao";
   nomeArquivoBC?: string;
+  filaRemotaCategory?: string;
 }
 
 const Index = () => {
@@ -446,6 +447,30 @@ ${proc.description}
   });
 
   const categories = ["INSTALAÇÃO", "MANUTENÇÃO", "CONFIGURAÇÃO", "SUPORTE", "REPARO"];
+
+  const filaRemotaCategories = [
+    { id: "conclusao-remoto", label: "Conclusão - Remoto", color: "border-l-primary" },
+    { id: "conclusao-impressora", label: "Conclusão - Impressora", color: "border-l-primary" },
+    { id: "conclusao-compartilhamento", label: "Conclusão - Compartilhamento", color: "border-l-primary" },
+    { id: "diagnostico-remoto", label: "Diagnóstico - Remoto", color: "border-l-amber-500" },
+    { id: "devolucao-remoto-presencial", label: "Devolução - Remoto > Presencial", color: "border-l-blue-500" },
+    { id: "improdutivo-remoto", label: "Improdutivo - Remoto", color: "border-l-red-500" },
+    { id: "improdutivo-outras", label: "Improdutivo – Outras Situações", color: "border-l-red-500" },
+  ];
+
+  const handleMoveProcedure = (procedureId: string, targetCategory: string) => {
+    const updatedProcedures = procedures.map(proc =>
+      proc.id === procedureId ? { ...proc, filaRemotaCategory: targetCategory || undefined } : proc
+    );
+    setProcedures(updatedProcedures);
+    saveProcedures(updatedProcedures);
+    const cat = filaRemotaCategories.find(c => c.id === targetCategory);
+    if (targetCategory) {
+      toast.success(`Procedimento movido para "${cat?.label}"`);
+    } else {
+      toast.success('Procedimento removido da fila');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -877,6 +902,24 @@ ${proc.description}
                       ))}
                     </div>
                   </div>
+
+                  <div className="flex items-center gap-2 pt-2 border-t" onClick={(e) => e.stopPropagation()}>
+                    <ArrowRight className="w-4 h-4 text-muted-foreground" />
+                    <Select
+                      value={procedure.filaRemotaCategory || "none"}
+                      onValueChange={(value) => handleMoveProcedure(procedure.id, value === "none" ? "" : value)}
+                    >
+                      <SelectTrigger className="h-8 text-xs flex-1">
+                        <SelectValue placeholder="Mover para..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">Sem fila</SelectItem>
+                        {filaRemotaCategories.map((cat) => (
+                          <SelectItem key={cat.id} value={cat.id}>{cat.label}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </Card>
               ))}
@@ -903,34 +946,39 @@ ${proc.description}
                   Procedimentos e orientações para atendimento remoto.
                 </p>
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                  <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary">
-                    <h3 className="font-semibold">Conclusão - Remoto</h3>
-                    <p className="text-sm text-muted-foreground mt-1">Procedimento de conclusão remota</p>
-                  </Card>
-                  <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary">
-                    <h3 className="font-semibold">Conclusão - Impressora</h3>
-                    <p className="text-sm text-muted-foreground mt-1">Conclusão para chamados de impressora</p>
-                  </Card>
-                  <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary">
-                    <h3 className="font-semibold">Conclusão - Compartilhamento</h3>
-                    <p className="text-sm text-muted-foreground mt-1">Conclusão para compartilhamento de rede</p>
-                  </Card>
-                  <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-amber-500">
-                    <h3 className="font-semibold">Diagnóstico - Remoto</h3>
-                    <p className="text-sm text-muted-foreground mt-1">Diagnóstico remoto de equipamento</p>
-                  </Card>
-                  <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-blue-500">
-                    <h3 className="font-semibold">Devolução - Remoto &gt; Presencial</h3>
-                    <p className="text-sm text-muted-foreground mt-1">Devolução para fila presencial</p>
-                  </Card>
-                  <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-red-500">
-                    <h3 className="font-semibold">Improdutivo - Remoto</h3>
-                    <p className="text-sm text-muted-foreground mt-1">Chamado improdutivo remoto</p>
-                  </Card>
-                  <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-red-500">
-                    <h3 className="font-semibold">Improdutivo – Outras Situações</h3>
-                    <p className="text-sm text-muted-foreground mt-1">Outras situações improdutivas</p>
-                  </Card>
+                  {filaRemotaCategories.map((cat) => {
+                    const assignedProcedures = procedures.filter(p => p.filaRemotaCategory === cat.id);
+                    return (
+                      <Card key={cat.id} className={`p-4 border-l-4 ${cat.color}`}>
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="font-semibold">{cat.label}</h3>
+                          <Badge variant="secondary" className="text-xs">{assignedProcedures.length}</Badge>
+                        </div>
+                        {assignedProcedures.length > 0 ? (
+                          <div className="space-y-2 mt-3">
+                            {assignedProcedures.map((proc) => (
+                              <div
+                                key={proc.id}
+                                className="bg-muted/50 p-2 rounded text-sm cursor-pointer hover:bg-muted transition-colors"
+                                onClick={() => {
+                                  const updatedProcedure = { ...proc, createdAt: new Date().toISOString() };
+                                  const updatedProcedures = procedures.map(p => p.id === proc.id ? updatedProcedure : p);
+                                  setProcedures(updatedProcedures);
+                                  saveProcedures(updatedProcedures);
+                                  setSelectedProcedure(updatedProcedure);
+                                }}
+                              >
+                                <p className="font-medium text-foreground">{proc.title}</p>
+                                <p className="text-xs text-muted-foreground truncate">{proc.description}</p>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-xs text-muted-foreground mt-1">Nenhum procedimento atribuído</p>
+                        )}
+                      </Card>
+                    );
+                  })}
                 </div>
               </div>
             </Card>
