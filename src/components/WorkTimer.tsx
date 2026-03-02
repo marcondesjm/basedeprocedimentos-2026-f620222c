@@ -266,25 +266,24 @@ export const WorkTimer = () => {
 
   const resetTimer = (id: string) => {
     stopAlarm();
-    const woToReset = workOrders.find(wo => wo.id === id);
     setWorkOrders(
-      workOrders.map((wo) =>
-        wo.id === id
-          ? {
-              ...wo,
-              totalSeconds: 40 * 60,
-              isRunning: false,
-              hasFinished: false,
-              hasWarned: false,
-              showGuidance: false,
-              startTime: undefined,
-              pausedTime: undefined,
-              images: woToReset?.images || [],
-            }
-          : wo
-      )
+      workOrders.map((wo) => {
+        if (wo.id !== id) return wo;
+        const currentTimeLeft = getTimeLeft(wo);
+        const newTotal = currentTimeLeft + 40 * 60;
+        return {
+          ...wo,
+          totalSeconds: newTotal,
+          isRunning: false,
+          hasFinished: false,
+          hasWarned: false,
+          showGuidance: false,
+          startTime: undefined,
+          pausedTime: undefined,
+        };
+      })
     );
-    toast.success("Timer reiniciado!");
+    toast.success("Timer: +40 minutos adicionados!");
   };
 
   const formatTime = (seconds: number) => {
