@@ -457,26 +457,24 @@ export const WorkTimer = () => {
                           <AlertCircle className="w-4 h-4 mr-2" />
                           Silenciar Alarme
                         </Button>
-                        <div className="flex gap-2">
-                          <Button
-                            onClick={() => completeWorkOrder(wo.id)}
-                            size="sm"
-                            variant="default"
-                            className="flex-1 bg-green-600 hover:bg-green-700 text-white"
-                          >
-                            <CheckCircle className="w-4 h-4 mr-2" />
-                            Salvar no Histórico
-                          </Button>
-                          <Button
-                            onClick={() => resetTimer(wo.id)}
-                            size="sm"
-                            variant="outline"
-                            className="flex-1"
-                          >
-                            <RotateCcw className="w-4 h-4 mr-2" />
-                            Reiniciar
-                          </Button>
-                        </div>
+                        <Button
+                          onClick={() => completeWorkOrder(wo.id)}
+                          size="sm"
+                          variant="default"
+                          className="w-full bg-green-600 hover:bg-green-700 text-white"
+                        >
+                          <CheckCircle className="w-4 h-4 mr-2" />
+                          Salvar no Histórico
+                        </Button>
+                        <Button
+                          onClick={() => resetTimer(wo.id)}
+                          size="sm"
+                          variant="outline"
+                          className="w-full"
+                        >
+                          <RotateCcw className="w-4 h-4 mr-2" />
+                          Reiniciar
+                        </Button>
                       </>
                     ) : wo.showGuidance ? (
                       <>
