@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -26,7 +26,7 @@ interface WorkOrder {
 export const WorkTimer = () => {
   const [workOrders, setWorkOrders] = useState<WorkOrder[]>([]);
   const [newWO, setNewWO] = useState("");
-  const [alarmIntervalId, setAlarmIntervalId] = useState<NodeJS.Timeout | null>(null);
+  const alarmIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
 
   useEffect(() => {
@@ -86,26 +86,23 @@ export const WorkTimer = () => {
   };
 
   const startContinuousAlarm = (woNumber: string) => {
-    // Para qualquer alarme anterior
-    if (alarmIntervalId) {
-      clearInterval(alarmIntervalId);
+    if (alarmIntervalRef.current) {
+      clearInterval(alarmIntervalRef.current);
     }
 
-    // Toca o primeiro beep imediatamente
     playBeep();
 
-    // Continua tocando a cada 2 segundos
     const intervalId = setInterval(() => {
       playBeep();
     }, 2000);
 
-    setAlarmIntervalId(intervalId);
+    alarmIntervalRef.current = intervalId;
   };
 
   const stopAlarm = () => {
-    if (alarmIntervalId) {
-      clearInterval(alarmIntervalId);
-      setAlarmIntervalId(null);
+    if (alarmIntervalRef.current) {
+      clearInterval(alarmIntervalRef.current);
+      alarmIntervalRef.current = null;
     }
   };
 
@@ -228,14 +225,14 @@ export const WorkTimer = () => {
     const woToComplete = workOrders.find(wo => wo.id === id);
     if (!woToComplete) return;
 
-    // Stop alarm if running
+    // Always stop alarm
     stopAlarm();
 
     // Save to history
     saveCompletedWorkOrder(woToComplete);
 
     // Remove from active list
-    setWorkOrders(workOrders.filter(wo => wo.id !== id));
+    setWorkOrders(prev => prev.filter(wo => wo.id !== id));
   };
 
   const toggleTimer = (id: string) => {
