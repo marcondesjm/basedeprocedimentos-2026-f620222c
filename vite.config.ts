@@ -19,29 +19,35 @@ export default defineConfig(({ mode }) => ({
     mode === "development" && componentTagger(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["icon-192.png", "icon-512.png"],
+      includeAssets: ["icon-192.png", "icon-512.png", "favicon.ico"],
       manifest: {
-        name: "Gestão de procedimentos by Marcondes",
-        short_name: "Marcondes",
-        description: "Sistema de gestão de procedimentos médicos by Marcondes",
-        theme_color: "#1EAEDB",
-        background_color: "#ffffff",
+        name: "Gestão de Procedimentos",
+        short_name: "Procedimentos",
+        description: "Sistema de gestão de procedimentos e ordens de serviço",
+        theme_color: "#1565C0",
+        background_color: "#f8fafc",
         display: "standalone",
+        orientation: "any",
+        start_url: "/",
+        scope: "/",
         icons: [
           {
             src: "icon-192.png",
             sizes: "192x192",
             type: "image/png",
+            purpose: "any maskable",
           },
           {
             src: "icon-512.png",
             sizes: "512x512",
             type: "image/png",
+            purpose: "any maskable",
           },
         ],
       },
       workbox: {
-        globPatterns: ["**/*.{js,css,html,ico,png,svg}"],
+        globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
+        navigateFallbackDenylist: [/^\/~oauth/],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/.*\.supabase\.co\/.*/i,
@@ -50,7 +56,7 @@ export default defineConfig(({ mode }) => ({
               cacheName: "supabase-cache",
               expiration: {
                 maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24, // 24 hours
+                maxAgeSeconds: 60 * 60 * 24,
               },
             },
           },
