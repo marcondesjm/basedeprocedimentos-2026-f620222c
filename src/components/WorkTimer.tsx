@@ -455,23 +455,23 @@ export const WorkTimer = () => {
                       <>
                         <Button
                           onClick={() => stopAlarm()}
-                          className="w-full h-11 text-base font-bold bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/40 animate-pulse"
+                          className="w-full h-9 text-xs md:text-sm font-bold bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/40 animate-pulse"
                         >
-                          <AlertCircle className="w-5 h-5 mr-2" />
-                          Silenciar Alarme
+                          <AlertCircle className="w-4 h-4 mr-1 shrink-0" />
+                          Silenciar
                         </Button>
                         <Button
                           onClick={() => completeWorkOrder(wo.id)}
-                          className="w-full h-11 text-base font-bold bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/40"
+                          className="w-full h-9 text-xs md:text-sm font-bold bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/40"
                         >
-                          <CheckCircle className="w-5 h-5 mr-2" />
-                          Salvar no Histórico
+                          <CheckCircle className="w-4 h-4 mr-1 shrink-0" />
+                          Salvar
                         </Button>
                         <Button
                           onClick={() => resetTimer(wo.id)}
-                          className="w-full h-10 font-semibold bg-blue-500 hover:bg-blue-600 text-white shadow-md shadow-blue-500/30"
+                          className="w-full h-9 text-xs md:text-sm font-semibold bg-blue-500 hover:bg-blue-600 text-white shadow-md shadow-blue-500/30"
                         >
-                          <RotateCcw className="w-5 h-5 mr-2" />
+                          <RotateCcw className="w-4 h-4 mr-1 shrink-0" />
                           Reiniciar (+40 min)
                         </Button>
                       </>
