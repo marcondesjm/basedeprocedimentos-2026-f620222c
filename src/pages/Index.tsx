@@ -98,7 +98,7 @@ const Index = () => {
   const [compartLink, setCompartLink] = useState("");
   const [compartAtalho, setCompartAtalho] = useState("");
   const [impressoraNome, setImpressoraNome] = useState("");
-  const [impressoraPibImp, setImpressoraPibImp] = useState("");
+  const [impressoraPibImps, setImpressoraPibImps] = useState<string[]>([""]);
   const [impressoraIpImp, setImpressoraIpImp] = useState("");
   const [impressoraPibMicro, setImpressoraPibMicro] = useState("");
   const [conclusaoNome, setConclusaoNome] = useState("");
@@ -1153,12 +1153,42 @@ SUPORTE TÉCNICO HEPTA`;
                               onChange={(e) => setImpressoraNome(e.target.value)}
                               className="text-sm h-8"
                             />
-                            <Input
-                              placeholder="PIB Impressora"
-                              value={impressoraPibImp}
-                              onChange={(e) => setImpressoraPibImp(e.target.value)}
-                              className="text-sm h-8"
-                            />
+                            {impressoraPibImps.map((pibVal, idx) => (
+                              <div key={idx} className="flex gap-1 items-center">
+                                <Input
+                                  placeholder={`PIB Impressora ${impressoraPibImps.length > 1 ? idx + 1 : ''}`}
+                                  value={pibVal}
+                                  onChange={(e) => {
+                                    const updated = [...impressoraPibImps];
+                                    updated[idx] = e.target.value;
+                                    setImpressoraPibImps(updated);
+                                  }}
+                                  className="text-sm h-8"
+                                />
+                                {idx === impressoraPibImps.length - 1 && (
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    className="h-8 w-8 p-0 shrink-0"
+                                    onClick={() => setImpressoraPibImps([...impressoraPibImps, ""])}
+                                  >
+                                    <Plus className="w-4 h-4" />
+                                  </Button>
+                                )}
+                                {impressoraPibImps.length > 1 && (
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-8 w-8 p-0 shrink-0 text-destructive hover:text-destructive"
+                                    onClick={() => setImpressoraPibImps(impressoraPibImps.filter((_, i) => i !== idx))}
+                                  >
+                                    <X className="w-3 h-3" />
+                                  </Button>
+                                )}
+                              </div>
+                            ))}
                             <Input
                               placeholder="IP Impressora"
                               value={impressoraIpImp}
@@ -1208,7 +1238,8 @@ SUPORTE TÉCNICO HEPTA`;
                               className="w-full bg-primary hover:bg-primary/90"
                               onClick={() => {
                                 const nome = impressoraNome || '________';
-                                const pibImp = impressoraPibImp || '';
+                                const pibImps = impressoraPibImps.filter(p => p.trim());
+                                const pibImpText = pibImps.length > 0 ? pibImps.join(', ') : '';
                                 const ipImp = impressoraIpImp || '';
                                 const pibMicro = impressoraPibMicro || '';
                                 const nota = `EM CONTATO COM O USUÁRIO, ${nome} FOI VERIFICADO QUE:
@@ -1217,7 +1248,7 @@ SUPORTE TÉCNICO HEPTA`;
 
 A IMPRESSORA JÁ ESTÁ CONFIGURADA EM REDE? SIM ( x )    NÃO ( x )
 
-PIB Impressora: ${pibImp}
+PIB Impressora: ${pibImpText}
 
 IP Impressora: ${ipImp}
 
