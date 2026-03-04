@@ -27,7 +27,7 @@ export const CompletedWorkOrders = () => {
   const [loading, setLoading] = useState(true);
   const [expandedOrders, setExpandedOrders] = useState<Set<string>>(new Set());
   const [showArchive, setShowArchive] = useState(false);
-  const [archiveSearch, setArchiveSearch] = useState("");
+  const [expandedDays, setExpandedDays] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     loadHistory();
