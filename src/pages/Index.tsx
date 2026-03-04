@@ -61,6 +61,15 @@ const Index = () => {
     return localStorage.getItem('app_version') === '2.5.0';
   });
 
+  useEffect(() => {
+    const handleContextMenu = (e: MouseEvent) => {
+      e.preventDefault();
+      toast.info("Desenvolvido por Marcondes Jorge Machado", { duration: 3000 });
+    };
+    document.addEventListener("contextmenu", handleContextMenu);
+    return () => document.removeEventListener("contextmenu", handleContextMenu);
+  }, []);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
