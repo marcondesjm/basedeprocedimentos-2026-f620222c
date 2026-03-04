@@ -343,7 +343,14 @@ export const WorkTimer = () => {
             <Input
               placeholder="Digite o número da WO"
               value={newWO}
-              onChange={(e) => setNewWO(e.target.value.replace(/\D/g, ''))}
+              onChange={(e) => {
+                const val = e.target.value;
+                if (val !== "" && /[^0-9]/.test(val.slice(-1))) {
+                  toast.error("Apenas números são permitidos!");
+                  return;
+                }
+                setNewWO(val.replace(/\D/g, ''));
+              }}
               onKeyDown={(e) => e.key === "Enter" && addWorkOrder()}
               inputMode="numeric"
               pattern="[0-9]*"
