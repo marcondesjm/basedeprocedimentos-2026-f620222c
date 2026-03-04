@@ -922,88 +922,100 @@ ${proc.description}
               <p className="text-muted-foreground">Carregando procedimentos...</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-4">
-              {filteredProcedures.map((procedure) => (
-              <Card
-                key={procedure.id}
-                className="p-5 hover:shadow-elevated transition-all cursor-pointer"
-                onClick={() => {
-                  // Atualizar data para o momento da visualização
-                  const updatedProcedure = {
-                    ...procedure,
-                    createdAt: new Date().toISOString()
-                  };
-                  
-                  // Atualizar no estado local
-                  const updatedProcedures = procedures.map(proc => 
-                    proc.id === procedure.id ? updatedProcedure : proc
-                  );
-                  setProcedures(updatedProcedures);
-                  saveProcedures(updatedProcedures);
-                  
-                  setSelectedProcedure(updatedProcedure);
-                }}
-              >
-                <div className="space-y-3">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <FileText className="w-5 h-5 text-primary" />
-                        <h3 className="font-semibold text-lg text-foreground">{procedure.title}</h3>
-                      </div>
-                      <p className="text-muted-foreground text-sm mb-3">{procedure.description}</p>
-                    </div>
-                    <Badge variant="secondary">{procedure.category}</Badge>
-                  </div>
-
-                  <div className="bg-muted/50 p-3 rounded-lg">
-                    <p className="text-sm text-foreground">{procedure.solution}</p>
-                  </div>
-
-                  <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-1">
-                      <Calendar className="w-4 h-4" />
-                      {new Date(procedure.createdAt).toLocaleDateString('pt-BR')}
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <span>•</span>
-                      {procedure.createdBy}
-                    </div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <Tag className="w-4 h-4" />
-                      {procedure.tags.map((tag, idx) => (
-                        <Badge key={idx} variant="outline" className="text-xs">
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2 pt-2 border-t" onClick={(e) => e.stopPropagation()}>
-                    <ArrowRight className="w-4 h-4 text-muted-foreground" />
-                    <Select
-                      value={procedure.filaRemotaCategory || procedure.filaPresencialCategory || "none"}
-                      onValueChange={(value) => handleMoveProcedure(procedure.id, value === "none" ? "" : value)}
+            <div className="space-y-1">
+              {filteredProcedures.map((procedure) => {
+                const isOpen = expandedProcedures.has(procedure.id);
+                return (
+                  <Card key={procedure.id} className="overflow-hidden">
+                    {/* Header row - always visible */}
+                    <div
+                      className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-muted/50 transition-colors"
+                      onClick={() => {
+                        const next = new Set(expandedProcedures);
+                        if (next.has(procedure.id)) next.delete(procedure.id);
+                        else next.add(procedure.id);
+                        setExpandedProcedures(next);
+                      }}
                     >
-                      <SelectTrigger className="h-8 text-xs flex-1">
-                        <SelectValue placeholder="Mover para..." />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="none">Sem fila</SelectItem>
-                        <SelectItem disabled value="__header_remota__" className="font-bold text-xs text-muted-foreground">── Fila Remota ──</SelectItem>
-                        {filaRemotaCategories.map((cat) => (
-                          <SelectItem key={cat.id} value={cat.id}>{cat.label}</SelectItem>
-                        ))}
-                        <SelectItem disabled value="__header_presencial__" className="font-bold text-xs text-muted-foreground">── Fila Presencial ──</SelectItem>
-                        {filaPresencialCategories.map((cat) => (
-                          <SelectItem key={cat.id} value={cat.id}>{cat.label}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </Card>
-              ))}
+                      <ChevronDown className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform ${isOpen ? 'rotate-0' : '-rotate-90'}`} />
+                      <FileText className="w-4 h-4 text-primary shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm truncate">{procedure.title}</p>
+                        <p className="text-xs text-muted-foreground truncate">{procedure.description}</p>
+                      </div>
+                      <Badge variant="secondary" className="text-xs shrink-0">{procedure.category}</Badge>
+                    </div>
+
+                    {/* Expanded content */}
+                    {isOpen && (
+                      <div className="px-4 pb-4 pt-1 border-t space-y-3">
+                        <div className="bg-muted/50 p-3 rounded-lg">
+                          <p className="text-sm text-foreground whitespace-pre-wrap">{procedure.solution}</p>
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+                          <div className="flex items-center gap-1">
+                            <Calendar className="w-4 h-4" />
+                            {new Date(procedure.createdAt).toLocaleDateString('pt-BR')}
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <span>•</span>
+                            {procedure.createdBy}
+                          </div>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <Tag className="w-4 h-4" />
+                            {procedure.tags.map((tag, idx) => (
+                              <Badge key={idx} variant="outline" className="text-xs">{tag}</Badge>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 pt-2 border-t">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="text-xs"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const updatedProcedure = { ...procedure, createdAt: new Date().toISOString() };
+                              const updatedProcedures = procedures.map(proc =>
+                                proc.id === procedure.id ? updatedProcedure : proc
+                              );
+                              setProcedures(updatedProcedures);
+                              saveProcedures(updatedProcedures);
+                              setSelectedProcedure(updatedProcedure);
+                            }}
+                          >
+                            <FileText className="w-3 h-3 mr-1" />
+                            Abrir
+                          </Button>
+                          <div className="flex-1" onClick={(e) => e.stopPropagation()}>
+                            <Select
+                              value={procedure.filaRemotaCategory || procedure.filaPresencialCategory || "none"}
+                              onValueChange={(value) => handleMoveProcedure(procedure.id, value === "none" ? "" : value)}
+                            >
+                              <SelectTrigger className="h-8 text-xs">
+                                <SelectValue placeholder="Mover para..." />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="none">Sem fila</SelectItem>
+                                <SelectItem disabled value="__header_remota__" className="font-bold text-xs text-muted-foreground">── Fila Remota ──</SelectItem>
+                                {filaRemotaCategories.map((cat) => (
+                                  <SelectItem key={cat.id} value={cat.id}>{cat.label}</SelectItem>
+                                ))}
+                                <SelectItem disabled value="__header_presencial__" className="font-bold text-xs text-muted-foreground">── Fila Presencial ──</SelectItem>
+                                {filaPresencialCategories.map((cat) => (
+                                  <SelectItem key={cat.id} value={cat.id}>{cat.label}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </Card>
+                );
+              })}
             </div>
           )}
 
