@@ -574,8 +574,55 @@ ${proc.description}
               <h1 className="text-3xl font-bold">Gestão de Procedimentos</h1>
               <p className="text-white/90 mt-1">Histórico de procedimentos e soluções realizadas</p>
             </div>
-            <div className="text-white/95 font-mono text-lg">
-              DATA: {format(currentDateTime, "dd/MM/yyyy, HH:mm:ss")}
+            <div className="flex flex-col items-end gap-1">
+              <div className="text-white/95 font-mono text-lg">
+                DATA: {format(currentDateTime, "dd/MM/yyyy, HH:mm:ss")}
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-white/70 text-xs font-mono">v2.5.0 • Atualizado: 04/03/2026 17:00</span>
+                {isAppUpToDate ? (
+                  <Badge className="bg-emerald-500/20 text-emerald-200 border-emerald-400/30 text-xs cursor-default">
+                    ✓ Atualizado
+                  </Badge>
+                ) : (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-6 px-2 text-xs text-amber-200 hover:text-white hover:bg-white/10 border border-amber-400/40"
+                    onClick={() => {
+                      // Limpar caches e recarregar
+                      if ('caches' in window) {
+                        caches.keys().then(names => {
+                          names.forEach(name => caches.delete(name));
+                        });
+                      }
+                      localStorage.removeItem('app_version');
+                      window.location.reload();
+                    }}
+                  >
+                    ⟳ Limpar cache e atualizar
+                  </Button>
+                )}
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-6 px-2 text-xs text-white/70 hover:text-white hover:bg-white/10"
+                  onClick={() => {
+                    const currentVersion = '2.5.0';
+                    const savedVersion = localStorage.getItem('app_version');
+                    if (savedVersion === currentVersion) {
+                      setIsAppUpToDate(true);
+                      toast.success('Aplicação está atualizada!');
+                    } else {
+                      localStorage.setItem('app_version', currentVersion);
+                      setIsAppUpToDate(false);
+                      toast.info('Nova versão detectada. Clique em "Limpar cache" para atualizar.');
+                    }
+                  }}
+                >
+                  Verificar
+                </Button>
+              </div>
             </div>
           </div>
         </div>
