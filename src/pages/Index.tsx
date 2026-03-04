@@ -69,6 +69,7 @@ const Index = () => {
   const [diagRemotoSetor, setDiagRemotoSetor] = useState("");
   const [diagRemotoNome, setDiagRemotoNome] = useState("");
   const [diagRemotoPib, setDiagRemotoPib] = useState("");
+  const [diagRemotoPibMicro, setDiagRemotoPibMicro] = useState("");
   const [improdOutrasNome, setImprodOutrasNome] = useState("");
   const [improdOutrasJustificativa, setImprodOutrasJustificativa] = useState("");
   const [improdOutrasPNome, setImprodOutrasPNome] = useState("");
@@ -1357,6 +1358,12 @@ SUPORTE TÉCNICO HEPTA`;
                               onChange={(e) => setDiagRemotoPib(e.target.value)}
                               className="text-sm h-8"
                             />
+                            <Input
+                              placeholder="PIB Micro"
+                              value={diagRemotoPibMicro}
+                              onChange={(e) => setDiagRemotoPibMicro(e.target.value)}
+                              className="text-sm h-8"
+                            />
                             <Popover>
                               <PopoverTrigger asChild>
                                 <Button variant="outline" size="sm" className="w-full border-amber-300 text-amber-700 hover:bg-amber-50">
@@ -1392,11 +1399,14 @@ SUPORTE TÉCNICO HEPTA`;
                                 const setor = diagRemotoSetor || '__________';
                                 const nome = diagRemotoNome || '_________________';
                                 const pib = diagRemotoPib || '';
+                                const pibMicro = diagRemotoPibMicro || '';
                                 const nota = `FAVOR DIRECIONAR AO SETOR ${setor}
 
 ==================
 
 PIB indicada pelo usuário: ${pib}
+
+PIB Micro: ${pibMicro}
 
 ==================
 
