@@ -337,9 +337,34 @@ export const CompletedWorkOrders = () => {
               <h3 className="font-semibold text-lg">
                 {format(dateObj, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
               </h3>
-              <Badge variant="secondary" className="ml-auto">
-                {orders.length} {orders.length === 1 ? 'chamado' : 'chamados'}
-              </Badge>
+              <div className="flex items-center gap-2 ml-auto">
+                {isArchive ? (
+                  <Button
+                    onClick={() => restoreDay(dateKey)}
+                    size="sm"
+                    variant="outline"
+                    className="text-xs h-7 gap-1"
+                    title="Restaurar dia inteiro"
+                  >
+                    <RotateCcw className="w-3 h-3" />
+                    Restaurar dia
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => archiveDay(dateKey)}
+                    size="sm"
+                    variant="outline"
+                    className="text-xs h-7 gap-1"
+                    title="Arquivar dia inteiro"
+                  >
+                    <Archive className="w-3 h-3" />
+                    Arquivar dia
+                  </Button>
+                )}
+                <Badge variant="secondary">
+                  {orders.length} {orders.length === 1 ? 'chamado' : 'chamados'}
+                </Badge>
+              </div>
             </div>
             
             <div className="space-y-2 pl-4">
