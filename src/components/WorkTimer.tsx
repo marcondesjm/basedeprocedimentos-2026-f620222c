@@ -13,13 +13,13 @@ import { format } from "date-fns";
 interface WorkOrder {
   id: string;
   number: string;
-  totalSeconds: number;
+  elapsedSeconds: number; // accumulated elapsed time when paused
+  limitSeconds: number; // alarm threshold (default 40min)
   isRunning: boolean;
   hasFinished: boolean;
   hasWarned: boolean;
   showGuidance: boolean;
-  startTime?: number;
-  pausedTime?: number;
+  startTime?: number; // timestamp when timer was last started
   images: string[];
 }
 
