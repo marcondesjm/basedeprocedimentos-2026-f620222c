@@ -7,7 +7,7 @@ export const logActivity = async (
   action: ActionType,
   entityType: EntityType,
   entityId?: string,
-  details?: Record<string, unknown>
+  details?: Record<string, string | number | boolean | null>
 ) => {
   try {
     await supabase.from("activity_logs").insert([{
