@@ -508,7 +508,6 @@ export const WorkTimer = () => {
                         >
                           <RotateCcw className="w-4 h-4" />
                         </Button>
-                        </Button>
                       </div>
                     )}
                   </div>
