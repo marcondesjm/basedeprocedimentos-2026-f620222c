@@ -608,7 +608,9 @@ ${proc.description}
                 DATA: {format(currentDateTime, "dd/MM/yyyy, HH:mm:ss")}
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-white/70 text-xs font-mono">v2.5.0 • Atualizado: 04/03/2026 17:00</span>
+                <span className="text-white/70 text-xs font-mono">
+                  {(window as any).__APP_VERSION__ || __APP_VERSION__} • Atualizado: {format(new Date(__BUILD_TIMESTAMP__), "dd/MM/yyyy HH:mm")}
+                </span>
                 {isAppUpToDate ? (
                   <Badge className="bg-emerald-500/20 text-emerald-200 border-emerald-400/30 text-xs cursor-default">
                     ✓ Atualizado
