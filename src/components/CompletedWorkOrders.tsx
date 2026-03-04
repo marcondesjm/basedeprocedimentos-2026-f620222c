@@ -28,6 +28,17 @@ export const CompletedWorkOrders = () => {
   const [expandedOrders, setExpandedOrders] = useState<Set<string>>(new Set());
   const [showArchive, setShowArchive] = useState(false);
   const [expandedDays, setExpandedDays] = useState<Set<string>>(new Set());
+  const [archiveSearch, setArchiveSearch] = useState("");
+
+  const toggleDay = (dateKey: string) => {
+    const newExpanded = new Set(expandedDays);
+    if (newExpanded.has(dateKey)) {
+      newExpanded.delete(dateKey);
+    } else {
+      newExpanded.add(dateKey);
+    }
+    setExpandedDays(newExpanded);
+  };
 
   useEffect(() => {
     loadHistory();
