@@ -1189,18 +1189,78 @@ SUPORTE TÉCNICO HEPTA`;
                                 )}
                               </div>
                             ))}
-                            <Input
-                              placeholder="IP Impressora"
-                              value={impressoraIpImp}
-                              onChange={(e) => setImpressoraIpImp(e.target.value)}
-                              className="text-sm h-8"
-                            />
-                            <Input
-                              placeholder="PIB Micro"
-                              value={impressoraPibMicro}
-                              onChange={(e) => setImpressoraPibMicro(e.target.value)}
-                              className="text-sm h-8"
-                            />
+                            {impressoraIpImps.map((ipVal, idx) => (
+                              <div key={idx} className="flex gap-1 items-center">
+                                <Input
+                                  placeholder={`IP Impressora ${impressoraIpImps.length > 1 ? idx + 1 : ''}`}
+                                  value={ipVal}
+                                  onChange={(e) => {
+                                    const updated = [...impressoraIpImps];
+                                    updated[idx] = e.target.value;
+                                    setImpressoraIpImps(updated);
+                                  }}
+                                  className="text-sm h-8"
+                                />
+                                {idx === impressoraIpImps.length - 1 && (
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    className="h-8 w-8 p-0 shrink-0"
+                                    onClick={() => setImpressoraIpImps([...impressoraIpImps, ""])}
+                                  >
+                                    <Plus className="w-4 h-4" />
+                                  </Button>
+                                )}
+                                {impressoraIpImps.length > 1 && (
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-8 w-8 p-0 shrink-0 text-destructive hover:text-destructive"
+                                    onClick={() => setImpressoraIpImps(impressoraIpImps.filter((_, i) => i !== idx))}
+                                  >
+                                    <X className="w-3 h-3" />
+                                  </Button>
+                                )}
+                              </div>
+                            ))}
+                            {impressoraPibMicros.map((pibVal, idx) => (
+                              <div key={idx} className="flex gap-1 items-center">
+                                <Input
+                                  placeholder={`PIB Micro ${impressoraPibMicros.length > 1 ? idx + 1 : ''}`}
+                                  value={pibVal}
+                                  onChange={(e) => {
+                                    const updated = [...impressoraPibMicros];
+                                    updated[idx] = e.target.value;
+                                    setImpressoraPibMicros(updated);
+                                  }}
+                                  className="text-sm h-8"
+                                />
+                                {idx === impressoraPibMicros.length - 1 && (
+                                  <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="sm"
+                                    className="h-8 w-8 p-0 shrink-0"
+                                    onClick={() => setImpressoraPibMicros([...impressoraPibMicros, ""])}
+                                  >
+                                    <Plus className="w-4 h-4" />
+                                  </Button>
+                                )}
+                                {impressoraPibMicros.length > 1 && (
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-8 w-8 p-0 shrink-0 text-destructive hover:text-destructive"
+                                    onClick={() => setImpressoraPibMicros(impressoraPibMicros.filter((_, i) => i !== idx))}
+                                  >
+                                    <X className="w-3 h-3" />
+                                  </Button>
+                                )}
+                              </div>
+                            ))}
                             <Popover>
                               <PopoverTrigger asChild>
                                 <Button variant="outline" size="sm" className="w-full border-primary/50 text-primary hover:bg-primary/10">
@@ -1240,8 +1300,10 @@ SUPORTE TÉCNICO HEPTA`;
                                 const nome = impressoraNome || '________';
                                 const pibImps = impressoraPibImps.filter(p => p.trim());
                                 const pibImpText = pibImps.length > 0 ? pibImps.join(', ') : '';
-                                const ipImp = impressoraIpImp || '';
-                                const pibMicro = impressoraPibMicro || '';
+                                const ipImps = impressoraIpImps.filter(p => p.trim());
+                                const ipImpText = ipImps.length > 0 ? ipImps.join(', ') : '';
+                                const pibMicros = impressoraPibMicros.filter(p => p.trim());
+                                const pibMicroText = pibMicros.length > 0 ? pibMicros.join(', ') : '';
                                 const nota = `EM CONTATO COM O USUÁRIO, ${nome} FOI VERIFICADO QUE:
 
 =========================
@@ -1250,9 +1312,9 @@ A IMPRESSORA JÁ ESTÁ CONFIGURADA EM REDE? SIM ( x )    NÃO ( x )
 
 PIB Impressora: ${pibImpText}
 
-IP Impressora: ${ipImp}
+IP Impressora: ${ipImpText}
 
-PIB Micro: ${pibMicro}
+PIB Micro: ${pibMicroText}
 
 ========================
 
