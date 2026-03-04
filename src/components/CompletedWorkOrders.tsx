@@ -531,6 +531,7 @@ export const CompletedWorkOrders = () => {
                           );
                         })}
                       </div>
+                      )}
                     </div>
                   );
                 })}
