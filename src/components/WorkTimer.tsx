@@ -6,20 +6,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Clock, Play, Pause, RotateCcw, AlertCircle, Plus, Trash2, CheckCircle, Image as ImageIcon, X, Info, ChevronDown, ChevronUp } from "lucide-react";
+import { Clock, Play, RotateCcw, AlertCircle, Plus, Trash2, CheckCircle, Image as ImageIcon, X, Info, ChevronDown, ChevronUp } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { format } from "date-fns";
 
 interface WorkOrder {
   id: string;
   number: string;
-  totalSeconds: number;
+  elapsedSeconds: number; // accumulated elapsed time when paused
+  limitSeconds: number; // alarm threshold (default 40min)
   isRunning: boolean;
   hasFinished: boolean;
   hasWarned: boolean;
   showGuidance: boolean;
-  startTime?: number;
-  pausedTime?: number;
+  startTime?: number; // timestamp when timer was last started
   images: string[];
 }
 
@@ -37,11 +37,11 @@ export const WorkTimer = () => {
         orders.map((wo) => {
           if (!wo.isRunning || wo.hasFinished || !wo.startTime) return wo;
 
-          const elapsed = Math.floor((now - wo.startTime) / 1000);
-          const timeLeft = Math.max(0, wo.totalSeconds - elapsed);
+          const currentElapsed = wo.elapsedSeconds + Math.floor((now - wo.startTime) / 1000);
 
-          // Aviso aos 5 minutos restantes (300 segundos)
-          if (timeLeft <= 300 && timeLeft > 295 && !wo.hasWarned) {
+          // Aviso aos 35 minutos (5 min antes do limite)
+          const warnAt = wo.limitSeconds - 300;
+          if (currentElapsed >= warnAt && currentElapsed < warnAt + 5 && !wo.hasWarned) {
             toast.warning(`⏰ WO ${wo.number}: Faltam 5 minutos!`, {
               description: "Prepare-se para adicionar uma nova nota no sistema.",
               duration: 10000,
@@ -49,14 +49,14 @@ export const WorkTimer = () => {
             return { ...wo, hasWarned: true };
           }
 
-          // Timer finalizado
-          if (timeLeft === 0 && !wo.hasFinished) {
+          // Timer atingiu o limite
+          if (currentElapsed >= wo.limitSeconds && !wo.hasFinished) {
             startContinuousAlarm(wo.number);
             toast.error(`⏰ WO ${wo.number}: Tempo Esgotado!`, {
               description: "Adicione uma nova nota no sistema agora!",
               duration: 15000,
             });
-            return { ...wo, isRunning: false, hasFinished: true };
+            return { ...wo, isRunning: false, hasFinished: true, elapsedSeconds: currentElapsed, startTime: undefined };
           }
 
           return wo;
@@ -152,7 +152,8 @@ export const WorkTimer = () => {
     const newOrder: WorkOrder = {
       id: Date.now().toString(),
       number: newWO.trim(),
-      totalSeconds: 40 * 60,
+      elapsedSeconds: 0,
+      limitSeconds: 40 * 60,
       isRunning: false,
       hasFinished: false,
       hasWarned: false,
@@ -184,7 +185,7 @@ export const WorkTimer = () => {
         id: crypto.randomUUID(),
         wo_number: wo.number,
         completed_at: now.toISOString(),
-        total_duration: wo.totalSeconds,
+        total_duration: wo.elapsedSeconds,
         images: wo.images,
         notes: woNotes || null,
       });
@@ -225,17 +226,13 @@ export const WorkTimer = () => {
     const woToComplete = workOrders.find(wo => wo.id === id);
     if (!woToComplete) return;
 
-    // Always stop alarm
     stopAlarm();
 
-    // Calculate the exact time left on the clock at this moment
-    const timeLeftOnClock = getTimeLeft(woToComplete);
+    // Save with the exact elapsed time shown on the clock
+    const elapsed = getElapsed(woToComplete);
+    const woWithTime = { ...woToComplete, elapsedSeconds: elapsed };
+    saveCompletedWorkOrder(woWithTime);
 
-    // Save to history with the exact time that was on the clock
-    const woWithExactTime = { ...woToComplete, totalSeconds: timeLeftOnClock };
-    saveCompletedWorkOrder(woWithExactTime);
-
-    // Remove from active list
     setWorkOrders(prev => prev.filter(wo => wo.id !== id));
   };
 
@@ -246,14 +243,12 @@ export const WorkTimer = () => {
         if (wo.id !== id) return wo;
         
         if (wo.isRunning) {
-          // Pausando: calcular tempo decorrido e atualizar totalSeconds
-          const elapsed = wo.startTime ? Math.floor((now - wo.startTime) / 1000) : 0;
-          const newTotal = Math.max(0, wo.totalSeconds - elapsed);
+          // Pausando: acumular tempo decorrido
+          const sessionElapsed = wo.startTime ? Math.floor((now - wo.startTime) / 1000) : 0;
           return {
             ...wo,
             isRunning: false,
-            totalSeconds: newTotal,
-            pausedTime: now,
+            elapsedSeconds: wo.elapsedSeconds + sessionElapsed,
             startTime: undefined,
           };
         } else {
@@ -273,17 +268,14 @@ export const WorkTimer = () => {
     setWorkOrders(
       workOrders.map((wo) => {
         if (wo.id !== id) return wo;
-        const currentTimeLeft = getTimeLeft(wo);
-        const newTotal = currentTimeLeft + 40 * 60;
         return {
           ...wo,
-          totalSeconds: newTotal,
+          limitSeconds: wo.limitSeconds + 40 * 60, // extend limit by +40 min
           isRunning: false,
           hasFinished: false,
           hasWarned: false,
           showGuidance: false,
           startTime: undefined,
-          pausedTime: undefined,
         };
       })
     );
@@ -296,15 +288,19 @@ export const WorkTimer = () => {
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
-  const getTimeLeft = (wo: WorkOrder): number => {
-    if (!wo.isRunning || !wo.startTime) return wo.totalSeconds;
-    const elapsed = Math.floor((Date.now() - wo.startTime) / 1000);
-    return Math.max(0, wo.totalSeconds - elapsed);
+  const getElapsed = (wo: WorkOrder): number => {
+    if (!wo.isRunning || !wo.startTime) return wo.elapsedSeconds;
+    const sessionElapsed = Math.floor((Date.now() - wo.startTime) / 1000);
+    return wo.elapsedSeconds + sessionElapsed;
+  };
+
+  const getTimeRemaining = (wo: WorkOrder): number => {
+    return Math.max(0, wo.limitSeconds - getElapsed(wo));
   };
 
   const getProgress = (wo: WorkOrder) => {
-    const timeLeft = getTimeLeft(wo);
-    return ((40 * 60 - timeLeft) / (40 * 60)) * 100;
+    const elapsed = getElapsed(wo);
+    return Math.min(100, (elapsed / wo.limitSeconds) * 100);
   };
 
   return (
@@ -410,17 +406,17 @@ export const WorkTimer = () => {
                       className={`text-2xl md:text-3xl font-bold tabular-nums ${
                         wo.hasFinished
                           ? "text-destructive animate-pulse"
-                          : getTimeLeft(wo) <= 300
+                          : getTimeRemaining(wo) <= 300
                           ? "text-orange-500"
                           : "text-primary"
                       }`}
                     >
-                      {formatTime(getTimeLeft(wo))}
+                      {formatTime(getElapsed(wo))}
                     </div>
                     <p className="text-xs md:text-sm text-muted-foreground mt-1">
                       {wo.hasFinished
                         ? "⏰ Tempo esgotado! Adicione uma nota."
-                        : getTimeLeft(wo) <= 300
+                        : getTimeRemaining(wo) <= 300
                         ? "⚠️ Últimos 5 minutos!"
                         : wo.isRunning
                         ? "Em andamento"
@@ -512,7 +508,7 @@ export const WorkTimer = () => {
                     )}
                   </div>
 
-                  {getTimeLeft(wo) <= 300 && getTimeLeft(wo) > 0 && !wo.hasFinished && (
+                  {getTimeRemaining(wo) <= 300 && getTimeRemaining(wo) > 0 && !wo.hasFinished && (
                     <div className="flex items-center gap-2 p-2 md:p-3 bg-orange-500/10 border border-orange-500/20 rounded text-xs md:text-sm">
                       <AlertCircle className="w-4 h-4 text-orange-500 flex-shrink-0" />
                       <p className="text-orange-700 dark:text-orange-300 font-medium">
