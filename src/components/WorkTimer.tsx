@@ -446,90 +446,79 @@ export const WorkTimer = () => {
                       <>
                         <Button
                           onClick={() => stopAlarm()}
-                          size="sm"
                           variant="destructive"
-                          className="w-full"
+                          className="w-full h-11 text-base font-bold shadow-lg shadow-destructive/30 animate-pulse"
                         >
-                          <AlertCircle className="w-4 h-4 mr-2" />
+                          <AlertCircle className="w-5 h-5 mr-2" />
                           Silenciar Alarme
                         </Button>
                         <Button
                           onClick={() => completeWorkOrder(wo.id)}
-                          size="sm"
-                          variant="default"
-                          className="w-full bg-green-600 hover:bg-green-700 text-white"
+                          className="w-full h-11 text-base font-bold bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-600/30"
                         >
-                          <CheckCircle className="w-4 h-4 mr-2" />
+                          <CheckCircle className="w-5 h-5 mr-2" />
                           Salvar no Histórico
                         </Button>
                         <Button
                           onClick={() => resetTimer(wo.id)}
-                          size="sm"
                           variant="outline"
-                          className="w-full"
+                          className="w-full h-10 font-semibold border-2 border-primary/50 hover:border-primary hover:bg-primary/10"
                         >
-                          <RotateCcw className="w-4 h-4 mr-2" />
-                          Reiniciar
+                          <RotateCcw className="w-5 h-5 mr-2" />
+                          Reiniciar (+40 min)
                         </Button>
                       </>
                     ) : wo.showGuidance ? (
                       <>
                         <Button
                           onClick={() => completeWorkOrder(wo.id)}
-                          size="sm"
-                          variant="default"
-                          className="w-full bg-green-600 hover:bg-green-700 text-white"
+                          className="w-full h-11 text-base font-bold bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-600/30"
                         >
-                          <CheckCircle className="w-4 h-4 mr-2" />
+                          <CheckCircle className="w-5 h-5 mr-2" />
                           Salvar
                         </Button>
                         <Button
                           onClick={() => setWorkOrders(workOrders.map(w => w.id === wo.id ? { ...w, showGuidance: false } : w))}
-                          size="sm"
                           variant="outline"
-                          className="w-full"
+                          className="w-full h-10 font-semibold border-2 border-primary/50 hover:border-primary hover:bg-primary/10"
                         >
-                          Reiniciar
+                          Cancelar
                         </Button>
                       </>
                     ) : (
-                      <>
+                      <div className="flex gap-2">
                         <Button
                           onClick={() => toggleTimer(wo.id)}
-                          size="sm"
                           variant={wo.isRunning ? "outline" : "default"}
-                          className={`flex-1 ${!wo.isRunning ? 'bg-green-600 hover:bg-green-700 text-white' : ''}`}
+                          className={`flex-1 h-11 text-base font-bold ${!wo.isRunning ? 'bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-600/30' : 'border-2 border-orange-400 text-orange-600 hover:bg-orange-50'}`}
                         >
                           {wo.isRunning ? (
                             <>
-                              <Pause className="w-4 h-4 mr-2" />
+                              <Pause className="w-5 h-5 mr-2" />
                               Pausar
                             </>
                           ) : (
                             <>
-                              <Play className="w-4 h-4 mr-2" />
+                              <Play className="w-5 h-5 mr-2" />
                               Iniciar
                             </>
                           )}
                         </Button>
                         <Button
                           onClick={() => showGuidanceForWO(wo.id)}
-                          size="sm"
-                          variant="default"
-                          className="flex-1 bg-black hover:bg-gray-900 text-white"
+                          className="flex-1 h-11 text-base font-bold bg-black hover:bg-gray-800 text-white shadow-lg shadow-black/30"
                         >
-                          <CheckCircle className="w-4 h-4 mr-2" />
+                          <CheckCircle className="w-5 h-5 mr-2" />
                           Concluir
                         </Button>
                         <Button
                           onClick={() => resetTimer(wo.id)}
-                          size="sm"
                           variant="outline"
-                          className="w-auto px-3"
+                          className="h-11 px-3 border-2 border-primary/50 hover:border-primary hover:bg-primary/10"
                         >
-                          <RotateCcw className="w-4 h-4" />
+                          <RotateCcw className="w-5 h-5" />
                         </Button>
-                      </>
+                      </div>
                     )}
                   </div>
 
