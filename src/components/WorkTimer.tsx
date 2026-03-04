@@ -346,7 +346,23 @@ export const WorkTimer = () => {
               onChange={(e) => {
                 const val = e.target.value;
                 if (val !== "" && /[^0-9]/.test(val.slice(-1))) {
-                  toast.error("Apenas números são permitidos!");
+                  // Beep sonoro
+                  const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+                  const osc = ctx.createOscillator();
+                  const gain = ctx.createGain();
+                  osc.connect(gain);
+                  gain.connect(ctx.destination);
+                  osc.frequency.value = 400;
+                  osc.type = "square";
+                  gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                  gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                  osc.start(ctx.currentTime);
+                  osc.stop(ctx.currentTime + 0.3);
+                  // Pop-up alerta
+                  toast.error("⚠️ Apenas números são permitidos!", {
+                    description: "O campo de WO aceita somente números. Letras e caracteres especiais não são válidos.",
+                    duration: 4000,
+                  });
                   return;
                 }
                 setNewWO(val.replace(/\D/g, ''));
