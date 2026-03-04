@@ -676,8 +676,8 @@ ${proc.description}
           </div>
           <div>
             <Changelog />
+          </div>
         </div>
-
         {/* Aviso LGPD */}
         <Alert className="mb-6 border-primary/20 bg-primary/5">
           <Shield className="h-5 w-5 text-primary" />
