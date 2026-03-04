@@ -94,6 +94,7 @@ const Index = () => {
   const [impressoraPibMicro, setImpressoraPibMicro] = useState("");
   const [conclusaoNome, setConclusaoNome] = useState("");
   const [conclusaoPib, setConclusaoPib] = useState("");
+  const [conclusaoPibMicro, setConclusaoPibMicro] = useState("");
   const [presencialNome, setPresencialNome] = useState("");
   const [presencialPib, setPresencialPib] = useState("");
   const [presencialIp, setPresencialIp] = useState("");
@@ -1059,6 +1060,12 @@ ${proc.description}
                               onChange={(e) => setConclusaoPib(e.target.value)}
                               className="text-sm h-8"
                             />
+                            <Input
+                              placeholder="PIB Micro"
+                              value={conclusaoPibMicro}
+                              onChange={(e) => setConclusaoPibMicro(e.target.value)}
+                              className="text-sm h-8"
+                            />
                             <Popover>
                               <PopoverTrigger asChild>
                                 <Button variant="outline" size="sm" className="w-full border-primary/50 text-primary hover:bg-primary/10">
@@ -1094,12 +1101,15 @@ ${proc.description}
                               onClick={() => {
                                 const nome = conclusaoNome || '_________________';
                                 const pib = conclusaoPib || '';
+                                const pibMicro = conclusaoPibMicro || '';
                                 const nota = `EM CONTATO COM O USUÁRIO ${nome}, FOI REALIZADO ACESSO REMOTO AO MICRO E
 FORAM EXECUTADOS OS PROCEDIMENTOS DE:
 
 ==================
 
 PIB: ${pib}
+
+PIB Micro: ${pibMicro}
 
 ==================
 
