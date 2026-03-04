@@ -343,8 +343,10 @@ export const WorkTimer = () => {
             <Input
               placeholder="Digite o número da WO"
               value={newWO}
-              onChange={(e) => setNewWO(e.target.value)}
+              onChange={(e) => setNewWO(e.target.value.replace(/\D/g, ''))}
               onKeyDown={(e) => e.key === "Enter" && addWorkOrder()}
+              inputMode="numeric"
+              pattern="[0-9]*"
               className="flex-1"
             />
             <Button onClick={addWorkOrder} className="shrink-0">
