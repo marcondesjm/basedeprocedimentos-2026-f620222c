@@ -603,21 +603,21 @@ ${proc.description}
         </Alert>
 
         <Tabs defaultValue="procedimentos" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 h-auto">
-            <TabsTrigger value="procedimentos" className="flex items-center gap-2 py-3">
-              <FileText className="w-4 h-4" />
+          <TabsList className="grid w-full grid-cols-4 h-auto bg-muted/50 p-1.5 rounded-xl shadow-sm border border-border/50">
+            <TabsTrigger value="procedimentos" className="flex items-center gap-2 py-3 px-4 rounded-lg font-semibold text-sm transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md data-[state=active]:shadow-primary/25 data-[state=inactive]:hover:bg-muted">
+              <FileText className="w-5 h-5" />
               <span className="hidden sm:inline">Procedimentos</span>
             </TabsTrigger>
-            <TabsTrigger value="fila-remota" className="flex items-center gap-2 py-3">
-              <Monitor className="w-4 h-4" />
+            <TabsTrigger value="fila-remota" className="flex items-center gap-2 py-3 px-4 rounded-lg font-semibold text-sm transition-all data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-blue-500/25 data-[state=inactive]:hover:bg-muted">
+              <Monitor className="w-5 h-5" />
               <span className="hidden sm:inline">Fila Remota</span>
             </TabsTrigger>
-            <TabsTrigger value="fila-presencial" className="flex items-center gap-2 py-3">
-              <Users className="w-4 h-4" />
+            <TabsTrigger value="fila-presencial" className="flex items-center gap-2 py-3 px-4 rounded-lg font-semibold text-sm transition-all data-[state=active]:bg-emerald-600 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-emerald-500/25 data-[state=inactive]:hover:bg-muted">
+              <Users className="w-5 h-5" />
               <span className="hidden sm:inline">Fila Presencial</span>
             </TabsTrigger>
-            <TabsTrigger value="checklists" className="flex items-center gap-2 py-3">
-              <CheckSquare className="w-4 h-4" />
+            <TabsTrigger value="checklists" className="flex items-center gap-2 py-3 px-4 rounded-lg font-semibold text-sm transition-all data-[state=active]:bg-amber-600 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-amber-500/25 data-[state=inactive]:hover:bg-muted">
+              <CheckSquare className="w-5 h-5" />
               <span className="hidden sm:inline">Checklists</span>
             </TabsTrigger>
           </TabsList>
