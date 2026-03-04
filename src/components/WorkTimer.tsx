@@ -483,13 +483,6 @@ export const WorkTimer = () => {
                           <CheckCircle className="w-4 h-4 mr-1 shrink-0" />
                           Salvar
                         </Button>
-                        <Button
-                          onClick={() => resetTimer(wo.id)}
-                          className="w-full h-9 text-xs md:text-sm font-semibold bg-blue-500 hover:bg-blue-600 text-white shadow-md shadow-blue-500/30"
-                        >
-                          <RotateCcw className="w-4 h-4 mr-1 shrink-0" />
-                          Reiniciar (+40 min)
-                        </Button>
                       </>
                     ) : wo.showGuidance ? (
                       <>
