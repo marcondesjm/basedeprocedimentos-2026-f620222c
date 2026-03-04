@@ -341,7 +341,7 @@ export const WorkTimer = () => {
         <div className="flex flex-col gap-3">
           <div className="flex gap-2">
             <div className="flex-1 flex items-center rounded-md border border-input bg-background ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
-              <span className="pl-3 text-sm font-semibold text-muted-foreground select-none">WO</span>
+              <span className="pl-3 text-sm font-semibold text-muted-foreground select-none">WO00000</span>
               <input
                 placeholder="00000"
                 value={newWO}
