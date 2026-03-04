@@ -28,6 +28,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { format } from "date-fns";
 import { WorkTimer } from "@/components/WorkTimer";
 import { CompletedWorkOrders } from "@/components/CompletedWorkOrders";
+import { Changelog } from "@/components/Changelog";
+import { ActivityLog } from "@/components/ActivityLog";
+import { logActivity } from "@/lib/activityLogger";
 
 type NoteType = "procedimento" | "diagnostico";
 
@@ -668,6 +671,11 @@ ${proc.description}
           <div>
             <CompletedWorkOrders />
           </div>
+          <div>
+            <ActivityLog />
+          </div>
+          <div>
+            <Changelog />
         </div>
 
         {/* Aviso LGPD */}
