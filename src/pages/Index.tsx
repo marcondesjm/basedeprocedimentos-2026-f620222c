@@ -28,6 +28,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { format } from "date-fns";
 import { WorkTimer } from "@/components/WorkTimer";
 import { CompletedWorkOrders } from "@/components/CompletedWorkOrders";
+import { Changelog } from "@/components/Changelog";
+import { ActivityLog } from "@/components/ActivityLog";
+import { logActivity } from "@/lib/activityLogger";
 
 type NoteType = "procedimento" | "diagnostico";
 
@@ -307,6 +310,7 @@ FAVOR DEIXAR O PINPAD NA PORTA QUE SE ENCONTRA A TRÁS NO MICRO. SE REMOVER ELE 
         nomeArquivoBC: "",
       });
       toast.success("Procedimento cadastrado com sucesso!");
+      logActivity("create", "procedure", undefined, { title: newProcedure.title });
     } catch (error) {
       console.error('Erro ao criar procedimento:', error);
       toast.error('Erro ao criar procedimento');
@@ -326,6 +330,7 @@ FAVOR DEIXAR O PINPAD NA PORTA QUE SE ENCONTRA A TRÁS NO MICRO. SE REMOVER ELE 
       setSelectedProcedure(editedProcedure);
       setIsEditMode(false);
       toast.success("Procedimento atualizado com sucesso!");
+      logActivity("update", "procedure", editedProcedure.id, { title: editedProcedure.title });
     } catch (error) {
       console.error('Erro ao atualizar procedimento:', error);
       toast.error('Erro ao atualizar procedimento');
@@ -668,8 +673,13 @@ ${proc.description}
           <div>
             <CompletedWorkOrders />
           </div>
+          <div>
+            <ActivityLog />
+          </div>
+          <div>
+            <Changelog />
+          </div>
         </div>
-
         {/* Aviso LGPD */}
         <Alert className="mb-6 border-primary/20 bg-primary/5">
           <Shield className="h-5 w-5 text-primary" />

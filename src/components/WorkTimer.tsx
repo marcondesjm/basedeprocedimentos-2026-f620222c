@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { logActivity } from "@/lib/activityLogger";
 import { Clock, Play, RotateCcw, AlertCircle, Plus, Trash2, CheckCircle, Image as ImageIcon, X, Info, ChevronDown, ChevronUp } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { format } from "date-fns";
@@ -165,6 +166,7 @@ export const WorkTimer = () => {
     setWorkOrders([...workOrders, newOrder]);
     setNewWO("");
     toast.success(`WO ${newOrder.number} adicionada!`);
+    logActivity("create", "work_order", newOrder.number, { number: newOrder.number });
   };
 
   const saveCompletedWorkOrder = (wo: WorkOrder, woNotes?: string) => {
@@ -198,6 +200,7 @@ export const WorkTimer = () => {
       window.dispatchEvent(new Event('historyUpdated'));
       
       toast.success(`WO ${wo.number} salva no histórico!`);
+      logActivity("complete", "work_order", wo.number, { duration: wo.elapsedSeconds });
     } catch (error) {
       console.error("Error saving completed work order:", error);
       toast.error("Erro ao salvar no histórico");
