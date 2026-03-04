@@ -396,7 +396,7 @@ export const WorkTimer = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Badge variant={wo.hasFinished ? "destructive" : wo.isRunning ? "default" : "secondary"}>
-                        WO {wo.number}
+                        WO00000{wo.number}
                       </Badge>
                       {wo.hasFinished && (
                         <CheckCircle className="w-4 h-4 text-destructive" />
