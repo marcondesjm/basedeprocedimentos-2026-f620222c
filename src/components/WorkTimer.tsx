@@ -228,8 +228,12 @@ export const WorkTimer = () => {
     // Always stop alarm
     stopAlarm();
 
-    // Save to history
-    saveCompletedWorkOrder(woToComplete);
+    // Calculate the exact time left on the clock at this moment
+    const timeLeftOnClock = getTimeLeft(woToComplete);
+
+    // Save to history with the exact time that was on the clock
+    const woWithExactTime = { ...woToComplete, totalSeconds: timeLeftOnClock };
+    saveCompletedWorkOrder(woWithExactTime);
 
     // Remove from active list
     setWorkOrders(prev => prev.filter(wo => wo.id !== id));
