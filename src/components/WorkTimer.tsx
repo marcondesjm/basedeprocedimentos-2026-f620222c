@@ -37,11 +37,11 @@ export const WorkTimer = () => {
         orders.map((wo) => {
           if (!wo.isRunning || wo.hasFinished || !wo.startTime) return wo;
 
-          const elapsed = Math.floor((now - wo.startTime) / 1000);
-          const timeLeft = Math.max(0, wo.totalSeconds - elapsed);
+          const currentElapsed = wo.elapsedSeconds + Math.floor((now - wo.startTime) / 1000);
 
-          // Aviso aos 5 minutos restantes (300 segundos)
-          if (timeLeft <= 300 && timeLeft > 295 && !wo.hasWarned) {
+          // Aviso aos 35 minutos (5 min antes do limite)
+          const warnAt = wo.limitSeconds - 300;
+          if (currentElapsed >= warnAt && currentElapsed < warnAt + 5 && !wo.hasWarned) {
             toast.warning(`⏰ WO ${wo.number}: Faltam 5 minutos!`, {
               description: "Prepare-se para adicionar uma nova nota no sistema.",
               duration: 10000,
@@ -49,14 +49,14 @@ export const WorkTimer = () => {
             return { ...wo, hasWarned: true };
           }
 
-          // Timer finalizado
-          if (timeLeft === 0 && !wo.hasFinished) {
+          // Timer atingiu o limite
+          if (currentElapsed >= wo.limitSeconds && !wo.hasFinished) {
             startContinuousAlarm(wo.number);
             toast.error(`⏰ WO ${wo.number}: Tempo Esgotado!`, {
               description: "Adicione uma nova nota no sistema agora!",
               duration: 15000,
             });
-            return { ...wo, isRunning: false, hasFinished: true };
+            return { ...wo, isRunning: false, hasFinished: true, elapsedSeconds: currentElapsed, startTime: undefined };
           }
 
           return wo;
