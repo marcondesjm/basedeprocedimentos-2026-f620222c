@@ -66,6 +66,7 @@ const Index = () => {
   const [devolucaoNome, setDevolucaoNome] = useState("");
   const [devolucaoPib, setDevolucaoPib] = useState("");
   const [devolucaoWo, setDevolucaoWo] = useState("");
+  const [devolucaoPibMicro, setDevolucaoPibMicro] = useState("");
   const [diagRemotoSetor, setDiagRemotoSetor] = useState("");
   const [diagRemotoNome, setDiagRemotoNome] = useState("");
   const [diagRemotoPib, setDiagRemotoPib] = useState("");
@@ -1449,6 +1450,12 @@ SUPORTE TÉCNICO HEPTA`;
                               className="text-sm h-8"
                             />
                             <Input
+                              placeholder="PIB Micro"
+                              value={devolucaoPibMicro}
+                              onChange={(e) => setDevolucaoPibMicro(e.target.value)}
+                              className="text-sm h-8"
+                            />
+                            <Input
                               placeholder="Nº da WO"
                               value={devolucaoWo}
                               onChange={(e) => setDevolucaoWo(e.target.value)}
@@ -1488,6 +1495,7 @@ SUPORTE TÉCNICO HEPTA`;
                               onClick={() => {
                                 const nome = devolucaoNome || '_________________';
                                 const pib = devolucaoPib || '';
+                                const pibMicro = devolucaoPibMicro || '';
                                 const wo = devolucaoWo ? `WO: ${devolucaoWo}\n\n` : '';
                                 const nota = `${wo}FAVOR DIRECIONAR AO SUPORTE PRESENCIAL
 
@@ -1497,6 +1505,8 @@ FORAM EXECUTADOS OS PROCEDIMENTOS DE:
 ==================
 
 PIB: ${pib}
+
+PIB Micro: ${pibMicro}
 
 ==================
 
