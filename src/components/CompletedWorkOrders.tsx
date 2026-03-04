@@ -28,6 +28,7 @@ export const CompletedWorkOrders = () => {
   const [expandedOrders, setExpandedOrders] = useState<Set<string>>(new Set());
   const [showArchive, setShowArchive] = useState(false);
   const [expandedDays, setExpandedDays] = useState<Set<string>>(new Set());
+  const [expandedMonths, setExpandedMonths] = useState<Set<string>>(new Set());
   const [archiveSearch, setArchiveSearch] = useState("");
 
   const toggleDay = (dateKey: string) => {
@@ -38,6 +39,16 @@ export const CompletedWorkOrders = () => {
       newExpanded.add(dateKey);
     }
     setExpandedDays(newExpanded);
+  };
+
+  const toggleMonth = (monthKey: string) => {
+    const newExpanded = new Set(expandedMonths);
+    if (newExpanded.has(monthKey)) {
+      newExpanded.delete(monthKey);
+    } else {
+      newExpanded.add(monthKey);
+    }
+    setExpandedMonths(newExpanded);
   };
 
   useEffect(() => {
@@ -355,7 +366,15 @@ export const CompletedWorkOrders = () => {
 
           return (
             <div key={monthKey} className="space-y-4">
-              <div className="flex items-center gap-2 pb-2 border-b-2 border-primary/30">
+              <div
+                className="flex items-center gap-2 pb-2 border-b-2 border-primary/30 cursor-pointer select-none"
+                onClick={() => toggleMonth(monthKey)}
+              >
+                {expandedMonths.has(monthKey) ? (
+                  <ChevronUp className="w-5 h-5 text-primary" />
+                ) : (
+                  <ChevronDown className="w-5 h-5 text-primary" />
+                )}
                 <Calendar className="w-5 h-5 text-primary" />
                 <h3 className="font-bold text-lg capitalize">
                   {format(monthDate, "MMMM 'de' yyyy", { locale: ptBR })}
@@ -365,6 +384,7 @@ export const CompletedWorkOrders = () => {
                 </Badge>
               </div>
 
+              {expandedMonths.has(monthKey) && (
               <div className="space-y-5 pl-2">
                 {monthDates.map((dateKey) => {
                   const orders = data[dateKey];
