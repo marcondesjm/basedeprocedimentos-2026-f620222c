@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Clock, Play, Pause, RotateCcw, AlertCircle, Plus, Trash2, CheckCircle, Image as ImageIcon, X, Info, ChevronDown, ChevronUp } from "lucide-react";
+import { Clock, Play, RotateCcw, AlertCircle, Plus, Trash2, CheckCircle, Image as ImageIcon, X, Info, ChevronDown, ChevronUp } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { format } from "date-fns";
 
