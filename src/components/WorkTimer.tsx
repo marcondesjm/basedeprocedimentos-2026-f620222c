@@ -406,17 +406,17 @@ export const WorkTimer = () => {
                       className={`text-2xl md:text-3xl font-bold tabular-nums ${
                         wo.hasFinished
                           ? "text-destructive animate-pulse"
-                          : getTimeLeft(wo) <= 300
+                          : getTimeRemaining(wo) <= 300
                           ? "text-orange-500"
                           : "text-primary"
                       }`}
                     >
-                      {formatTime(getTimeLeft(wo))}
+                      {formatTime(getElapsed(wo))}
                     </div>
                     <p className="text-xs md:text-sm text-muted-foreground mt-1">
                       {wo.hasFinished
                         ? "⏰ Tempo esgotado! Adicione uma nota."
-                        : getTimeLeft(wo) <= 300
+                        : getTimeRemaining(wo) <= 300
                         ? "⚠️ Últimos 5 minutos!"
                         : wo.isRunning
                         ? "Em andamento"
@@ -508,7 +508,7 @@ export const WorkTimer = () => {
                     )}
                   </div>
 
-                  {getTimeLeft(wo) <= 300 && getTimeLeft(wo) > 0 && !wo.hasFinished && (
+                  {getTimeRemaining(wo) <= 300 && getTimeRemaining(wo) > 0 && !wo.hasFinished && (
                     <div className="flex items-center gap-2 p-2 md:p-3 bg-orange-500/10 border border-orange-500/20 rounded text-xs md:text-sm">
                       <AlertCircle className="w-4 h-4 text-orange-500 flex-shrink-0" />
                       <p className="text-orange-700 dark:text-orange-300 font-medium">
