@@ -484,26 +484,23 @@ export const WorkTimer = () => {
                       </>
                     ) : (
                       <div className="flex gap-2">
-                        <Button
-                          onClick={() => toggleTimer(wo.id)}
-                          className={`flex-1 h-9 text-sm font-bold shadow-md ${!wo.isRunning ? 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-500/40' : 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-500/40'}`}
-                        >
-                          <Play className="w-4 h-4 mr-1" />
-                          Iniciar
-                        </Button>
-                        <Button
-                          onClick={() => showGuidanceForWO(wo.id)}
-                          className="flex-1 h-9 text-sm font-bold bg-violet-600 hover:bg-violet-700 text-white shadow-md shadow-violet-600/40"
-                        >
-                          <CheckCircle className="w-4 h-4 mr-1" />
-                          Concluir
-                        </Button>
-                        <Button
-                          onClick={() => resetTimer(wo.id)}
-                          className="h-9 px-2.5 bg-blue-500 hover:bg-blue-600 text-white shadow-md shadow-blue-500/30"
-                        >
-                          <RotateCcw className="w-4 h-4" />
-                        </Button>
+                        {!wo.isRunning ? (
+                          <Button
+                            onClick={() => toggleTimer(wo.id)}
+                            className="flex-1 h-9 text-sm font-bold shadow-md bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-500/40"
+                          >
+                            <Play className="w-4 h-4 mr-1" />
+                            Iniciar
+                          </Button>
+                        ) : (
+                          <Button
+                            onClick={() => showGuidanceForWO(wo.id)}
+                            className="flex-1 h-9 text-sm font-bold bg-violet-600 hover:bg-violet-700 text-white shadow-md shadow-violet-600/40"
+                          >
+                            <CheckCircle className="w-4 h-4 mr-1" />
+                            Concluir
+                          </Button>
+                        )}
                       </div>
                     )}
                   </div>
