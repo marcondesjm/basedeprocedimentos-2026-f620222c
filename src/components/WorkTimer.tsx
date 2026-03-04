@@ -424,7 +424,7 @@ export const WorkTimer = () => {
                     </div>
                     <p className="text-xs md:text-sm text-muted-foreground mt-1">
                       {wo.hasFinished
-                        ? "⏰ Tempo esgotado! Adicione uma nota."
+                        ? "⏰ Insira uma nota no Remedy!"
                         : getTimeRemaining(wo) <= 300
                         ? "⚠️ Últimos 5 minutos!"
                         : wo.isRunning
