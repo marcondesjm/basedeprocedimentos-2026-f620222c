@@ -484,22 +484,6 @@ export const WorkTimer = () => {
                           Salvar
                         </Button>
                       </>
-                    ) : wo.showGuidance ? (
-                      <>
-                        <Button
-                          onClick={() => completeWorkOrder(wo.id)}
-                          className="w-full h-11 text-base font-bold bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/40"
-                        >
-                          <CheckCircle className="w-5 h-5 mr-2" />
-                          Salvar
-                        </Button>
-                        <Button
-                          onClick={() => setWorkOrders(workOrders.map(w => w.id === wo.id ? { ...w, showGuidance: false } : w))}
-                          className="w-full h-10 font-semibold bg-gray-500 hover:bg-gray-600 text-white shadow-md shadow-gray-500/30"
-                        >
-                          Cancelar
-                        </Button>
-                      </>
                     ) : (
                       <div className="flex gap-2">
                         {!wo.isRunning ? (
@@ -512,7 +496,7 @@ export const WorkTimer = () => {
                           </Button>
                         ) : (
                           <Button
-                            onClick={() => showGuidanceForWO(wo.id)}
+                            onClick={() => completeWorkOrder(wo.id)}
                             className="flex-1 h-9 text-sm font-bold bg-violet-600 hover:bg-violet-700 text-white shadow-md shadow-violet-600/40"
                           >
                             <CheckCircle className="w-4 h-4 mr-1" />
