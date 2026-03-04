@@ -95,6 +95,58 @@ export const CompletedWorkOrders = () => {
     }
   };
 
+  const archiveDay = (dateKey: string) => {
+    try {
+      const historyData = localStorage.getItem('workOrderHistory');
+      const history = historyData ? JSON.parse(historyData) : {};
+      const archiveData = localStorage.getItem('workOrderArchive');
+      const archive = archiveData ? JSON.parse(archiveData) : {};
+
+      const orders = history[dateKey];
+      if (!orders || orders.length === 0) return;
+
+      if (!archive[dateKey]) archive[dateKey] = [];
+      archive[dateKey].push(...orders);
+
+      delete history[dateKey];
+
+      localStorage.setItem('workOrderHistory', JSON.stringify(history));
+      localStorage.setItem('workOrderArchive', JSON.stringify(archive));
+      setHistoryByDate(history);
+      setArchivedByDate(archive);
+      toast.success(`Dia arquivado com ${orders.length} chamado(s)!`);
+    } catch (error) {
+      console.error("Error archiving day:", error);
+      toast.error("Erro ao arquivar dia");
+    }
+  };
+
+  const restoreDay = (dateKey: string) => {
+    try {
+      const historyData = localStorage.getItem('workOrderHistory');
+      const history = historyData ? JSON.parse(historyData) : {};
+      const archiveData = localStorage.getItem('workOrderArchive');
+      const archive = archiveData ? JSON.parse(archiveData) : {};
+
+      const orders = archive[dateKey];
+      if (!orders || orders.length === 0) return;
+
+      if (!history[dateKey]) history[dateKey] = [];
+      history[dateKey].push(...orders);
+
+      delete archive[dateKey];
+
+      localStorage.setItem('workOrderHistory', JSON.stringify(history));
+      localStorage.setItem('workOrderArchive', JSON.stringify(archive));
+      setHistoryByDate(history);
+      setArchivedByDate(archive);
+      toast.success(`Dia restaurado com ${orders.length} chamado(s)!`);
+    } catch (error) {
+      console.error("Error restoring day:", error);
+      toast.error("Erro ao restaurar dia");
+    }
+  };
+
   const restoreOrder = (dateKey: string, orderId: string) => {
     try {
       const historyData = localStorage.getItem('workOrderHistory');
