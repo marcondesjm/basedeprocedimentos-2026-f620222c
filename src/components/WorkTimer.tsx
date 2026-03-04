@@ -272,6 +272,22 @@ export const WorkTimer = () => {
     );
   };
 
+  const silenceAlarm = (id: string) => {
+    stopAlarm();
+    setWorkOrders(
+      workOrders.map((wo) => {
+        if (wo.id !== id) return wo;
+        return {
+          ...wo,
+          limitSeconds: wo.limitSeconds + 40 * 60,
+          hasFinished: false,
+          hasWarned: false,
+        };
+      })
+    );
+    toast.success("Alarme silenciado. Próximo alarme em 40 minutos.");
+  };
+
   const resetTimer = (id: string) => {
     stopAlarm();
     setWorkOrders(
@@ -279,7 +295,7 @@ export const WorkTimer = () => {
         if (wo.id !== id) return wo;
         return {
           ...wo,
-          limitSeconds: wo.limitSeconds + 40 * 60, // extend limit by +40 min
+          limitSeconds: wo.limitSeconds + 40 * 60,
           isRunning: false,
           hasFinished: false,
           hasWarned: false,
@@ -454,7 +470,7 @@ export const WorkTimer = () => {
                     {wo.hasFinished ? (
                       <>
                         <Button
-                          onClick={() => stopAlarm()}
+                          onClick={() => silenceAlarm(wo.id)}
                           className="w-full h-9 text-xs md:text-sm font-bold bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/40 animate-pulse"
                         >
                           <AlertCircle className="w-4 h-4 mr-1 shrink-0" />
