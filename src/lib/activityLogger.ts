@@ -10,12 +10,12 @@ export const logActivity = async (
   details?: Record<string, unknown>
 ) => {
   try {
-    await supabase.from("activity_logs").insert({
+    await supabase.from("activity_logs").insert([{
       action,
       entity_type: entityType,
       entity_id: entityId || null,
       details: details || {},
-    });
+    }]);
   } catch (error) {
     console.error("Failed to log activity:", error);
   }
