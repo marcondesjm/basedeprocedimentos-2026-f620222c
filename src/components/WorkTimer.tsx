@@ -282,6 +282,12 @@ export const WorkTimer = () => {
     toast.success("Timer: +40 minutos adicionados!");
   };
 
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
+
   const getElapsed = (wo: WorkOrder): number => {
     if (!wo.isRunning || !wo.startTime) return wo.elapsedSeconds;
     const sessionElapsed = Math.floor((Date.now() - wo.startTime) / 1000);
