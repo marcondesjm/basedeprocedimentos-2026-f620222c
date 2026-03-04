@@ -86,6 +86,7 @@ const Index = () => {
   const [baseConhecimentoOpen, setBaseConhecimentoOpen] = useState(false);
   const [compartNome, setCompartNome] = useState("");
   const [compartPib, setCompartPib] = useState("");
+  const [compartPibMicro, setCompartPibMicro] = useState("");
   const [compartLink, setCompartLink] = useState("");
   const [compartAtalho, setCompartAtalho] = useState("");
   const [impressoraNome, setImpressoraNome] = useState("");
@@ -1250,6 +1251,12 @@ SUPORTE TÉCNICO HEPTA`;
                               className="text-sm h-8"
                             />
                             <Input
+                              placeholder="PIB Micro"
+                              value={compartPibMicro}
+                              onChange={(e) => setCompartPibMicro(e.target.value)}
+                              className="text-sm h-8"
+                            />
+                            <Input
                               placeholder="Compartilhamento Link"
                               value={compartLink}
                               onChange={(e) => setCompartLink(e.target.value)}
@@ -1297,6 +1304,7 @@ SUPORTE TÉCNICO HEPTA`;
                               onClick={() => {
                                 const nome = compartNome || '_________________';
                                 const pib = compartPib || '';
+                                const pibMicro = compartPibMicro || '';
                                 const link = compartLink || '';
                                 const atalho = compartAtalho || '';
                                 const nota = `EM CONTATO COM O USUÁRIO ${nome}, FOI REALIZADO ACESSO REMOTO AO MICRO E
@@ -1305,6 +1313,8 @@ FORAM EXECUTADOS OS PROCEDIMENTOS DE:
 ==================
 
 PIB: ${pib}
+
+PIB Micro: ${pibMicro}
 
 COMPARTILHAMENTO LINK: ${link}
 
