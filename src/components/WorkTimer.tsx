@@ -490,32 +490,23 @@ export const WorkTimer = () => {
                       <div className="flex gap-2">
                         <Button
                           onClick={() => toggleTimer(wo.id)}
-                          className={`flex-1 h-11 text-base font-bold shadow-lg ${!wo.isRunning ? 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-500/40' : 'bg-amber-500 hover:bg-amber-600 text-white shadow-amber-500/40'}`}
+                          className={`flex-1 h-9 text-sm font-bold shadow-md ${!wo.isRunning ? 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-500/40' : 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-500/40'}`}
                         >
-                          {wo.isRunning ? (
-                            <>
-                              <Pause className="w-5 h-5 mr-2" />
-                              Pausar
-                            </>
-                          ) : (
-                            <>
-                              <Play className="w-5 h-5 mr-2" />
-                              Iniciar
-                            </>
-                          )}
+                          <Play className="w-4 h-4 mr-1" />
+                          Iniciar
                         </Button>
                         <Button
                           onClick={() => showGuidanceForWO(wo.id)}
-                          className="flex-1 h-11 text-base font-bold bg-violet-600 hover:bg-violet-700 text-white shadow-lg shadow-violet-600/40"
+                          className="flex-1 h-9 text-sm font-bold bg-violet-600 hover:bg-violet-700 text-white shadow-md shadow-violet-600/40"
                         >
-                          <CheckCircle className="w-5 h-5 mr-2" />
+                          <CheckCircle className="w-4 h-4 mr-1" />
                           Concluir
                         </Button>
                         <Button
                           onClick={() => resetTimer(wo.id)}
-                          className="h-11 px-3 bg-blue-500 hover:bg-blue-600 text-white shadow-md shadow-blue-500/30"
+                          className="h-9 px-2.5 bg-blue-500 hover:bg-blue-600 text-white shadow-md shadow-blue-500/30"
                         >
-                          <RotateCcw className="w-5 h-5" />
+                          <RotateCcw className="w-4 h-4" />
                         </Button>
                       </div>
                     )}
