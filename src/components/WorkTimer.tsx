@@ -153,7 +153,7 @@ export const WorkTimer = () => {
       id: Date.now().toString(),
       number: newWO.trim(),
       elapsedSeconds: 0,
-      limitSeconds: 40 * 60,
+      limitSeconds: 20,
       isRunning: false,
       hasFinished: false,
       hasWarned: false,
