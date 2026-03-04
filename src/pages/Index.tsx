@@ -57,6 +57,9 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const [expandedProcedures, setExpandedProcedures] = useState<Set<string>>(new Set());
+  const [isAppUpToDate, setIsAppUpToDate] = useState(() => {
+    return localStorage.getItem('app_version') === '2.5.0';
+  });
 
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
