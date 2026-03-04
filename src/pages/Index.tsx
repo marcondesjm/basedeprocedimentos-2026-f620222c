@@ -1099,49 +1099,38 @@ ${proc.description}
                           <Badge variant="secondary" className="text-xs">{assignedProcedures.length}</Badge>
                         </div>
                         {assignedProcedures.length > 0 ? (
-                          <div className="space-y-1 mt-3">
-                            {assignedProcedures.map((proc) => {
-                              const qKey = `remota-${cat.id}-${proc.id}`;
-                              const isQOpen = expandedQueueProcs.has(qKey);
-                              return (
-                                <div key={proc.id} className="rounded border border-border/50 overflow-hidden">
+                          <div className="mt-2">
+                            <div
+                              className="flex items-center gap-2 px-2 py-1.5 cursor-pointer hover:bg-muted/50 transition-colors rounded text-sm"
+                              onClick={() => {
+                                const qKey = `remota-${cat.id}-list`;
+                                const next = new Set(expandedQueueProcs);
+                                if (next.has(qKey)) next.delete(qKey); else next.add(qKey);
+                                setExpandedQueueProcs(next);
+                              }}
+                            >
+                              <ChevronDown className={`w-3 h-3 text-muted-foreground shrink-0 transition-transform ${expandedQueueProcs.has(`remota-${cat.id}-list`) ? 'rotate-0' : '-rotate-90'}`} />
+                              <span className="text-xs font-medium text-foreground">Procedimentos</span>
+                            </div>
+                            {expandedQueueProcs.has(`remota-${cat.id}-list`) && (
+                              <div className="space-y-1 mt-1 pl-5">
+                                {assignedProcedures.map((proc) => (
                                   <div
-                                    className="flex items-center gap-2 px-2 py-1.5 cursor-pointer hover:bg-muted/50 transition-colors text-sm"
+                                    key={proc.id}
+                                    className="px-2 py-1 rounded text-xs cursor-pointer hover:bg-muted/50 transition-colors border border-border/30"
                                     onClick={() => {
-                                      const next = new Set(expandedQueueProcs);
-                                      if (next.has(qKey)) next.delete(qKey); else next.add(qKey);
-                                      setExpandedQueueProcs(next);
+                                      const updatedProcedure = { ...proc, createdAt: new Date().toISOString() };
+                                      const updatedProcedures = procedures.map(p => p.id === proc.id ? updatedProcedure : p);
+                                      setProcedures(updatedProcedures);
+                                      saveProcedures(updatedProcedures);
+                                      setSelectedProcedure(updatedProcedure);
                                     }}
                                   >
-                                    <ChevronDown className={`w-3 h-3 text-muted-foreground shrink-0 transition-transform ${isQOpen ? 'rotate-0' : '-rotate-90'}`} />
-                                    <div className="flex-1 min-w-0">
-                                      <p className="font-medium text-foreground truncate text-xs">{proc.title}</p>
-                                      <p className="text-xs text-muted-foreground truncate">{proc.description}</p>
-                                    </div>
+                                    <p className="font-medium text-foreground">{proc.title}</p>
                                   </div>
-                                  {isQOpen && (
-                                    <div className="px-3 pb-2 pt-1 border-t bg-muted/30 space-y-2">
-                                      <p className="text-xs text-foreground whitespace-pre-wrap">{proc.solution}</p>
-                                      <Button
-                                        size="sm"
-                                        variant="outline"
-                                        className="text-xs h-6"
-                                        onClick={() => {
-                                          const updatedProcedure = { ...proc, createdAt: new Date().toISOString() };
-                                          const updatedProcedures = procedures.map(p => p.id === proc.id ? updatedProcedure : p);
-                                          setProcedures(updatedProcedures);
-                                          saveProcedures(updatedProcedures);
-                                          setSelectedProcedure(updatedProcedure);
-                                        }}
-                                      >
-                                        <FileText className="w-3 h-3 mr-1" />
-                                        Abrir
-                                      </Button>
-                                    </div>
-                                  )}
-                                </div>
-                              );
-                            })}
+                                ))}
+                              </div>
+                            )}
                           </div>
                         ) : (
                           <p className="text-xs text-muted-foreground mt-1">Nenhum procedimento atribuído</p>
@@ -1883,49 +1872,38 @@ Caso ainda necessite do suporte técnico, solicitamos que registre um novo chama
                           <Badge variant="secondary" className="text-xs">{assignedProcedures.length}</Badge>
                         </div>
                         {assignedProcedures.length > 0 ? (
-                          <div className="space-y-1 mt-3">
-                            {assignedProcedures.map((proc) => {
-                              const qKey = `presencial-${cat.id}-${proc.id}`;
-                              const isQOpen = expandedQueueProcs.has(qKey);
-                              return (
-                                <div key={proc.id} className="rounded border border-border/50 overflow-hidden">
+                          <div className="mt-2">
+                            <div
+                              className="flex items-center gap-2 px-2 py-1.5 cursor-pointer hover:bg-muted/50 transition-colors rounded text-sm"
+                              onClick={() => {
+                                const qKey = `presencial-${cat.id}-list`;
+                                const next = new Set(expandedQueueProcs);
+                                if (next.has(qKey)) next.delete(qKey); else next.add(qKey);
+                                setExpandedQueueProcs(next);
+                              }}
+                            >
+                              <ChevronDown className={`w-3 h-3 text-muted-foreground shrink-0 transition-transform ${expandedQueueProcs.has(`presencial-${cat.id}-list`) ? 'rotate-0' : '-rotate-90'}`} />
+                              <span className="text-xs font-medium text-foreground">Procedimentos</span>
+                            </div>
+                            {expandedQueueProcs.has(`presencial-${cat.id}-list`) && (
+                              <div className="space-y-1 mt-1 pl-5">
+                                {assignedProcedures.map((proc) => (
                                   <div
-                                    className="flex items-center gap-2 px-2 py-1.5 cursor-pointer hover:bg-muted/50 transition-colors text-sm"
+                                    key={proc.id}
+                                    className="px-2 py-1 rounded text-xs cursor-pointer hover:bg-muted/50 transition-colors border border-border/30"
                                     onClick={() => {
-                                      const next = new Set(expandedQueueProcs);
-                                      if (next.has(qKey)) next.delete(qKey); else next.add(qKey);
-                                      setExpandedQueueProcs(next);
+                                      const updatedProcedure = { ...proc, createdAt: new Date().toISOString() };
+                                      const updatedProcedures = procedures.map(p => p.id === proc.id ? updatedProcedure : p);
+                                      setProcedures(updatedProcedures);
+                                      saveProcedures(updatedProcedures);
+                                      setSelectedProcedure(updatedProcedure);
                                     }}
                                   >
-                                    <ChevronDown className={`w-3 h-3 text-muted-foreground shrink-0 transition-transform ${isQOpen ? 'rotate-0' : '-rotate-90'}`} />
-                                    <div className="flex-1 min-w-0">
-                                      <p className="font-medium text-foreground truncate text-xs">{proc.title}</p>
-                                      <p className="text-xs text-muted-foreground truncate">{proc.description}</p>
-                                    </div>
+                                    <p className="font-medium text-foreground">{proc.title}</p>
                                   </div>
-                                  {isQOpen && (
-                                    <div className="px-3 pb-2 pt-1 border-t bg-muted/30 space-y-2">
-                                      <p className="text-xs text-foreground whitespace-pre-wrap">{proc.solution}</p>
-                                      <Button
-                                        size="sm"
-                                        variant="outline"
-                                        className="text-xs h-6"
-                                        onClick={() => {
-                                          const updatedProcedure = { ...proc, createdAt: new Date().toISOString() };
-                                          const updatedProcedures = procedures.map(p => p.id === proc.id ? updatedProcedure : p);
-                                          setProcedures(updatedProcedures);
-                                          saveProcedures(updatedProcedures);
-                                          setSelectedProcedure(updatedProcedure);
-                                        }}
-                                      >
-                                        <FileText className="w-3 h-3 mr-1" />
-                                        Abrir
-                                      </Button>
-                                    </div>
-                                  )}
-                                </div>
-                              );
-                            })}
+                                ))}
+                              </div>
+                            )}
                           </div>
                         ) : (
                           <p className="text-xs text-muted-foreground mt-1">Nenhum procedimento atribuído</p>
