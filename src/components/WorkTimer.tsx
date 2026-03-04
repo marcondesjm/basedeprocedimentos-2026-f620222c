@@ -152,7 +152,8 @@ export const WorkTimer = () => {
     const newOrder: WorkOrder = {
       id: Date.now().toString(),
       number: newWO.trim(),
-      totalSeconds: 40 * 60,
+      elapsedSeconds: 0,
+      limitSeconds: 40 * 60,
       isRunning: false,
       hasFinished: false,
       hasWarned: false,
@@ -184,7 +185,7 @@ export const WorkTimer = () => {
         id: crypto.randomUUID(),
         wo_number: wo.number,
         completed_at: now.toISOString(),
-        total_duration: wo.totalSeconds,
+        total_duration: wo.elapsedSeconds,
         images: wo.images,
         notes: woNotes || null,
       });
@@ -225,17 +226,13 @@ export const WorkTimer = () => {
     const woToComplete = workOrders.find(wo => wo.id === id);
     if (!woToComplete) return;
 
-    // Always stop alarm
     stopAlarm();
 
-    // Calculate the exact time left on the clock at this moment
-    const timeLeftOnClock = getTimeLeft(woToComplete);
+    // Save with the exact elapsed time shown on the clock
+    const elapsed = getElapsed(woToComplete);
+    const woWithTime = { ...woToComplete, elapsedSeconds: elapsed };
+    saveCompletedWorkOrder(woWithTime);
 
-    // Save to history with the exact time that was on the clock
-    const woWithExactTime = { ...woToComplete, totalSeconds: timeLeftOnClock };
-    saveCompletedWorkOrder(woWithExactTime);
-
-    // Remove from active list
     setWorkOrders(prev => prev.filter(wo => wo.id !== id));
   };
 
@@ -246,14 +243,12 @@ export const WorkTimer = () => {
         if (wo.id !== id) return wo;
         
         if (wo.isRunning) {
-          // Pausando: calcular tempo decorrido e atualizar totalSeconds
-          const elapsed = wo.startTime ? Math.floor((now - wo.startTime) / 1000) : 0;
-          const newTotal = Math.max(0, wo.totalSeconds - elapsed);
+          // Pausando: acumular tempo decorrido
+          const sessionElapsed = wo.startTime ? Math.floor((now - wo.startTime) / 1000) : 0;
           return {
             ...wo,
             isRunning: false,
-            totalSeconds: newTotal,
-            pausedTime: now,
+            elapsedSeconds: wo.elapsedSeconds + sessionElapsed,
             startTime: undefined,
           };
         } else {
@@ -273,38 +268,33 @@ export const WorkTimer = () => {
     setWorkOrders(
       workOrders.map((wo) => {
         if (wo.id !== id) return wo;
-        const currentTimeLeft = getTimeLeft(wo);
-        const newTotal = currentTimeLeft + 40 * 60;
         return {
           ...wo,
-          totalSeconds: newTotal,
+          limitSeconds: wo.limitSeconds + 40 * 60, // extend limit by +40 min
           isRunning: false,
           hasFinished: false,
           hasWarned: false,
           showGuidance: false,
           startTime: undefined,
-          pausedTime: undefined,
         };
       })
     );
     toast.success("Timer: +40 minutos adicionados!");
   };
 
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  const getElapsed = (wo: WorkOrder): number => {
+    if (!wo.isRunning || !wo.startTime) return wo.elapsedSeconds;
+    const sessionElapsed = Math.floor((Date.now() - wo.startTime) / 1000);
+    return wo.elapsedSeconds + sessionElapsed;
   };
 
-  const getTimeLeft = (wo: WorkOrder): number => {
-    if (!wo.isRunning || !wo.startTime) return wo.totalSeconds;
-    const elapsed = Math.floor((Date.now() - wo.startTime) / 1000);
-    return Math.max(0, wo.totalSeconds - elapsed);
+  const getTimeRemaining = (wo: WorkOrder): number => {
+    return Math.max(0, wo.limitSeconds - getElapsed(wo));
   };
 
   const getProgress = (wo: WorkOrder) => {
-    const timeLeft = getTimeLeft(wo);
-    return ((40 * 60 - timeLeft) / (40 * 60)) * 100;
+    const elapsed = getElapsed(wo);
+    return Math.min(100, (elapsed / wo.limitSeconds) * 100);
   };
 
   return (
