@@ -353,48 +353,6 @@ export const WorkTimer = () => {
             </Button>
           </div>
 
-          <div className="space-y-2">
-            <label htmlFor="image-upload">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => document.getElementById('image-upload')?.click()}
-                className="w-full"
-              >
-                <ImageIcon className="w-4 h-4 mr-2" />
-                Adicionar Imagens
-              </Button>
-              <input
-                id="image-upload"
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleImageUpload}
-                className="hidden"
-              />
-            </label>
-            
-            {selectedImages.length > 0 && (
-              <div className="grid grid-cols-3 gap-2">
-                {selectedImages.map((img, idx) => (
-                  <div key={idx} className="relative group">
-                    <img
-                      src={img}
-                      alt={`Preview ${idx + 1}`}
-                      className="w-full h-20 object-cover rounded-md"
-                    />
-                    <button
-                      onClick={() => removeImage(idx)}
-                      className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
         </div>
 
         {/* Lista de WOs */}
