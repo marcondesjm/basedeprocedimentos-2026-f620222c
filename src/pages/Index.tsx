@@ -80,7 +80,7 @@ const Index = () => {
   const [devPresPibMicro, setDevPresPibMicro] = useState("");
   const [presencialPibMicro, setPresencialPibMicro] = useState("");
   const [formatPibMicro, setFormatPibMicro] = useState("");
-  const [impPresPibMicro, setImpPresPibMicro] = useState("");
+  
   const [diagGenPibMicro, setDiagGenPibMicro] = useState("");
   const [sigesfPibMicro, setSigesfPibMicro] = useState("");
   const [analiseProblemasOpen, setAnaliseProblemasOpen] = useState(false);
@@ -2053,30 +2053,60 @@ SUPORTE TÉCNICO HEPTA`;
                               onChange={(e) => setImpPresNome(e.target.value)}
                               className="text-sm h-8"
                             />
-                            <Input
-                              placeholder="PIB Impressora"
-                              value={impPresPibImp}
-                              onChange={(e) => setImpPresPibImp(e.target.value)}
-                              className="text-sm h-8"
-                            />
-                            <Input
-                              placeholder="IP Impressora"
-                              value={impPresIpImp}
-                              onChange={(e) => setImpPresIpImp(e.target.value)}
-                              className="text-sm h-8"
-                            />
+                            {impPresPibImps.map((pibVal, idx) => (
+                              <div key={idx} className="flex gap-1 items-center">
+                                <Input
+                                  placeholder={`PIB Impressora ${impPresPibImps.length > 1 ? idx + 1 : ''}`}
+                                  value={pibVal}
+                                  onChange={(e) => { const u = [...impPresPibImps]; u[idx] = e.target.value; setImpPresPibImps(u); }}
+                                  className="text-sm h-8"
+                                />
+                                {idx === impPresPibImps.length - 1 && (
+                                  <Button type="button" variant="outline" size="sm" className="h-8 w-8 p-0 shrink-0" onClick={() => setImpPresPibImps([...impPresPibImps, ""])}><Plus className="w-4 h-4" /></Button>
+                                )}
+                                {impPresPibImps.length > 1 && (
+                                  <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0 shrink-0 text-destructive hover:text-destructive" onClick={() => setImpPresPibImps(impPresPibImps.filter((_, i) => i !== idx))}><X className="w-3 h-3" /></Button>
+                                )}
+                              </div>
+                            ))}
+                            {impPresIpImps.map((ipVal, idx) => (
+                              <div key={idx} className="flex gap-1 items-center">
+                                <Input
+                                  placeholder={`IP Impressora ${impPresIpImps.length > 1 ? idx + 1 : ''}`}
+                                  value={ipVal}
+                                  onChange={(e) => { const u = [...impPresIpImps]; u[idx] = e.target.value; setImpPresIpImps(u); }}
+                                  className="text-sm h-8"
+                                />
+                                {idx === impPresIpImps.length - 1 && (
+                                  <Button type="button" variant="outline" size="sm" className="h-8 w-8 p-0 shrink-0" onClick={() => setImpPresIpImps([...impPresIpImps, ""])}><Plus className="w-4 h-4" /></Button>
+                                )}
+                                {impPresIpImps.length > 1 && (
+                                  <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0 shrink-0 text-destructive hover:text-destructive" onClick={() => setImpPresIpImps(impPresIpImps.filter((_, i) => i !== idx))}><X className="w-3 h-3" /></Button>
+                                )}
+                              </div>
+                            ))}
                             <Input
                               placeholder="Setor"
                               value={impPresSetor}
                               onChange={(e) => setImpPresSetor(e.target.value)}
                               className="text-sm h-8"
                             />
-                            <Input
-                              placeholder="PIB Micro"
-                              value={impPresPibMicro}
-                              onChange={(e) => setImpPresPibMicro(e.target.value)}
-                              className="text-sm h-8"
-                            />
+                            {impPresPibMicros.map((pibVal, idx) => (
+                              <div key={idx} className="flex gap-1 items-center">
+                                <Input
+                                  placeholder={`PIB Micro ${impPresPibMicros.length > 1 ? idx + 1 : ''}`}
+                                  value={pibVal}
+                                  onChange={(e) => { const u = [...impPresPibMicros]; u[idx] = e.target.value; setImpPresPibMicros(u); }}
+                                  className="text-sm h-8"
+                                />
+                                {idx === impPresPibMicros.length - 1 && (
+                                  <Button type="button" variant="outline" size="sm" className="h-8 w-8 p-0 shrink-0" onClick={() => setImpPresPibMicros([...impPresPibMicros, ""])}><Plus className="w-4 h-4" /></Button>
+                                )}
+                                {impPresPibMicros.length > 1 && (
+                                  <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0 shrink-0 text-destructive hover:text-destructive" onClick={() => setImpPresPibMicros(impPresPibMicros.filter((_, i) => i !== idx))}><X className="w-3 h-3" /></Button>
+                                )}
+                              </div>
+                            ))}
                             <Popover>
                               <PopoverTrigger asChild>
                                 <Button variant="outline" size="sm" className="w-full border-primary/50 text-primary hover:bg-primary/10">
@@ -2115,10 +2145,13 @@ SUPORTE TÉCNICO HEPTA`;
                               onClick={() => {
                                 const data = impPresData || '__/__/202X';
                                 const nome = impPresNome || '________';
-                                const pibImp = impPresPibImp || '';
-                                const ipImp = impPresIpImp || '';
+                                const pibImps = impPresPibImps.filter(p => p.trim());
+                                const pibImpText = pibImps.length > 0 ? pibImps.join(', ') : '';
+                                const ipImps = impPresIpImps.filter(p => p.trim());
+                                const ipImpText = ipImps.length > 0 ? ipImps.join(', ') : '';
                                 const setor = impPresSetor || '________';
-                                const pibMicro = impPresPibMicro || '';
+                                const pibMicros = impPresPibMicros.filter(p => p.trim());
+                                const pibMicroText = pibMicros.length > 0 ? pibMicros.join(', ') : '';
                                 const nota = `PROCEDIMENTOS REALIZADOS DURANTE VISITA TÉCNICA NO DIA ${data}
 
 USUÁRIO: ${nome}
@@ -2127,11 +2160,11 @@ USUÁRIO: ${nome}
 
 É A PRIMEIRA INSTALAÇÃO DESTA IMPRESSORA NO SETOR? SIM ( x )    NÃO ( x )
 
-PIB Impressora: ${pibImp}
+PIB Impressora: ${pibImpText}
 
-PIB Micro: ${pibMicro}
+PIB Micro: ${pibMicroText}
 
-IP Impressora: ${ipImp}
+IP Impressora: ${ipImpText}
 
 ========================
 
