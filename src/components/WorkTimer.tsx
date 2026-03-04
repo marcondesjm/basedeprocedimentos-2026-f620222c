@@ -154,10 +154,11 @@ export const WorkTimer = () => {
       number: newWO.trim(),
       elapsedSeconds: 0,
       limitSeconds: 20,
-      isRunning: false,
+      isRunning: true,
       hasFinished: false,
       hasWarned: false,
       showGuidance: false,
+      startTime: Date.now(),
       images: selectedImages,
     };
 
