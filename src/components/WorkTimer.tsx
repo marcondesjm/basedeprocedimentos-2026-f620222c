@@ -43,7 +43,7 @@ export const WorkTimer = () => {
           const warnAt = wo.limitSeconds - 300;
           if (currentElapsed >= warnAt && currentElapsed < warnAt + 5 && !wo.hasWarned) {
             toast.warning(`⏰ WO ${wo.number}: Faltam 5 minutos!`, {
-              description: "Prepare-se para adicionar uma nova nota no sistema.",
+              description: "Prepare-se para inserir uma nota no Remedy.",
               duration: 10000,
             });
             return { ...wo, hasWarned: true };
@@ -52,9 +52,9 @@ export const WorkTimer = () => {
           // Timer atingiu o limite
           if (currentElapsed >= wo.limitSeconds && !wo.hasFinished) {
             startContinuousAlarm(wo.number);
-            toast.error(`⏰ WO ${wo.number}: Tempo Esgotado!`, {
-              description: "Adicione uma nova nota no sistema agora!",
-              duration: 15000,
+            toast.error(`⏰ WO ${wo.number}: 40 minutos atingidos!`, {
+              description: "Insira uma nota no Remedy agora!",
+              duration: 30000,
             });
             return { ...wo, isRunning: false, hasFinished: true, elapsedSeconds: currentElapsed, startTime: undefined };
           }
@@ -424,7 +424,7 @@ export const WorkTimer = () => {
                     </div>
                     <p className="text-xs md:text-sm text-muted-foreground mt-1">
                       {wo.hasFinished
-                        ? "⏰ Tempo esgotado! Adicione uma nota."
+                        ? "⏰ Insira uma nota no Remedy!"
                         : getTimeRemaining(wo) <= 300
                         ? "⚠️ Últimos 5 minutos!"
                         : wo.isRunning
