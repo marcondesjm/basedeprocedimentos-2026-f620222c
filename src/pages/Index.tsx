@@ -602,31 +602,30 @@ ${proc.description}
   return (
     <div className="min-h-screen bg-background">
       <header className="bg-gradient-primary text-white shadow-elevated">
-        <div className="container mx-auto px-6 py-6">
+        <div className="container mx-auto px-3 py-3 md:px-6 md:py-6">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
             <div>
-              <h1 className="text-3xl font-bold">Gestão de Procedimentos</h1>
-              <p className="text-white/90 mt-1">Histórico de procedimentos e soluções realizadas</p>
+              <h1 className="text-xl md:text-3xl font-bold">Gestão de Procedimentos</h1>
+              <p className="text-white/90 mt-0.5 md:mt-1 text-xs md:text-base">Histórico de procedimentos e soluções realizadas</p>
             </div>
-            <div className="flex flex-col items-end gap-1">
-              <div className="text-white/95 font-mono text-lg">
+            <div className="flex flex-col items-start md:items-end gap-1 w-full md:w-auto">
+              <div className="text-white/95 font-mono text-sm md:text-lg">
                 DATA: {format(currentDateTime, "dd/MM/yyyy, HH:mm:ss")}
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-white/70 text-xs font-mono">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-white/70 text-[10px] md:text-xs font-mono">
                   {String(__APP_VERSION__)} • Atualizado: {format(new Date(String(__BUILD_TIMESTAMP__)), "dd/MM/yyyy HH:mm")}
                 </span>
                 {isAppUpToDate ? (
-                  <Badge className="bg-emerald-500/20 text-emerald-200 border-emerald-400/30 text-xs cursor-default">
+                  <Badge className="bg-emerald-500/20 text-emerald-200 border-emerald-400/30 text-[10px] md:text-xs cursor-default">
                     ✓ Atualizado
                   </Badge>
                 ) : (
                   <Button
                     size="sm"
                     variant="ghost"
-                    className="h-6 px-2 text-xs text-amber-200 hover:text-white hover:bg-white/10 border border-amber-400/40"
+                    className="h-6 px-2 text-[10px] md:text-xs text-amber-200 hover:text-white hover:bg-white/10 border border-amber-400/40"
                     onClick={() => {
-                      // Limpar caches e recarregar
                       if ('caches' in window) {
                         caches.keys().then(names => {
                           names.forEach(name => caches.delete(name));
@@ -642,9 +641,9 @@ ${proc.description}
                 <Button
                   size="sm"
                   variant="ghost"
-                  className="h-6 px-2 text-xs text-white/70 hover:text-white hover:bg-white/10"
+                  className="h-6 px-2 text-[10px] md:text-xs text-white/70 hover:text-white hover:bg-white/10"
                   onClick={() => {
-                    const currentVersion = '2.5.0';
+                    const currentVersion = '2.6.0';
                     const savedVersion = localStorage.getItem('app_version');
                     if (savedVersion === currentVersion) {
                       setIsAppUpToDate(true);
@@ -664,7 +663,7 @@ ${proc.description}
         </div>
       </header>
 
-      <main className="container mx-auto px-6 py-8">
+      <main className="container mx-auto px-3 py-4 md:px-6 md:py-8">
         {/* Timer de Trabalho e Histórico lado a lado */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <div>
