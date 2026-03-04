@@ -27,7 +27,18 @@ export const CompletedWorkOrders = () => {
   const [loading, setLoading] = useState(true);
   const [expandedOrders, setExpandedOrders] = useState<Set<string>>(new Set());
   const [showArchive, setShowArchive] = useState(false);
+  const [expandedDays, setExpandedDays] = useState<Set<string>>(new Set());
   const [archiveSearch, setArchiveSearch] = useState("");
+
+  const toggleDay = (dateKey: string) => {
+    const newExpanded = new Set(expandedDays);
+    if (newExpanded.has(dateKey)) {
+      newExpanded.delete(dateKey);
+    } else {
+      newExpanded.add(dateKey);
+    }
+    setExpandedDays(newExpanded);
+  };
 
   useEffect(() => {
     loadHistory();
@@ -361,7 +372,15 @@ export const CompletedWorkOrders = () => {
 
                   return (
                     <div key={dateKey} className="space-y-3">
-                      <div className="flex items-center gap-2 pb-1 border-b border-border/50">
+                      <div
+                        className="flex items-center gap-2 pb-1 border-b border-border/50 cursor-pointer select-none"
+                        onClick={() => toggleDay(dateKey)}
+                      >
+                        {expandedDays.has(dateKey) ? (
+                          <ChevronUp className="w-4 h-4 text-muted-foreground" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                        )}
                         <Calendar className="w-4 h-4 text-muted-foreground" />
                         <h4 className="font-semibold text-base">
                           {format(dateObj, "dd 'de' MMMM", { locale: ptBR })}
@@ -369,7 +388,7 @@ export const CompletedWorkOrders = () => {
                         <div className="flex items-center gap-2 ml-auto">
                           {isArchive ? (
                             <Button
-                              onClick={() => restoreDay(dateKey)}
+                              onClick={(e) => { e.stopPropagation(); restoreDay(dateKey); }}
                               size="sm"
                               variant="outline"
                               className="text-xs h-7 gap-1"
@@ -380,7 +399,7 @@ export const CompletedWorkOrders = () => {
                             </Button>
                           ) : (
                             <Button
-                              onClick={() => archiveDay(dateKey)}
+                              onClick={(e) => { e.stopPropagation(); archiveDay(dateKey); }}
                               size="sm"
                               variant="outline"
                               className="text-xs h-7 gap-1"
@@ -396,6 +415,7 @@ export const CompletedWorkOrders = () => {
                         </div>
                       </div>
 
+                      {expandedDays.has(dateKey) && (
                       <div className="space-y-2 pl-4">
                         {orders.map((wo) => {
                           const isExpanded = expandedOrders.has(wo.id);
@@ -511,6 +531,7 @@ export const CompletedWorkOrders = () => {
                           );
                         })}
                       </div>
+                      )}
                     </div>
                   );
                 })}
