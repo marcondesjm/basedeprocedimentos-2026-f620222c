@@ -340,38 +340,39 @@ export const WorkTimer = () => {
         {/* Adicionar nova WO */}
         <div className="flex flex-col gap-3">
           <div className="flex gap-2">
-            <Input
-              placeholder="Digite o número da WO"
-              value={newWO}
-              onChange={(e) => {
-                const val = e.target.value;
-                if (val !== "" && /[^0-9]/.test(val.slice(-1))) {
-                  // Beep sonoro
-                  const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
-                  const osc = ctx.createOscillator();
-                  const gain = ctx.createGain();
-                  osc.connect(gain);
-                  gain.connect(ctx.destination);
-                  osc.frequency.value = 400;
-                  osc.type = "square";
-                  gain.gain.setValueAtTime(0.2, ctx.currentTime);
-                  gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
-                  osc.start(ctx.currentTime);
-                  osc.stop(ctx.currentTime + 0.3);
-                  // Pop-up alerta
-                  toast.error("⚠️ Apenas números são permitidos!", {
-                    description: "O campo de WO aceita somente números. Letras e caracteres especiais não são válidos.",
-                    duration: 4000,
-                  });
-                  return;
-                }
-                setNewWO(val.replace(/\D/g, ''));
-              }}
-              onKeyDown={(e) => e.key === "Enter" && addWorkOrder()}
-              inputMode="numeric"
-              pattern="[0-9]*"
-              className="flex-1"
-            />
+            <div className="flex-1 flex items-center rounded-md border border-input bg-background ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
+              <span className="pl-3 text-sm font-semibold text-muted-foreground select-none">WO</span>
+              <input
+                placeholder="00000"
+                value={newWO}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val !== "" && /[^0-9]/.test(val.slice(-1))) {
+                    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.frequency.value = 400;
+                    osc.type = "square";
+                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+                    osc.start(ctx.currentTime);
+                    osc.stop(ctx.currentTime + 0.3);
+                    toast.error("⚠️ Apenas números são permitidos!", {
+                      description: "O campo de WO aceita somente números. Letras e caracteres especiais não são válidos.",
+                      duration: 4000,
+                    });
+                    return;
+                  }
+                  setNewWO(val.replace(/\D/g, ''));
+                }}
+                onKeyDown={(e) => e.key === "Enter" && addWorkOrder()}
+                inputMode="numeric"
+                pattern="[0-9]*"
+                className="flex-1 h-10 bg-transparent px-2 py-2 text-base md:text-sm placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+              />
+            </div>
             <Button onClick={addWorkOrder} className="shrink-0">
               <Plus className="w-4 h-4 mr-2" />
               Adicionar
