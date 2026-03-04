@@ -56,7 +56,7 @@ export const WorkTimer = () => {
               description: "Insira uma nota no Remedy agora!",
               duration: 30000,
             });
-            return { ...wo, isRunning: false, hasFinished: true, elapsedSeconds: currentElapsed, startTime: undefined };
+            return { ...wo, hasFinished: true };
           }
 
           return wo;
