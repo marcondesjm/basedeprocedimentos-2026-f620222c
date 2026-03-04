@@ -215,10 +215,19 @@ export const WorkTimer = () => {
   };
 
   const showGuidanceForWO = (id: string) => {
-    // Show guidance before completing
-    setWorkOrders(workOrders.map(wo => 
-      wo.id === id ? { ...wo, showGuidance: true, isRunning: false } : wo
-    ));
+    const now = Date.now();
+    setWorkOrders(workOrders.map(wo => {
+      if (wo.id !== id) return wo;
+      // Accumulate elapsed time before stopping
+      const sessionElapsed = wo.isRunning && wo.startTime ? Math.floor((now - wo.startTime) / 1000) : 0;
+      return {
+        ...wo,
+        showGuidance: true,
+        isRunning: false,
+        elapsedSeconds: wo.elapsedSeconds + sessionElapsed,
+        startTime: undefined,
+      };
+    }));
     stopAlarm();
   };
 
