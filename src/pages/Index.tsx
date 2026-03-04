@@ -113,8 +113,10 @@ const Index = () => {
   const [formatIp, setFormatIp] = useState("");
   const [formatData, setFormatData] = useState("");
   const [impPresNome, setImpPresNome] = useState("");
-  const [impPresPibImp, setImpPresPibImp] = useState("");
-  const [impPresIpImp, setImpPresIpImp] = useState("");
+  const [impPresPibImps, setImpPresPibImps] = useState<string[]>([""]);
+  const [impPresIpImps, setImpPresIpImps] = useState<string[]>([""]);
+  const [impPresPibMicros, setImpPresPibMicros] = useState<string[]>([""]);
+
   const [impPresData, setImpPresData] = useState("");
   const [impPresSetor, setImpPresSetor] = useState("");
   const [diagGenNome, setDiagGenNome] = useState("");
