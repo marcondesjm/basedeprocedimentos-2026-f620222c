@@ -99,8 +99,8 @@ const Index = () => {
   const [compartAtalho, setCompartAtalho] = useState("");
   const [impressoraNome, setImpressoraNome] = useState("");
   const [impressoraPibImps, setImpressoraPibImps] = useState<string[]>([""]);
-  const [impressoraIpImp, setImpressoraIpImp] = useState("");
-  const [impressoraPibMicro, setImpressoraPibMicro] = useState("");
+  const [impressoraIpImps, setImpressoraIpImps] = useState<string[]>([""]);
+  const [impressoraPibMicros, setImpressoraPibMicros] = useState<string[]>([""]);
   const [conclusaoNome, setConclusaoNome] = useState("");
   const [conclusaoPib, setConclusaoPib] = useState("");
   const [conclusaoPibMicro, setConclusaoPibMicro] = useState("");
