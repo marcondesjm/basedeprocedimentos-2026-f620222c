@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { logActivity } from "@/lib/activityLogger";
+import { isValidWONumber } from "@/lib/security";
 import { Clock, Play, RotateCcw, AlertCircle, Plus, Trash2, CheckCircle, Image as ImageIcon, X, Info, ChevronDown, ChevronUp } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { format } from "date-fns";
@@ -139,8 +140,16 @@ export const WorkTimer = () => {
   };
 
   const addWorkOrder = () => {
-    if (!newWO.trim()) {
+    const woNumber = newWO.trim();
+    if (!woNumber) {
       toast.error("Digite o número da WO");
+      return;
+    }
+
+    if (!isValidWONumber(woNumber)) {
+      toast.error("Número de WO inválido", {
+        description: "Use apenas dígitos (máximo 20 caracteres).",
+      });
       return;
     }
 
