@@ -56,6 +56,7 @@ const Index = () => {
   const [procedures, setProcedures] = useState<Procedure[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
+  const [expandedProcedures, setExpandedProcedures] = useState<Set<string>>(new Set());
 
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
