@@ -324,169 +324,203 @@ export const CompletedWorkOrders = () => {
     );
   }
 
-  const renderOrderList = (dates: string[], data: HistoryByDate, isArchive: boolean) => (
-    <div className="space-y-6">
-      {dates.map((dateKey) => {
-        const orders = data[dateKey];
-        const dateObj = new Date(dateKey + 'T12:00:00');
-        
-        return (
-          <div key={dateKey} className="space-y-3">
-            <div className="flex items-center gap-2 pb-2 border-b border-border/50">
-              <Calendar className="w-4 h-4 text-primary" />
-              <h3 className="font-semibold text-lg">
-                {format(dateObj, "dd 'de' MMMM 'de' yyyy", { locale: ptBR })}
-              </h3>
-              <div className="flex items-center gap-2 ml-auto">
-                {isArchive ? (
-                  <Button
-                    onClick={() => restoreDay(dateKey)}
-                    size="sm"
-                    variant="outline"
-                    className="text-xs h-7 gap-1"
-                    title="Restaurar dia inteiro"
-                  >
-                    <RotateCcw className="w-3 h-3" />
-                    Restaurar dia
-                  </Button>
-                ) : (
-                  <Button
-                    onClick={() => archiveDay(dateKey)}
-                    size="sm"
-                    variant="outline"
-                    className="text-xs h-7 gap-1"
-                    title="Arquivar dia inteiro"
-                  >
-                    <Archive className="w-3 h-3" />
-                    Arquivar dia
-                  </Button>
-                )}
-                <Badge variant="secondary">
-                  {orders.length} {orders.length === 1 ? 'chamado' : 'chamados'}
+  const renderOrderList = (dates: string[], data: HistoryByDate, isArchive: boolean) => {
+    // Group dates by month
+    const monthGroups: { [monthKey: string]: string[] } = {};
+    dates.forEach((dateKey) => {
+      const monthKey = dateKey.substring(0, 7); // yyyy-MM
+      if (!monthGroups[monthKey]) monthGroups[monthKey] = [];
+      monthGroups[monthKey].push(dateKey);
+    });
+
+    const sortedMonths = Object.keys(monthGroups).sort((a, b) => b.localeCompare(a));
+
+    return (
+      <div className="space-y-8">
+        {sortedMonths.map((monthKey) => {
+          const monthDates = monthGroups[monthKey];
+          const monthDate = new Date(monthKey + '-15');
+          const totalMonthOrders = monthDates.reduce((sum, dk) => sum + (data[dk]?.length || 0), 0);
+
+          return (
+            <div key={monthKey} className="space-y-4">
+              <div className="flex items-center gap-2 pb-2 border-b-2 border-primary/30">
+                <Calendar className="w-5 h-5 text-primary" />
+                <h3 className="font-bold text-lg capitalize">
+                  {format(monthDate, "MMMM 'de' yyyy", { locale: ptBR })}
+                </h3>
+                <Badge variant="default" className="ml-auto">
+                  {totalMonthOrders} {totalMonthOrders === 1 ? 'chamado' : 'chamados'}
                 </Badge>
               </div>
-            </div>
-            
-            <div className="space-y-2 pl-4">
-              {orders.map((wo) => {
-                const isExpanded = expandedOrders.has(wo.id);
-                const completedDate = new Date(wo.completed_at);
-                
-                return (
-                  <Card key={wo.id} className="p-4 hover:shadow-md transition-shadow">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1 space-y-2">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <Badge variant="outline" className="font-mono">
-                            WO {wo.wo_number}
-                          </Badge>
-                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                            <Clock className="w-4 h-4" />
-                            {format(completedDate, "HH:mm", { locale: ptBR })}
-                          </div>
-                          <Badge variant="secondary">
-                            {formatDuration(wo.total_duration)}
-                          </Badge>
-                          {wo.images && wo.images.length > 0 && (
-                            <Badge variant="outline" className="gap-1">
-                              <ImageIcon className="w-3 h-3" />
-                              {wo.images.length}
-                            </Badge>
-                          )}
-                        </div>
 
-                        {isExpanded && (
-                          <div className="pt-2 space-y-3 border-t">
-                            {wo.notes && (
-                              <div>
-                                <p className="text-sm font-medium mb-1">Observações:</p>
-                                <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-                                  {wo.notes}
-                                </p>
-                              </div>
-                            )}
-                            
-                            {wo.images && wo.images.length > 0 && (
-                              <div>
-                                <p className="text-sm font-medium mb-2">Imagens:</p>
-                                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                                  {wo.images.map((img, idx) => (
-                                    <div
-                                      key={idx}
-                                      className="relative aspect-square rounded-lg overflow-hidden border border-border hover:border-primary cursor-pointer transition-colors"
-                                      onClick={() => downloadImage(img, wo.wo_number, idx)}
-                                    >
-                                      <img
-                                        src={img}
-                                        alt={`WO ${wo.wo_number} - Imagem ${idx + 1}`}
-                                        className="w-full h-full object-cover"
-                                      />
-                                      <div className="absolute inset-0 bg-black/0 hover:bg-black/50 transition-colors flex items-center justify-center">
-                                        <Download className="w-6 h-6 text-white opacity-0 hover:opacity-100 transition-opacity" />
-                                      </div>
+              <div className="space-y-5 pl-2">
+                {monthDates.map((dateKey) => {
+                  const orders = data[dateKey];
+                  const dateObj = new Date(dateKey + 'T12:00:00');
+
+                  return (
+                    <div key={dateKey} className="space-y-3">
+                      <div className="flex items-center gap-2 pb-1 border-b border-border/50">
+                        <Calendar className="w-4 h-4 text-muted-foreground" />
+                        <h4 className="font-semibold text-base">
+                          {format(dateObj, "dd 'de' MMMM", { locale: ptBR })}
+                        </h4>
+                        <div className="flex items-center gap-2 ml-auto">
+                          {isArchive ? (
+                            <Button
+                              onClick={() => restoreDay(dateKey)}
+                              size="sm"
+                              variant="outline"
+                              className="text-xs h-7 gap-1"
+                              title="Restaurar dia inteiro"
+                            >
+                              <RotateCcw className="w-3 h-3" />
+                              Restaurar dia
+                            </Button>
+                          ) : (
+                            <Button
+                              onClick={() => archiveDay(dateKey)}
+                              size="sm"
+                              variant="outline"
+                              className="text-xs h-7 gap-1"
+                              title="Arquivar dia inteiro"
+                            >
+                              <Archive className="w-3 h-3" />
+                              Arquivar dia
+                            </Button>
+                          )}
+                          <Badge variant="secondary">
+                            {orders.length} {orders.length === 1 ? 'chamado' : 'chamados'}
+                          </Badge>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2 pl-4">
+                        {orders.map((wo) => {
+                          const isExpanded = expandedOrders.has(wo.id);
+                          const completedDate = new Date(wo.completed_at);
+
+                          return (
+                            <Card key={wo.id} className="p-4 hover:shadow-md transition-shadow">
+                              <div className="flex items-start justify-between gap-4">
+                                <div className="flex-1 space-y-2">
+                                  <div className="flex items-center gap-2 flex-wrap">
+                                    <Badge variant="outline" className="font-mono">
+                                      WO00000{wo.wo_number}
+                                    </Badge>
+                                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                                      <Clock className="w-4 h-4" />
+                                      {format(completedDate, "HH:mm", { locale: ptBR })}
                                     </div>
-                                  ))}
+                                    <Badge variant="secondary">
+                                      {formatDuration(wo.total_duration)}
+                                    </Badge>
+                                    {wo.images && wo.images.length > 0 && (
+                                      <Badge variant="outline" className="gap-1">
+                                        <ImageIcon className="w-3 h-3" />
+                                        {wo.images.length}
+                                      </Badge>
+                                    )}
+                                  </div>
+
+                                  {isExpanded && (
+                                    <div className="pt-2 space-y-3 border-t">
+                                      {wo.notes && (
+                                        <div>
+                                          <p className="text-sm font-medium mb-1">Observações:</p>
+                                          <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                                            {wo.notes}
+                                          </p>
+                                        </div>
+                                      )}
+
+                                      {wo.images && wo.images.length > 0 && (
+                                        <div>
+                                          <p className="text-sm font-medium mb-2">Imagens:</p>
+                                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                            {wo.images.map((img, idx) => (
+                                              <div
+                                                key={idx}
+                                                className="relative aspect-square rounded-lg overflow-hidden border border-border hover:border-primary cursor-pointer transition-colors"
+                                                onClick={() => downloadImage(img, wo.wo_number, idx)}
+                                              >
+                                                <img
+                                                  src={img}
+                                                  alt={`WO ${wo.wo_number} - Imagem ${idx + 1}`}
+                                                  className="w-full h-full object-cover"
+                                                />
+                                                <div className="absolute inset-0 bg-black/0 hover:bg-black/50 transition-colors flex items-center justify-center">
+                                                  <Download className="w-6 h-6 text-white opacity-0 hover:opacity-100 transition-opacity" />
+                                                </div>
+                                              </div>
+                                            ))}
+                                          </div>
+                                        </div>
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+
+                                <div className="flex gap-1">
+                                  {((wo.notes && wo.notes.length > 0) || (wo.images && wo.images.length > 0)) && (
+                                    <Button
+                                      onClick={() => toggleExpand(wo.id)}
+                                      size="sm"
+                                      variant="ghost"
+                                    >
+                                      {isExpanded ? (
+                                        <ChevronUp className="w-4 h-4" />
+                                      ) : (
+                                        <ChevronDown className="w-4 h-4" />
+                                      )}
+                                    </Button>
+                                  )}
+                                  {isArchive ? (
+                                    <Button
+                                      onClick={() => restoreOrder(dateKey, wo.id)}
+                                      size="sm"
+                                      variant="ghost"
+                                      className="text-primary hover:text-primary hover:bg-primary/10"
+                                      title="Restaurar ao histórico"
+                                    >
+                                      <RotateCcw className="w-4 h-4" />
+                                    </Button>
+                                  ) : (
+                                    <Button
+                                      onClick={() => archiveOrder(dateKey, wo.id)}
+                                      size="sm"
+                                      variant="ghost"
+                                      className="text-amber-600 hover:text-amber-700 hover:bg-amber-50"
+                                      title="Arquivar"
+                                    >
+                                      <Archive className="w-4 h-4" />
+                                    </Button>
+                                  )}
+                                  <Button
+                                    onClick={() => deleteOrder(dateKey, wo.id, isArchive)}
+                                    size="sm"
+                                    variant="ghost"
+                                    className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
                                 </div>
                               </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="flex gap-1">
-                        {((wo.notes && wo.notes.length > 0) || (wo.images && wo.images.length > 0)) && (
-                          <Button
-                            onClick={() => toggleExpand(wo.id)}
-                            size="sm"
-                            variant="ghost"
-                          >
-                            {isExpanded ? (
-                              <ChevronUp className="w-4 h-4" />
-                            ) : (
-                              <ChevronDown className="w-4 h-4" />
-                            )}
-                          </Button>
-                        )}
-                        {isArchive ? (
-                          <Button
-                            onClick={() => restoreOrder(dateKey, wo.id)}
-                            size="sm"
-                            variant="ghost"
-                            className="text-primary hover:text-primary hover:bg-primary/10"
-                            title="Restaurar ao histórico"
-                          >
-                            <RotateCcw className="w-4 h-4" />
-                          </Button>
-                        ) : (
-                          <Button
-                            onClick={() => archiveOrder(dateKey, wo.id)}
-                            size="sm"
-                            variant="ghost"
-                            className="text-amber-600 hover:text-amber-700 hover:bg-amber-50"
-                            title="Arquivar"
-                          >
-                            <Archive className="w-4 h-4" />
-                          </Button>
-                        )}
-                        <Button
-                          onClick={() => deleteOrder(dateKey, wo.id, isArchive)}
-                          size="sm"
-                          variant="ghost"
-                          className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
+                            </Card>
+                          );
+                        })}
                       </div>
                     </div>
-                  </Card>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        );
-      })}
-    </div>
-  );
+          );
+        })}
+      </div>
+    );
+  };
 
   const allDates = Object.keys(historyByDate).sort((a, b) => b.localeCompare(a));
   const filteredArchive = getFilteredArchive();
