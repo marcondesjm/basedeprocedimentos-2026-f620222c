@@ -77,6 +77,12 @@ const Index = () => {
   const [improdOutrasPJustificativa, setImprodOutrasPJustificativa] = useState("");
   const [devPresPib, setDevPresPib] = useState("");
   const [devPresIp, setDevPresIp] = useState("");
+  const [devPresPibMicro, setDevPresPibMicro] = useState("");
+  const [presencialPibMicro, setPresencialPibMicro] = useState("");
+  const [formatPibMicro, setFormatPibMicro] = useState("");
+  const [impPresPibMicro, setImpPresPibMicro] = useState("");
+  const [diagGenPibMicro, setDiagGenPibMicro] = useState("");
+  const [sigesfPibMicro, setSigesfPibMicro] = useState("");
   const [analiseProblemasOpen, setAnaliseProblemasOpen] = useState(false);
   const [analiseChecks, setAnaliseChecks] = useState<Record<string, boolean>>({});
   const [milestoneOpen, setMilestoneOpen] = useState(false);
@@ -1740,6 +1746,12 @@ Caso ainda necessite do suporte técnico, solicitamos que registre um novo chama
                               onChange={(e) => setPresencialIp(e.target.value)}
                               className="text-sm h-8"
                             />
+                            <Input
+                              placeholder="PIB Micro"
+                              value={presencialPibMicro}
+                              onChange={(e) => setPresencialPibMicro(e.target.value)}
+                              className="text-sm h-8"
+                            />
                             <Popover>
                               <PopoverTrigger asChild>
                                 <Button variant="outline" size="sm" className="w-full border-primary/50 text-primary hover:bg-primary/10">
@@ -1779,6 +1791,7 @@ Caso ainda necessite do suporte técnico, solicitamos que registre um novo chama
                                 const nome = presencialNome || '________';
                                 const pib = presencialPib || '';
                                 const ip = presencialIp || '';
+                                const pibMicro = presencialPibMicro || '';
                                 const nota = `PROCEDIMENTOS REALIZADOS DURANTE VISITA TÉCNICA NO DIA ${data}
 
 USUÁRIO: ${nome}
@@ -1786,6 +1799,8 @@ USUÁRIO: ${nome}
 ===================
 
 PIB: ${pib}
+
+PIB Micro: ${pibMicro}
 
 IP: ${ip}
 
@@ -1836,6 +1851,12 @@ SUPORTE TÉCNICO HEPTA`;
                               onChange={(e) => setFormatIp(e.target.value)}
                               className="text-sm h-8"
                             />
+                            <Input
+                              placeholder="PIB Micro"
+                              value={formatPibMicro}
+                              onChange={(e) => setFormatPibMicro(e.target.value)}
+                              className="text-sm h-8"
+                            />
                             <Popover>
                               <PopoverTrigger asChild>
                                 <Button variant="outline" size="sm" className="w-full border-primary/50 text-primary hover:bg-primary/10">
@@ -1875,6 +1896,7 @@ SUPORTE TÉCNICO HEPTA`;
                                 const nome = formatNome || '________';
                                 const pib = formatPib || '';
                                 const ip = formatIp || '';
+                                const pibMicro = formatPibMicro || '';
                                 const nota = `PROCEDIMENTOS REALIZADOS DURANTE VISITA TÉCNICA NO DIA ${data}
 
 USUÁRIO: ${nome}
@@ -1882,6 +1904,8 @@ USUÁRIO: ${nome}
 ===================
 
 PIB: ${pib}
+
+PIB Micro: ${pibMicro}
 
 IP: ${ip}
 
@@ -1952,6 +1976,12 @@ SUPORTE TÉCNICO HEPTA`;
                               onChange={(e) => setImpPresSetor(e.target.value)}
                               className="text-sm h-8"
                             />
+                            <Input
+                              placeholder="PIB Micro"
+                              value={impPresPibMicro}
+                              onChange={(e) => setImpPresPibMicro(e.target.value)}
+                              className="text-sm h-8"
+                            />
                             <Popover>
                               <PopoverTrigger asChild>
                                 <Button variant="outline" size="sm" className="w-full border-primary/50 text-primary hover:bg-primary/10">
@@ -1993,6 +2023,7 @@ SUPORTE TÉCNICO HEPTA`;
                                 const pibImp = impPresPibImp || '';
                                 const ipImp = impPresIpImp || '';
                                 const setor = impPresSetor || '________';
+                                const pibMicro = impPresPibMicro || '';
                                 const nota = `PROCEDIMENTOS REALIZADOS DURANTE VISITA TÉCNICA NO DIA ${data}
 
 USUÁRIO: ${nome}
@@ -2002,6 +2033,8 @@ USUÁRIO: ${nome}
 É A PRIMEIRA INSTALAÇÃO DESTA IMPRESSORA NO SETOR? SIM ( x )    NÃO ( x )
 
 PIB Impressora: ${pibImp}
+
+PIB Micro: ${pibMicro}
 
 IP Impressora: ${ipImp}
 
@@ -2059,6 +2092,12 @@ SUPORTE TÉCNICO HEPTA`;
                               onChange={(e) => setDiagGenPib(e.target.value)}
                               className="text-sm h-8"
                             />
+                            <Input
+                              placeholder="PIB Micro"
+                              value={diagGenPibMicro}
+                              onChange={(e) => setDiagGenPibMicro(e.target.value)}
+                              className="text-sm h-8"
+                            />
                             <Popover>
                               <PopoverTrigger asChild>
                                 <Button variant="outline" size="sm" className="w-full border-amber-300 text-amber-700 hover:bg-amber-50">
@@ -2094,11 +2133,14 @@ SUPORTE TÉCNICO HEPTA`;
                                 const setor = diagGenSetor || '__________';
                                 const nome = diagGenNome || '_________________';
                                 const pib = diagGenPib || '';
+                                const pibMicro = diagGenPibMicro || '';
                                 const nota = `FAVOR DIRECIONAR AO SETOR ${setor}
 
 ==================
 
 PIB: ${pib}
+
+PIB Micro: ${pibMicro}
 
 ==================
 
@@ -2164,6 +2206,12 @@ SUPORTE TÉCNICO HEPTA`;
                               onChange={(e) => setSigesfIp(e.target.value)}
                               className="text-sm h-8"
                             />
+                            <Input
+                              placeholder="PIB Micro"
+                              value={sigesfPibMicro}
+                              onChange={(e) => setSigesfPibMicro(e.target.value)}
+                              className="text-sm h-8"
+                            />
                             <Popover>
                               <PopoverTrigger asChild>
                                 <Button variant="outline" size="sm" className="w-full border-amber-300 text-amber-700 hover:bg-amber-50">
@@ -2204,9 +2252,12 @@ SUPORTE TÉCNICO HEPTA`;
                                 const modelo = sigesfModelo || '';
                                 const pib = sigesfPib || '';
                                 const ip = sigesfIp || '';
+                                const pibMicro = sigesfPibMicro || '';
                                 const nota = `FAVOR DIRECIONAR A ${direcionar}
 
 DIAGNÓSTICO PRESENCIAL
+
+PIB Micro: ${pibMicro}
 
 PROCEDIMENTOS REALIZADOS DURANTE VISITA TÉCNICA NO DIA ${data}
 
@@ -2426,6 +2477,12 @@ Caso ainda necessite do suporte técnico, solicitamos que registre um novo chama
                               onChange={(e) => setDevPresIp(e.target.value)}
                               className="text-sm h-8"
                             />
+                            <Input
+                              placeholder="PIB Micro"
+                              value={devPresPibMicro}
+                              onChange={(e) => setDevPresPibMicro(e.target.value)}
+                              className="text-sm h-8"
+                            />
                             <Popover>
                               <PopoverTrigger asChild>
                                 <Button variant="outline" size="sm" className="w-full border-blue-300 text-blue-700 hover:bg-blue-50">
@@ -2463,6 +2520,7 @@ Caso ainda necessite do suporte técnico, solicitamos que registre um novo chama
                               onClick={() => {
                                 const pib = devPresPib || '';
                                 const ip = devPresIp || '';
+                                const pibMicro = devPresPibMicro || '';
                                 const nota = `FAVOR DIRECIONAR A FILA REMOTA
 
 ATENDIMENTO CONCLUIDO REMOTAMENTE
@@ -2470,6 +2528,8 @@ ATENDIMENTO CONCLUIDO REMOTAMENTE
 ===================
 
 PIB: ${pib}
+
+PIB Micro: ${pibMicro}
 
 IP: ${ip}
 
