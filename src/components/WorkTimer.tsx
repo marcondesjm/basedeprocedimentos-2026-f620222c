@@ -446,23 +446,21 @@ export const WorkTimer = () => {
                       <>
                         <Button
                           onClick={() => stopAlarm()}
-                          variant="destructive"
-                          className="w-full h-11 text-base font-bold shadow-lg shadow-destructive/30 animate-pulse"
+                          className="w-full h-11 text-base font-bold bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/40 animate-pulse"
                         >
                           <AlertCircle className="w-5 h-5 mr-2" />
                           Silenciar Alarme
                         </Button>
                         <Button
                           onClick={() => completeWorkOrder(wo.id)}
-                          className="w-full h-11 text-base font-bold bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-600/30"
+                          className="w-full h-11 text-base font-bold bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/40"
                         >
                           <CheckCircle className="w-5 h-5 mr-2" />
                           Salvar no Histórico
                         </Button>
                         <Button
                           onClick={() => resetTimer(wo.id)}
-                          variant="outline"
-                          className="w-full h-10 font-semibold border-2 border-primary/50 hover:border-primary hover:bg-primary/10"
+                          className="w-full h-10 font-semibold bg-blue-500 hover:bg-blue-600 text-white shadow-md shadow-blue-500/30"
                         >
                           <RotateCcw className="w-5 h-5 mr-2" />
                           Reiniciar (+40 min)
@@ -472,15 +470,14 @@ export const WorkTimer = () => {
                       <>
                         <Button
                           onClick={() => completeWorkOrder(wo.id)}
-                          className="w-full h-11 text-base font-bold bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-600/30"
+                          className="w-full h-11 text-base font-bold bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/40"
                         >
                           <CheckCircle className="w-5 h-5 mr-2" />
                           Salvar
                         </Button>
                         <Button
                           onClick={() => setWorkOrders(workOrders.map(w => w.id === wo.id ? { ...w, showGuidance: false } : w))}
-                          variant="outline"
-                          className="w-full h-10 font-semibold border-2 border-primary/50 hover:border-primary hover:bg-primary/10"
+                          className="w-full h-10 font-semibold bg-gray-500 hover:bg-gray-600 text-white shadow-md shadow-gray-500/30"
                         >
                           Cancelar
                         </Button>
@@ -489,8 +486,7 @@ export const WorkTimer = () => {
                       <div className="flex gap-2">
                         <Button
                           onClick={() => toggleTimer(wo.id)}
-                          variant={wo.isRunning ? "outline" : "default"}
-                          className={`flex-1 h-11 text-base font-bold ${!wo.isRunning ? 'bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-600/30' : 'border-2 border-orange-400 text-orange-600 hover:bg-orange-50'}`}
+                          className={`flex-1 h-11 text-base font-bold shadow-lg ${!wo.isRunning ? 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-500/40' : 'bg-amber-500 hover:bg-amber-600 text-white shadow-amber-500/40'}`}
                         >
                           {wo.isRunning ? (
                             <>
@@ -506,15 +502,14 @@ export const WorkTimer = () => {
                         </Button>
                         <Button
                           onClick={() => showGuidanceForWO(wo.id)}
-                          className="flex-1 h-11 text-base font-bold bg-black hover:bg-gray-800 text-white shadow-lg shadow-black/30"
+                          className="flex-1 h-11 text-base font-bold bg-violet-600 hover:bg-violet-700 text-white shadow-lg shadow-violet-600/40"
                         >
                           <CheckCircle className="w-5 h-5 mr-2" />
                           Concluir
                         </Button>
                         <Button
                           onClick={() => resetTimer(wo.id)}
-                          variant="outline"
-                          className="h-11 px-3 border-2 border-primary/50 hover:border-primary hover:bg-primary/10"
+                          className="h-11 px-3 bg-blue-500 hover:bg-blue-600 text-white shadow-md shadow-blue-500/30"
                         >
                           <RotateCcw className="w-5 h-5" />
                         </Button>
