@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search, FileText, Calendar, Tag, Download, Upload, Save, Shield, X, Copy, AlertCircle, Monitor, Users, CheckSquare, ArrowRight, ChevronDown, BookOpen } from "lucide-react";
+import { Plus, Search, FileText, Calendar, Tag, Download, Upload, Save, Shield, X, Copy, AlertCircle, Monitor, Users, CheckSquare, ArrowRight, ChevronDown, BookOpen, Mail } from "lucide-react";
 import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -88,7 +88,26 @@ const Index = () => {
       });
     };
     document.addEventListener("contextmenu", handleContextMenu);
-    return () => document.removeEventListener("contextmenu", handleContextMenu);
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        e.key === "F12" ||
+        (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) ||
+        (e.ctrlKey && e.key === "u")
+      ) {
+        e.preventDefault();
+        toast.error("⚠️ Ação bloqueada!", {
+          description: "Desenvolvido por Marcondes Jorge Machado",
+          duration: 4000,
+        });
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("contextmenu", handleContextMenu);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
   }, []);
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -3444,6 +3463,44 @@ SUPORTE TÉCNICO HEPTA`;
                   <p className="text-sm text-muted-foreground">
                     <strong className="text-violet-600">💡 Dica:</strong> Este manual é atualizado junto com o app. Consulte sempre que tiver dúvidas sobre funcionalidades ou procedimentos técnicos.
                   </p>
+                </div>
+
+                {/* Botão Contribuir */}
+                <div className="flex justify-center">
+                  <Button
+                    className="gap-2"
+                    onClick={() => {
+                      const subject = encodeURIComponent("Contribuição de Procedimento - Base de Procedimentos");
+                      const body = encodeURIComponent(
+`Olá Ticket Manager,
+
+Gostaria de contribuir com um novo procedimento para o aplicativo.
+
+TÍTULO DO PROCEDIMENTO:
+[Descreva o título aqui]
+
+CATEGORIA:
+[Ex: CONFIGURAÇÃO, INSTALAÇÃO, REDE, etc.]
+
+DESCRIÇÃO DO PROBLEMA:
+[Descreva o problema que este procedimento resolve]
+
+SOLUÇÃO / PASSO A PASSO:
+[Descreva a solução detalhada]
+
+TAGS:
+[Palavras-chave separadas por vírgula]
+
+---
+Enviado via Base de Procedimentos`
+                      );
+                      window.open(`mailto:ticketmanager@empresa.com?subject=${subject}&body=${body}`, '_blank');
+                      toast.success("Abrindo seu app de email...");
+                    }}
+                  >
+                    <Mail className="w-4 h-4" />
+                    Contribuir com Procedimento
+                  </Button>
                 </div>
               </div>
             </Card>
