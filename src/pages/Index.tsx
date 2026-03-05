@@ -1948,11 +1948,11 @@ Caso ainda necessite do suporte técnico, solicitamos que registre um novo chama
                 </div>
               </div>
             </Card>
-           </Card>
             )}
 
             {/* === FILA PRESENCIAL VIEW === */}
             {activeView === "fila-presencial" && (
+            <Card className="p-6">
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <Users className="w-6 h-6 text-primary" />
