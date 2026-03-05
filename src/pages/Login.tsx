@@ -147,6 +147,12 @@ const Login = () => {
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  // Clock
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentDateTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) navigate("/");
