@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+
+const ALLOWED_EMAILS = [
+  "suporte@gmail.com",
+  "marcondesgestaotrafego@gmail.com",
+];
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -10,22 +16,35 @@ const AuthGuard = ({ children }: AuthGuardProps) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const navigate = useNavigate();
 
+  const checkAccess = async (email: string | undefined) => {
+    if (!email || !ALLOWED_EMAILS.includes(email.toLowerCase())) {
+      toast.error("⛔ Acesso negado! Email não autorizado.");
+      await supabase.auth.signOut();
+      setIsAuthenticated(false);
+      navigate("/login");
+      return false;
+    }
+    return true;
+  };
+
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (session) {
-        setIsAuthenticated(true);
+        const allowed = await checkAccess(session.user.email);
+        if (allowed) setIsAuthenticated(true);
       } else {
         setIsAuthenticated(false);
         navigate("/login");
       }
     });
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!session) {
         setIsAuthenticated(false);
         navigate("/login");
       } else {
-        setIsAuthenticated(true);
+        const allowed = await checkAccess(session.user.email);
+        if (allowed) setIsAuthenticated(true);
       }
     });
 
