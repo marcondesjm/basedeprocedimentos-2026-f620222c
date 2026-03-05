@@ -32,6 +32,7 @@ import { CompletedWorkOrders } from "@/components/CompletedWorkOrders";
 import { Changelog } from "@/components/Changelog";
 import { ActivityLog } from "@/components/ActivityLog";
 import { logActivity } from "@/lib/activityLogger";
+import { supabase } from "@/integrations/supabase/client";
 
 type NoteType = "procedimento" | "diagnostico";
 
