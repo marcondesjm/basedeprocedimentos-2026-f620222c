@@ -164,14 +164,17 @@ const Login = () => {
       try {
         const { data } = await supabase
           .from('app_config')
-          .select('value')
+          .select('value, updated_at')
           .eq('key', 'current_version')
           .single();
-        if (data && data.value !== APP_VERSION) {
-          setIsUpToDate(false);
-          toast.info('🔄 Nova versão disponível!');
-        } else {
-          setIsUpToDate(true);
+        if (data) {
+          setLastUpdated(data.updated_at);
+          if (data.value !== APP_VERSION) {
+            setIsUpToDate(false);
+            toast.info('🔄 Nova versão disponível!');
+          } else {
+            setIsUpToDate(true);
+          }
         }
       } catch { setIsUpToDate(true); }
     };
