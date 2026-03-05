@@ -21,6 +21,7 @@ const MatrixBackground = () => {
     if (!ctx) return;
 
     let animationId: number;
+    let time = 0;
 
     const resize = () => {
       canvas.width = window.innerWidth;
@@ -29,79 +30,183 @@ const MatrixBackground = () => {
     resize();
     window.addEventListener("resize", resize);
 
-    const fontSize = 14;
-    const chars = "01";
+    const fontSize = 13;
+    const chars = "01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
     let columns = Math.floor(canvas.width / fontSize);
-    let drops: number[] = new Array(columns).fill(0).map(() => Math.random() * -100);
+    let drops: number[] = new Array(columns).fill(0).map(() => Math.random() * -80);
+    let speeds: number[] = new Array(columns).fill(0).map(() => 0.3 + Math.random() * 0.7);
 
-    window.addEventListener("resize", () => {
+    // Grid nodes for circuit pattern
+    const nodes: { x: number; y: number; pulse: number; connections: number[] }[] = [];
+    const NUM_NODES = 40;
+    for (let i = 0; i < NUM_NODES; i++) {
+      nodes.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        pulse: Math.random() * Math.PI * 2,
+        connections: [],
+      });
+    }
+    // Connect nearby nodes
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const dx = nodes[i].x - nodes[j].x;
+        const dy = nodes[i].y - nodes[j].y;
+        if (Math.sqrt(dx * dx + dy * dy) < 200) {
+          nodes[i].connections.push(j);
+        }
+      }
+    }
+
+    // Hex data blocks
+    const hexBlocks: { x: number; y: number; text: string; alpha: number; life: number }[] = [];
+
+    const addHexBlock = () => {
+      if (Math.random() < 0.02 && hexBlocks.length < 8) {
+        const hexChars = "0123456789ABCDEF";
+        let text = "0x";
+        for (let i = 0; i < 8; i++) text += hexChars[Math.floor(Math.random() * 16)];
+        hexBlocks.push({
+          x: Math.random() * (canvas.width - 100),
+          y: Math.random() * canvas.height,
+          text,
+          alpha: 0,
+          life: 0,
+        });
+      }
+    };
+
+    // Scanning line
+    let scanY = 0;
+
+    const resizeHandler = () => {
       columns = Math.floor(canvas.width / fontSize);
-      drops = new Array(columns).fill(0).map(() => Math.random() * -100);
-    });
+      drops = new Array(columns).fill(0).map(() => Math.random() * -80);
+      speeds = new Array(columns).fill(0).map(() => 0.3 + Math.random() * 0.7);
+    };
+    window.addEventListener("resize", resizeHandler);
 
     const animate = () => {
-      // Semi-transparent black to create trail effect
-      ctx.fillStyle = "rgba(0, 0, 0, 0.06)";
+      time++;
+
+      // Dark fade with slight blue tint
+      ctx.fillStyle = "rgba(0, 2, 8, 0.08)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+      // Circuit grid lines
+      ctx.lineWidth = 0.5;
+      for (const node of nodes) {
+        node.pulse += 0.02;
+        const nodeAlpha = 0.15 + Math.sin(node.pulse) * 0.1;
+
+        // Draw connections
+        for (const j of node.connections) {
+          const other = nodes[j];
+          const gradient = ctx.createLinearGradient(node.x, node.y, other.x, other.y);
+          gradient.addColorStop(0, `rgba(0, 180, 80, ${nodeAlpha * 0.3})`);
+          gradient.addColorStop(0.5, `rgba(0, 255, 120, ${nodeAlpha * 0.15})`);
+          gradient.addColorStop(1, `rgba(0, 180, 80, ${nodeAlpha * 0.3})`);
+          ctx.strokeStyle = gradient;
+          ctx.beginPath();
+          ctx.moveTo(node.x, node.y);
+          ctx.lineTo(other.x, other.y);
+          ctx.stroke();
+
+          // Traveling pulse along line
+          const pulsePos = (Math.sin(time * 0.03 + node.pulse) + 1) / 2;
+          const px = node.x + (other.x - node.x) * pulsePos;
+          const py = node.y + (other.y - node.y) * pulsePos;
+          ctx.beginPath();
+          ctx.arc(px, py, 2, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(0, 255, 120, ${nodeAlpha * 1.5})`;
+          ctx.fill();
+        }
+
+        // Node dot
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, 2 + Math.sin(node.pulse) * 1, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0, 255, 100, ${nodeAlpha})`;
+        ctx.shadowColor = "rgba(0, 255, 100, 0.5)";
+        ctx.shadowBlur = 6;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+
+      // Matrix rain columns
+      ctx.font = `${fontSize}px 'Courier New', monospace`;
       for (let i = 0; i < drops.length; i++) {
         const char = chars[Math.floor(Math.random() * chars.length)];
         const x = i * fontSize;
         const y = drops[i] * fontSize;
 
-        // Bright green head
-        const headAlpha = 0.9 + Math.random() * 0.1;
-        ctx.font = `${fontSize}px 'Courier New', monospace`;
-        ctx.fillStyle = `rgba(0, 255, 70, ${headAlpha})`;
-        ctx.fillText(char, x, y);
-
-        // Glow effect on head
-        ctx.shadowColor = "rgba(0, 255, 70, 0.6)";
-        ctx.shadowBlur = 8;
+        // Head character - bright cyan-green
+        ctx.fillStyle = `rgba(0, 255, 170, ${0.85 + Math.random() * 0.15})`;
+        ctx.shadowColor = "rgba(0, 255, 170, 0.7)";
+        ctx.shadowBlur = 10;
         ctx.fillText(char, x, y);
         ctx.shadowBlur = 0;
 
-        // Trail characters (dimmer)
-        for (let t = 1; t < 12; t++) {
+        // Trail
+        for (let t = 1; t < 18; t++) {
           const trailY = y - t * fontSize;
           if (trailY < 0) break;
-          const trailAlpha = Math.max(0, (0.5 - t * 0.04));
+          const trailAlpha = Math.max(0, 0.45 - t * 0.025);
           const trailChar = chars[Math.floor(Math.random() * chars.length)];
-          ctx.fillStyle = `rgba(0, 200, 50, ${trailAlpha})`;
+          // Color shift from green to teal in trail
+          const g = Math.floor(200 - t * 5);
+          const b = Math.floor(50 + t * 8);
+          ctx.fillStyle = `rgba(0, ${g}, ${b}, ${trailAlpha})`;
           ctx.fillText(trailChar, x, trailY);
         }
 
-        // Reset or advance
-        if (y > canvas.height && Math.random() > 0.975) {
+        if (y > canvas.height && Math.random() > 0.98) {
           drops[i] = 0;
         }
-        drops[i] += 0.6 + Math.random() * 0.4;
+        drops[i] += speeds[i];
       }
 
-      // Occasional bright flash characters
-      if (Math.random() < 0.3) {
-        const fx = Math.floor(Math.random() * columns) * fontSize;
-        const fy = Math.random() * canvas.height;
-        const flashChar = chars[Math.floor(Math.random() * chars.length)];
-        ctx.font = `${fontSize + 2}px 'Courier New', monospace`;
-        ctx.fillStyle = "rgba(180, 255, 180, 0.9)";
-        ctx.shadowColor = "rgba(0, 255, 70, 0.8)";
-        ctx.shadowBlur = 15;
-        ctx.fillText(flashChar, fx, fy);
-        ctx.shadowBlur = 0;
+      // Hex data blocks floating
+      addHexBlock();
+      for (let i = hexBlocks.length - 1; i >= 0; i--) {
+        const hb = hexBlocks[i];
+        hb.life++;
+        if (hb.life < 20) {
+          hb.alpha = hb.life / 20;
+        } else if (hb.life > 100) {
+          hb.alpha = Math.max(0, 1 - (hb.life - 100) / 30);
+        }
+        if (hb.life > 130) {
+          hexBlocks.splice(i, 1);
+          continue;
+        }
+        ctx.font = "11px 'Courier New', monospace";
+        ctx.fillStyle = `rgba(0, 200, 180, ${hb.alpha * 0.5})`;
+        ctx.fillText(hb.text, hb.x, hb.y);
+        // Border box
+        ctx.strokeStyle = `rgba(0, 200, 180, ${hb.alpha * 0.25})`;
+        ctx.lineWidth = 0.5;
+        ctx.strokeRect(hb.x - 4, hb.y - 12, 90, 16);
       }
+
+      // Horizontal scan line
+      scanY += 0.8;
+      if (scanY > canvas.height) scanY = 0;
+      ctx.fillStyle = "rgba(0, 255, 120, 0.03)";
+      ctx.fillRect(0, scanY, canvas.width, 2);
+      ctx.fillStyle = "rgba(0, 255, 120, 0.015)";
+      ctx.fillRect(0, scanY - 20, canvas.width, 40);
 
       animationId = requestAnimationFrame(animate);
     };
 
-    // Initial fill
-    ctx.fillStyle = "rgb(0, 0, 0)";
+    ctx.fillStyle = "rgb(0, 2, 8)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     animate();
 
     return () => {
       cancelAnimationFrame(animationId);
       window.removeEventListener("resize", resize);
+      window.removeEventListener("resize", resizeHandler);
     };
   }, []);
 
@@ -109,7 +214,7 @@ const MatrixBackground = () => {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 w-full h-full"
-      style={{ background: "rgb(0, 0, 0)" }}
+      style={{ background: "rgb(0, 2, 8)" }}
     />
   );
 };
