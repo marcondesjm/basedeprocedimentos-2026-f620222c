@@ -560,24 +560,8 @@ const Login = () => {
 
   const handleForceSync = async () => {
     setIsSyncing(true);
-    try {
-      const { data } = await supabase
-        .from('app_config')
-        .select('value')
-        .eq('key', 'current_version')
-        .single();
-      if (data && data.value !== APP_VERSION) {
-        toast.info('Nova versão detectada! Limpando cache...');
-        await handleClearCache();
-      } else {
-        setIsUpToDate(true);
-        toast.success('✅ App já está atualizado!');
-        setIsSyncing(false);
-      }
-    } catch {
-      toast.error('Erro ao verificar versão');
-      setIsSyncing(false);
-    }
+    toast.info('🔄 Limpando cache e atualizando...');
+    await handleClearCache();
   };
 
   const handleEmailLogin = async (e: React.FormEvent) => {
@@ -651,16 +635,6 @@ const Login = () => {
             >
               <RefreshCw className={`w-3 h-3 ${isSyncing ? 'animate-spin' : ''}`} />
               Verificar
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleClearCache}
-              disabled={isSyncing}
-              className="h-6 sm:h-7 px-1.5 sm:px-2 text-white hover:bg-white/10 text-[10px] sm:text-xs gap-1"
-            >
-              <Trash2 className="w-3 h-3" />
-              Limpar Cache
             </Button>
           </div>
         </div>
