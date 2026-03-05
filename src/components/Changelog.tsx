@@ -85,7 +85,6 @@ export const Changelog = () => {
           ) : (
             <ChevronDown className="w-5 h-5 text-muted-foreground" />
           )}
-          )}
         </div>
       </div>
 
