@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.78.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -16,19 +16,27 @@ serve(async (req) => {
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
   );
 
-  // Check if user already exists
-  const { data: users } = await supabaseAdmin.auth.admin.listUsers();
-  const exists = users?.users?.some((u: any) => u.email === "suporte@gmail.com");
+  const { email, password } = await req.json();
 
-  if (exists) {
-    return new Response(JSON.stringify({ message: "User already exists" }), {
+  const { data: users } = await supabaseAdmin.auth.admin.listUsers();
+  const existingUser = users?.users?.find((u: any) => u.email === email);
+
+  if (existingUser) {
+    const { error } = await supabaseAdmin.auth.admin.updateUserById(existingUser.id, { password });
+    if (error) {
+      return new Response(JSON.stringify({ error: error.message }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    return new Response(JSON.stringify({ message: "Password updated" }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 
   const { data, error } = await supabaseAdmin.auth.admin.createUser({
-    email: "suporte@gmail.com",
-    password: "hepta123",
+    email,
+    password,
     email_confirm: true,
   });
 
