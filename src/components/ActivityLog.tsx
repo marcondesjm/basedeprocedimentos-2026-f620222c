@@ -36,10 +36,9 @@ export const ActivityLog = () => {
   const [isOpen, setIsOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const getViewport = () => scrollRef.current?.querySelector<HTMLDivElement>('[data-radix-scroll-area-viewport]');
-  const scrollToTop = () => getViewport()?.scrollTo({ top: 0, behavior: 'smooth' });
+  const scrollToTop = () => scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   const scrollToBottom = () => {
-    const vp = getViewport();
+    const vp = scrollRef.current;
     if (vp) vp.scrollTo({ top: vp.scrollHeight, behavior: 'smooth' });
   };
 
@@ -106,7 +105,7 @@ export const ActivityLog = () => {
 
       {isOpen && (
         <div className="relative mt-4">
-          <ScrollArea className="max-h-[400px]" ref={scrollRef}>
+          <div ref={scrollRef} className="max-h-[400px] overflow-y-auto pr-2">
             {logs.length === 0 ? (
               <p className="text-center text-muted-foreground text-sm py-4">
                 Nenhuma atividade registrada ainda
@@ -144,7 +143,7 @@ export const ActivityLog = () => {
                 ))}
               </div>
             )}
-          </ScrollArea>
+          </div>
           {logs.length > 3 && (
             <div className="absolute right-2 bottom-2 flex flex-col gap-1">
               <Button
