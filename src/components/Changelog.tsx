@@ -43,6 +43,20 @@ const versions: VersionEntry[] = [
 export const Changelog = () => {
   const [isOpen, setIsOpen] = useState(false);
 
+  const handleDownloadChangelog = () => {
+    const lines = versions.map((v) => {
+      const header = `${v.version} - ${v.date}`;
+      const changes = v.changes.map((c) => `  • ${c}`).join("\n");
+      return `${header}\n${changes}`;
+    });
+    const content = "LOG DE MODIFICAÇÕES\n\n" + lines.join("\n\n");
+    const blob = new Blob(["\ufeff" + content], { type: "text/plain;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `changelog_${format(new Date(), "yyyy-MM-dd_HHmm")}.txt`;
+    link.click();
+  };
+
   return (
     <Card className="p-4 md:p-6 bg-gradient-to-br from-muted/30 to-muted/50 border-muted-foreground/10">
       <div
@@ -54,11 +68,23 @@ export const Changelog = () => {
           <h2 className="text-lg font-bold">Log de Modificações</h2>
         </div>
         <div className="flex items-center gap-2">
+          {isOpen && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 px-2 text-xs gap-1"
+              onClick={(e) => { e.stopPropagation(); handleDownloadChangelog(); }}
+            >
+              <Download className="w-3 h-3" />
+              Salvar
+            </Button>
+          )}
           <Badge variant="outline">{versions.length} versões</Badge>
           {isOpen ? (
             <ChevronUp className="w-5 h-5 text-muted-foreground" />
           ) : (
             <ChevronDown className="w-5 h-5 text-muted-foreground" />
+          )}
           )}
         </div>
       </div>
