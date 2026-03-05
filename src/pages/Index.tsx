@@ -33,6 +33,8 @@ import { Changelog } from "@/components/Changelog";
 import { ActivityLog } from "@/components/ActivityLog";
 import { logActivity } from "@/lib/activityLogger";
 import { supabase } from "@/integrations/supabase/client";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/AppSidebar";
 
 type NoteType = "procedimento" | "diagnostico";
 
