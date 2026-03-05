@@ -318,7 +318,6 @@ const Login = () => {
               Limpar Cache
             </Button>
           </div>
-          </div>
         </div>
 
         {/* Login Card */}
