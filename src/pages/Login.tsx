@@ -60,97 +60,216 @@ const MatrixBackground = () => {
     let drops: number[] = new Array(columns).fill(0).map(() => Math.random() * -80);
     let speeds: number[] = new Array(columns).fill(0).map(() => 0.3 + Math.random() * 0.7);
 
-    // Grid nodes for circuit pattern
-    const nodes: { x: number; y: number; pulse: number; connections: number[] }[] = [];
-    const NUM_NODES = 40;
-    for (let i = 0; i < NUM_NODES; i++) {
-      nodes.push({
+    // === SPACE GAME ===
+    const ship = { x: canvas.width / 2, y: canvas.height / 2, angle: 0, thrustAlpha: 0 };
+    const lasers: { x: number; y: number; vx: number; vy: number; life: number }[] = [];
+    const enemies: { x: number; y: number; vx: number; vy: number; size: number; hp: number; type: number }[] = [];
+    const particles: { x: number; y: number; vx: number; vy: number; life: number; color: string; size: number }[] = [];
+    const stars: { x: number; y: number; size: number; brightness: number; speed: number }[] = [];
+    let score = 0;
+    let lastShot = 0;
+    let autoShootTimer = 0;
+
+    // Generate stars
+    for (let i = 0; i < 100; i++) {
+      stars.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        pulse: Math.random() * Math.PI * 2,
-        connections: [],
+        size: 0.5 + Math.random() * 1.5,
+        brightness: 0.3 + Math.random() * 0.7,
+        speed: 0.1 + Math.random() * 0.3,
       });
     }
-    // Connect nearby nodes
-    for (let i = 0; i < nodes.length; i++) {
-      for (let j = i + 1; j < nodes.length; j++) {
-        const dx = nodes[i].x - nodes[j].x;
-        const dy = nodes[i].y - nodes[j].y;
-        if (Math.sqrt(dx * dx + dy * dy) < 200) {
-          nodes[i].connections.push(j);
-        }
-      }
-    }
 
-    // Hex data blocks
-    const hexBlocks: { x: number; y: number; text: string; alpha: number; life: number }[] = [];
-
-    const addHexBlock = () => {
-      if (Math.random() < 0.02 && hexBlocks.length < 8) {
-        const hexChars = "0123456789ABCDEF";
-        let text = "0x";
-        for (let i = 0; i < 8; i++) text += hexChars[Math.floor(Math.random() * 16)];
-        hexBlocks.push({
-          x: Math.random() * (canvas.width - 100),
-          y: Math.random() * canvas.height,
-          text,
-          alpha: 0,
-          life: 0,
+    // Spawn enemies
+    const spawnEnemy = () => {
+      if (enemies.length < 12) {
+        const side = Math.floor(Math.random() * 4);
+        let ex = 0, ey = 0;
+        if (side === 0) { ex = Math.random() * canvas.width; ey = -30; }
+        else if (side === 1) { ex = canvas.width + 30; ey = Math.random() * canvas.height; }
+        else if (side === 2) { ex = Math.random() * canvas.width; ey = canvas.height + 30; }
+        else { ex = -30; ey = Math.random() * canvas.height; }
+        const speed = 0.5 + Math.random() * 1.5;
+        const angle = Math.atan2(canvas.height / 2 - ey, canvas.width / 2 - ex) + (Math.random() - 0.5) * 1;
+        enemies.push({
+          x: ex, y: ey,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          size: 8 + Math.random() * 12,
+          hp: 1,
+          type: Math.floor(Math.random() * 3),
         });
       }
     };
 
-    // Code snippets floating in background
+    const explode = (x: number, y: number, count: number, color: string) => {
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 1 + Math.random() * 3;
+        particles.push({
+          x, y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          life: 30 + Math.random() * 20,
+          color,
+          size: 1 + Math.random() * 2,
+        });
+      }
+    };
+
+    const shootLaser = () => {
+      if (time - lastShot < 8) return;
+      lastShot = time;
+      const speed = 8;
+      lasers.push({
+        x: ship.x + Math.cos(ship.angle) * 18,
+        y: ship.y + Math.sin(ship.angle) * 18,
+        vx: Math.cos(ship.angle) * speed,
+        vy: Math.sin(ship.angle) * speed,
+        life: 60,
+      });
+    };
+
+    // Click to shoot
+    const onClick = () => shootLaser();
+    document.addEventListener("click", onClick);
+
+    // Code snippets
     const codeSnippets = [
-      "const init = () => {",
-      "  await fetch('/api/data');",
-      "if (status === 200) {",
-      "  return response.json();",
-      "export default App;",
-      "import React from 'react';",
-      "const [state, setState] =",
-      "  useState<boolean>(false);",
-      "async function loadData() {",
-      "  const result = await db",
-      "    .query('SELECT * FROM');",
-      "try { connect(); }",
-      "catch (err) { log(err); }",
-      "socket.on('message', cb);",
-      "router.get('/health', ok);",
-      "npm install --save-dev",
-      "docker compose up -d",
-      "git push origin main",
-      "CREATE TABLE users (",
-      "  id SERIAL PRIMARY KEY",
-      ");",
-      "console.log('deployed');",
-      "useEffect(() => {}, []);",
-      "interface Props { id: string }",
-      "type Response = { ok: bool }",
-      "kubectl apply -f deploy.yml",
-      "ssh root@192.168.1.100",
-      "sudo systemctl restart",
-      "ping -c 4 10.0.0.1",
-      "chmod 755 ./script.sh",
+      "const init = () => {", "  await fetch('/api/data');", "if (status === 200) {",
+      "  return response.json();", "export default App;", "import React from 'react';",
+      "async function loadData() {", "  const result = await db", "try { connect(); }",
+      "socket.on('message', cb);", "router.get('/health', ok);", "npm install --save-dev",
+      "docker compose up -d", "git push origin main", "CREATE TABLE users (",
+      "console.log('deployed');", "useEffect(() => {}, []);", "kubectl apply -f deploy.yml",
+      "ssh root@192.168.1.100", "chmod 755 ./script.sh",
     ];
     const codeLines: { x: number; y: number; text: string; alpha: number; speed: number; fontSize: number }[] = [];
 
     const addCodeLine = () => {
-      if (Math.random() < 0.025 && codeLines.length < 15) {
-        const snippet = codeSnippets[Math.floor(Math.random() * codeSnippets.length)];
+      if (Math.random() < 0.02 && codeLines.length < 12) {
         codeLines.push({
-          x: Math.random() * (canvas.width - 200),
-          y: -20,
-          text: snippet,
-          alpha: 0.12 + Math.random() * 0.15,
-          speed: 0.15 + Math.random() * 0.35,
+          x: Math.random() * (canvas.width - 200), y: -20,
+          text: codeSnippets[Math.floor(Math.random() * codeSnippets.length)],
+          alpha: 0.1 + Math.random() * 0.12, speed: 0.15 + Math.random() * 0.3,
           fontSize: 10 + Math.floor(Math.random() * 3),
         });
       }
     };
 
-    // Scanning line
     let scanY = 0;
+
+    const drawShip = (x: number, y: number, angle: number) => {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(angle);
+
+      // Engine glow
+      ship.thrustAlpha = 0.5 + Math.sin(time * 0.3) * 0.3;
+      const engineGrad = ctx.createRadialGradient(-12, 0, 0, -12, 0, 20);
+      engineGrad.addColorStop(0, `rgba(0, 200, 255, ${ship.thrustAlpha * 0.6})`);
+      engineGrad.addColorStop(0.5, `rgba(0, 100, 255, ${ship.thrustAlpha * 0.3})`);
+      engineGrad.addColorStop(1, "transparent");
+      ctx.fillStyle = engineGrad;
+      ctx.fillRect(-32, -20, 20, 40);
+
+      // Ship body
+      ctx.beginPath();
+      ctx.moveTo(20, 0);
+      ctx.lineTo(-12, -10);
+      ctx.lineTo(-8, 0);
+      ctx.lineTo(-12, 10);
+      ctx.closePath();
+      ctx.fillStyle = "rgba(0, 255, 200, 0.8)";
+      ctx.shadowColor = "rgba(0, 255, 200, 0.6)";
+      ctx.shadowBlur = 15;
+      ctx.fill();
+      ctx.strokeStyle = "rgba(0, 255, 255, 0.9)";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      // Cockpit
+      ctx.beginPath();
+      ctx.arc(6, 0, 3, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+      ctx.fill();
+
+      // Wings
+      ctx.beginPath();
+      ctx.moveTo(-5, -10);
+      ctx.lineTo(-14, -18);
+      ctx.lineTo(-10, -10);
+      ctx.closePath();
+      ctx.fillStyle = "rgba(0, 200, 180, 0.6)";
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(-5, 10);
+      ctx.lineTo(-14, 18);
+      ctx.lineTo(-10, 10);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.restore();
+    };
+
+    const drawEnemy = (e: { x: number; y: number; size: number; type: number }) => {
+      ctx.save();
+      ctx.translate(e.x, e.y);
+      const pulse = Math.sin(time * 0.1 + e.x) * 0.2;
+
+      if (e.type === 0) {
+        // Asteroid
+        ctx.beginPath();
+        for (let i = 0; i < 8; i++) {
+          const a = (i / 8) * Math.PI * 2;
+          const r = e.size * (0.7 + Math.sin(a * 3 + e.x) * 0.3);
+          if (i === 0) ctx.moveTo(Math.cos(a) * r, Math.sin(a) * r);
+          else ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+        }
+        ctx.closePath();
+        ctx.fillStyle = `rgba(180, 80, 60, ${0.5 + pulse})`;
+        ctx.strokeStyle = `rgba(255, 120, 80, ${0.6 + pulse})`;
+        ctx.lineWidth = 1;
+        ctx.fill();
+        ctx.stroke();
+      } else if (e.type === 1) {
+        // Enemy ship
+        ctx.rotate(time * 0.02 + e.y);
+        ctx.beginPath();
+        ctx.moveTo(0, -e.size);
+        ctx.lineTo(e.size * 0.7, e.size * 0.5);
+        ctx.lineTo(-e.size * 0.7, e.size * 0.5);
+        ctx.closePath();
+        ctx.fillStyle = `rgba(255, 50, 80, ${0.6 + pulse})`;
+        ctx.shadowColor = "rgba(255, 50, 80, 0.5)";
+        ctx.shadowBlur = 8;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = `rgba(255, 100, 120, 0.7)`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      } else {
+        // Drone (diamond)
+        ctx.rotate(time * 0.03);
+        ctx.beginPath();
+        ctx.moveTo(0, -e.size);
+        ctx.lineTo(e.size * 0.6, 0);
+        ctx.lineTo(0, e.size);
+        ctx.lineTo(-e.size * 0.6, 0);
+        ctx.closePath();
+        ctx.fillStyle = `rgba(200, 0, 255, ${0.5 + pulse})`;
+        ctx.shadowColor = "rgba(200, 0, 255, 0.5)";
+        ctx.shadowBlur = 10;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = `rgba(220, 100, 255, 0.7)`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+      ctx.restore();
+    };
 
     const resizeHandler = () => {
       columns = Math.floor(canvas.width / fontSize);
@@ -162,103 +281,32 @@ const MatrixBackground = () => {
     const animate = () => {
       time++;
 
-      // Dark fade with slight blue tint
-      ctx.fillStyle = "rgba(0, 2, 8, 0.08)";
+      // Dark fade
+      ctx.fillStyle = "rgba(0, 2, 8, 0.12)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Circuit grid lines
-      ctx.lineWidth = 0.5;
-      for (const node of nodes) {
-        node.pulse += 0.02;
-        const nodeAlpha = 0.15 + Math.sin(node.pulse) * 0.1;
-
-        // Draw connections
-        for (const j of node.connections) {
-          const other = nodes[j];
-          const gradient = ctx.createLinearGradient(node.x, node.y, other.x, other.y);
-          gradient.addColorStop(0, `rgba(0, 180, 80, ${nodeAlpha * 0.3})`);
-          gradient.addColorStop(0.5, `rgba(0, 255, 120, ${nodeAlpha * 0.15})`);
-          gradient.addColorStop(1, `rgba(0, 180, 80, ${nodeAlpha * 0.3})`);
-          ctx.strokeStyle = gradient;
-          ctx.beginPath();
-          ctx.moveTo(node.x, node.y);
-          ctx.lineTo(other.x, other.y);
-          ctx.stroke();
-
-          // Traveling pulse along line
-          const pulsePos = (Math.sin(time * 0.03 + node.pulse) + 1) / 2;
-          const px = node.x + (other.x - node.x) * pulsePos;
-          const py = node.y + (other.y - node.y) * pulsePos;
-          ctx.beginPath();
-          ctx.arc(px, py, 2, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(0, 255, 120, ${nodeAlpha * 1.5})`;
-          ctx.fill();
-        }
-
-        // Node dot
+      // Stars parallax
+      for (const star of stars) {
+        star.y += star.speed;
+        if (star.y > canvas.height) { star.y = 0; star.x = Math.random() * canvas.width; }
+        const twinkle = star.brightness * (0.7 + Math.sin(time * 0.05 + star.x) * 0.3);
         ctx.beginPath();
-        ctx.arc(node.x, node.y, 2 + Math.sin(node.pulse) * 1, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(0, 255, 100, ${nodeAlpha})`;
-        ctx.shadowColor = "rgba(0, 255, 100, 0.5)";
-        ctx.shadowBlur = 6;
+        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(200, 220, 255, ${twinkle})`;
         ctx.fill();
-        ctx.shadowBlur = 0;
       }
 
-      // Matrix rain columns
+      // Subtle matrix rain (reduced)
       ctx.font = `${fontSize}px 'Courier New', monospace`;
       for (let i = 0; i < drops.length; i++) {
+        if (Math.random() > 0.4) continue; // render fewer
         const char = chars[Math.floor(Math.random() * chars.length)];
         const x = i * fontSize;
         const y = drops[i] * fontSize;
-
-        // Head character - bright cyan-green
-        ctx.fillStyle = `rgba(0, 255, 170, ${0.85 + Math.random() * 0.15})`;
-        ctx.shadowColor = "rgba(0, 255, 170, 0.7)";
-        ctx.shadowBlur = 10;
+        ctx.fillStyle = `rgba(0, 255, 170, ${0.15 + Math.random() * 0.1})`;
         ctx.fillText(char, x, y);
-        ctx.shadowBlur = 0;
-
-        // Trail
-        for (let t = 1; t < 18; t++) {
-          const trailY = y - t * fontSize;
-          if (trailY < 0) break;
-          const trailAlpha = Math.max(0, 0.45 - t * 0.025);
-          const trailChar = chars[Math.floor(Math.random() * chars.length)];
-          // Color shift from green to teal in trail
-          const g = Math.floor(200 - t * 5);
-          const b = Math.floor(50 + t * 8);
-          ctx.fillStyle = `rgba(0, ${g}, ${b}, ${trailAlpha})`;
-          ctx.fillText(trailChar, x, trailY);
-        }
-
-        if (y > canvas.height && Math.random() > 0.98) {
-          drops[i] = 0;
-        }
+        if (y > canvas.height && Math.random() > 0.98) drops[i] = 0;
         drops[i] += speeds[i];
-      }
-
-      // Hex data blocks floating
-      addHexBlock();
-      for (let i = hexBlocks.length - 1; i >= 0; i--) {
-        const hb = hexBlocks[i];
-        hb.life++;
-        if (hb.life < 20) {
-          hb.alpha = hb.life / 20;
-        } else if (hb.life > 100) {
-          hb.alpha = Math.max(0, 1 - (hb.life - 100) / 30);
-        }
-        if (hb.life > 130) {
-          hexBlocks.splice(i, 1);
-          continue;
-        }
-        ctx.font = "11px 'Courier New', monospace";
-        ctx.fillStyle = `rgba(0, 200, 180, ${hb.alpha * 0.5})`;
-        ctx.fillText(hb.text, hb.x, hb.y);
-        // Border box
-        ctx.strokeStyle = `rgba(0, 200, 180, ${hb.alpha * 0.25})`;
-        ctx.lineWidth = 0.5;
-        ctx.strokeRect(hb.x - 4, hb.y - 12, 90, 16);
       }
 
       // Floating code snippets
@@ -266,67 +314,142 @@ const MatrixBackground = () => {
       for (let i = codeLines.length - 1; i >= 0; i--) {
         const cl = codeLines[i];
         cl.y += cl.speed;
-        if (cl.y > canvas.height + 20) {
-          codeLines.splice(i, 1);
-          continue;
-        }
+        if (cl.y > canvas.height + 20) { codeLines.splice(i, 1); continue; }
         ctx.font = `${cl.fontSize}px 'Courier New', monospace`;
         ctx.fillStyle = `rgba(0, 180, 140, ${cl.alpha})`;
         ctx.fillText(cl.text, cl.x, cl.y);
       }
 
-      // Horizontal scan line
-      scanY += 0.8;
+      // Scan line
+      scanY += 0.6;
       if (scanY > canvas.height) scanY = 0;
-      ctx.fillStyle = "rgba(0, 255, 120, 0.03)";
+      ctx.fillStyle = "rgba(0, 255, 120, 0.02)";
       ctx.fillRect(0, scanY, canvas.width, 2);
-      ctx.fillStyle = "rgba(0, 255, 120, 0.015)";
-      ctx.fillRect(0, scanY - 20, canvas.width, 40);
 
-      // Mouse interaction - ripple & repel effect
+      // === GAME LOGIC ===
+      // Ship follows mouse
       if (mouseX > 0 && mouseY > 0) {
-        // Glow circle at cursor
-        const grad = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, MOUSE_RADIUS);
-        grad.addColorStop(0, "rgba(0, 255, 180, 0.12)");
-        grad.addColorStop(0.4, "rgba(0, 200, 140, 0.05)");
-        grad.addColorStop(1, "transparent");
-        ctx.fillStyle = grad;
-        ctx.fillRect(mouseX - MOUSE_RADIUS, mouseY - MOUSE_RADIUS, MOUSE_RADIUS * 2, MOUSE_RADIUS * 2);
+        ship.x += (mouseX - ship.x) * 0.08;
+        ship.y += (mouseY - ship.y) * 0.08;
+        ship.angle = Math.atan2(mouseY - ship.y, mouseX - ship.x);
+      }
 
-        // Pulsing ring
-        const ringRadius = MOUSE_RADIUS * (0.6 + Math.sin(time * 0.08) * 0.15);
-        ctx.beginPath();
-        ctx.arc(mouseX, mouseY, ringRadius, 0, Math.PI * 2);
-        ctx.strokeStyle = `rgba(0, 255, 170, ${0.15 + Math.sin(time * 0.06) * 0.08})`;
-        ctx.lineWidth = 1;
-        ctx.stroke();
-
-        // Inner ring
-        ctx.beginPath();
-        ctx.arc(mouseX, mouseY, ringRadius * 0.5, 0, Math.PI * 2);
-        ctx.strokeStyle = "rgba(0, 255, 170, 0.08)";
-        ctx.stroke();
-
-        // Binary burst around cursor
-        ctx.font = "10px 'Courier New', monospace";
-        for (let a = 0; a < 12; a++) {
-          const angle = (a / 12) * Math.PI * 2 + time * 0.02;
-          const dist = 40 + Math.sin(time * 0.05 + a) * 20;
-          const bx = mouseX + Math.cos(angle) * dist;
-          const by = mouseY + Math.sin(angle) * dist;
-          const bchar = Math.random() > 0.5 ? "1" : "0";
-          ctx.fillStyle = `rgba(0, 255, 170, ${0.3 + Math.sin(time * 0.1 + a) * 0.15})`;
-          ctx.fillText(bchar, bx, by);
+      // Auto-shoot
+      autoShootTimer++;
+      if (autoShootTimer > 15 && enemies.length > 0) {
+        autoShootTimer = 0;
+        // Find nearest enemy
+        let nearest = enemies[0];
+        let minDist = Infinity;
+        for (const e of enemies) {
+          const d = Math.hypot(e.x - ship.x, e.y - ship.y);
+          if (d < minDist) { minDist = d; nearest = e; }
         }
+        ship.angle = Math.atan2(nearest.y - ship.y, nearest.x - ship.x);
+        shootLaser();
+      }
 
-        // Crosshair
-        ctx.strokeStyle = "rgba(0, 255, 170, 0.1)";
+      // Spawn enemies
+      if (time % 60 === 0) spawnEnemy();
+      if (time % 120 === 0 && Math.random() > 0.5) spawnEnemy();
+
+      // Update & draw lasers
+      for (let i = lasers.length - 1; i >= 0; i--) {
+        const l = lasers[i];
+        l.x += l.vx;
+        l.y += l.vy;
+        l.life--;
+        if (l.life <= 0 || l.x < -20 || l.x > canvas.width + 20 || l.y < -20 || l.y > canvas.height + 20) {
+          lasers.splice(i, 1); continue;
+        }
+        // Draw laser
+        ctx.beginPath();
+        ctx.moveTo(l.x, l.y);
+        ctx.lineTo(l.x - l.vx * 2, l.y - l.vy * 2);
+        ctx.strokeStyle = `rgba(0, 255, 255, ${0.8 * (l.life / 60)})`;
+        ctx.shadowColor = "rgba(0, 255, 255, 0.8)";
+        ctx.shadowBlur = 8;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        // Check collision with enemies
+        for (let j = enemies.length - 1; j >= 0; j--) {
+          const e = enemies[j];
+          if (Math.hypot(l.x - e.x, l.y - e.y) < e.size + 4) {
+            e.hp--;
+            lasers.splice(i, 1);
+            if (e.hp <= 0) {
+              const colors = ["rgba(255,200,50,1)", "rgba(255,100,30,1)", "rgba(0,255,200,1)"];
+              explode(e.x, e.y, 15, colors[e.type]);
+              enemies.splice(j, 1);
+              score++;
+            }
+            break;
+          }
+        }
+      }
+
+      // Update & draw enemies
+      for (let i = enemies.length - 1; i >= 0; i--) {
+        const e = enemies[i];
+        e.x += e.vx;
+        e.y += e.vy;
+        // Remove if far out of bounds
+        if (e.x < -60 || e.x > canvas.width + 60 || e.y < -60 || e.y > canvas.height + 60) {
+          enemies.splice(i, 1); continue;
+        }
+        drawEnemy(e);
+      }
+
+      // Update & draw particles
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vx *= 0.97;
+        p.vy *= 0.97;
+        p.life--;
+        if (p.life <= 0) { particles.splice(i, 1); continue; }
+        const alpha = p.life / 50;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size * alpha, 0, Math.PI * 2);
+        ctx.fillStyle = p.color.replace("1)", `${alpha})`);
+        ctx.shadowColor = p.color;
+        ctx.shadowBlur = 4;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+
+      // Draw ship
+      drawShip(ship.x, ship.y, ship.angle);
+
+      // Shield ring around ship
+      ctx.beginPath();
+      ctx.arc(ship.x, ship.y, 28 + Math.sin(time * 0.1) * 3, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(0, 255, 200, ${0.08 + Math.sin(time * 0.08) * 0.04})`;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // HUD - Score
+      ctx.font = "bold 14px 'Courier New', monospace";
+      ctx.fillStyle = "rgba(0, 255, 200, 0.5)";
+      ctx.textAlign = "left";
+      ctx.fillText(`SCORE: ${String(score).padStart(4, '0')}`, 16, 30);
+      ctx.fillText(`ENEMIES: ${enemies.length}`, 16, 48);
+
+      // Crosshair at mouse
+      if (mouseX > 0 && mouseY > 0) {
+        ctx.strokeStyle = "rgba(0, 255, 200, 0.15)";
         ctx.lineWidth = 0.5;
         ctx.beginPath();
-        ctx.moveTo(mouseX - 30, mouseY);
-        ctx.lineTo(mouseX + 30, mouseY);
-        ctx.moveTo(mouseX, mouseY - 30);
-        ctx.lineTo(mouseX, mouseY + 30);
+        ctx.arc(mouseX, mouseY, 20, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(mouseX - 8, mouseY);
+        ctx.lineTo(mouseX + 8, mouseY);
+        ctx.moveTo(mouseX, mouseY - 8);
+        ctx.lineTo(mouseX, mouseY + 8);
         ctx.stroke();
       }
 
@@ -345,6 +468,7 @@ const MatrixBackground = () => {
       document.removeEventListener("mouseleave", onMouseLeave);
       document.removeEventListener("touchmove", onTouchMove);
       document.removeEventListener("touchend", onTouchEnd);
+      document.removeEventListener("click", onClick);
     };
   }, []);
 
