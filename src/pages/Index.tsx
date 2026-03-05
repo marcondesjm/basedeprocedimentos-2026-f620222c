@@ -704,61 +704,60 @@ ${proc.description}
         
         <div className="flex-1 flex flex-col min-w-0">
           {/* Compact header */}
-          <header className="bg-gradient-primary text-white shadow-elevated">
-            <div className="px-3 py-2 md:px-6 md:py-3 flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <SidebarTrigger className="text-white hover:bg-white/10" />
-                <div>
-                  <h1 className="text-base md:text-xl font-bold">Gestão de Procedimentos</h1>
-                  <p className="text-white/80 text-[10px] md:text-xs">Sistema de Suporte Técnico</p>
+          <header className="bg-gradient-primary text-white shadow-elevated sticky top-0 z-10" role="banner">
+            <div className="px-3 py-2 md:px-6 md:py-3 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3 min-w-0">
+                <SidebarTrigger className="text-white hover:bg-white/10 shrink-0" aria-label="Abrir/fechar menu lateral" />
+                <div className="min-w-0">
+                  <h1 className="text-sm md:text-lg font-bold truncate">Gestão de Procedimentos</h1>
+                  <p className="text-white/70 text-[10px] md:text-xs truncate">Sistema de Suporte Técnico</p>
                 </div>
               </div>
-              <div className="flex flex-col items-end gap-0.5">
-                <div className="text-white/95 font-mono text-xs md:text-sm">
+              <div className="flex items-center gap-3 shrink-0">
+                <time className="text-white/90 font-mono text-[10px] md:text-sm tabular-nums" dateTime={currentDateTime.toISOString()}>
                   {format(currentDateTime, "dd/MM/yyyy, HH:mm:ss")}
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-white/60 text-[10px] font-mono hidden sm:inline">
-                    {String(__APP_VERSION__)}
-                  </span>
-                  {isAppUpToDate ? (
-                    <Badge className="bg-emerald-500/20 text-emerald-200 border-emerald-400/30 text-[10px] cursor-default">
-                      ✓ Atualizado
-                    </Badge>
-                  ) : (
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="h-5 px-1.5 text-[10px] text-amber-200 hover:text-white hover:bg-white/10 border border-amber-400/40"
-                      onClick={() => {
-                        if ('caches' in window) {
-                          caches.keys().then(names => {
-                            names.forEach(name => caches.delete(name));
-                          });
-                        }
-                        localStorage.removeItem('app_version');
-                        window.location.reload();
-                      }}
-                    >
-                      ⟳ Atualizar
-                    </Button>
-                  )}
-                </div>
+                </time>
+                <span className="text-white/50 text-[10px] font-mono hidden md:inline" aria-label="Versão do aplicativo">
+                  {String(__APP_VERSION__)}
+                </span>
+                {isAppUpToDate ? (
+                  <Badge className="bg-emerald-500/20 text-emerald-200 border-emerald-400/30 text-[10px] cursor-default hidden sm:inline-flex">
+                    ✓ Atualizado
+                  </Badge>
+                ) : (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-6 px-2 text-[10px] text-amber-200 hover:text-white hover:bg-white/10 border border-amber-400/40"
+                    onClick={() => {
+                      if ('caches' in window) {
+                        caches.keys().then(names => {
+                          names.forEach(name => caches.delete(name));
+                        });
+                      }
+                      localStorage.removeItem('app_version');
+                      window.location.reload();
+                    }}
+                    aria-label="Atualizar aplicação"
+                  >
+                    ⟳ Atualizar
+                  </Button>
+                )}
               </div>
             </div>
           </header>
 
-          <main className="flex-1 px-3 py-4 md:px-6 md:py-6 overflow-auto">
+          <main className="flex-1 px-3 py-4 md:px-6 md:py-6 overflow-auto" role="main">
             {/* === PAINEL VIEW === */}
             {activeView === "painel" && (
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <section className="space-y-6" aria-label="Painel principal">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
                   <div><WorkTimer /></div>
                   <div><CompletedWorkOrders /></div>
                   <div><ActivityLog /></div>
                   <div><Changelog /></div>
                 </div>
-              </div>
+              </section>
             )}
 
             {/* === PROCEDIMENTOS VIEW === */}
