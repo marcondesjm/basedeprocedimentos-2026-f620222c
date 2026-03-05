@@ -1,14 +1,98 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { lovable } from "@/integrations/lovable/index";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Shield } from "lucide-react";
+import { Shield, RefreshCw, Trash2 } from "lucide-react";
+
+const APP_VERSION = '2.6.0';
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [isUpToDate, setIsUpToDate] = useState<boolean | null>(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) navigate("/");
+    });
+  }, [navigate]);
+
+  useEffect(() => {
+    const checkVersion = async () => {
+      try {
+        const { data } = await supabase
+          .from('app_config')
+          .select('value')
+          .eq('key', 'current_version')
+          .single();
+        if (data && data.value !== APP_VERSION) {
+          setIsUpToDate(false);
+          toast.info('🔄 Nova versão disponível!');
+        } else {
+          setIsUpToDate(true);
+        }
+      } catch { setIsUpToDate(true); }
+    };
+    checkVersion();
+
+    const channel = supabase
+      .channel('login-version-sync')
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'app_config', filter: 'key=eq.current_version' },
+        (payload) => {
+          if (payload.new?.value !== APP_VERSION) {
+            toast.info('🔄 Atualização disponível! Recarregando...');
+            handleClearCache();
+          }
+        })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, []);
+
+  const handleClearCache = async () => {
+    setIsSyncing(true);
+    try {
+      if ('caches' in window) {
+        const names = await caches.keys();
+        await Promise.all(names.map(name => caches.delete(name)));
+      }
+      localStorage.removeItem('app_version');
+      if ('serviceWorker' in navigator) {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(registrations.map(r => r.unregister()));
+      }
+      toast.success('Cache limpo! Recarregando...', { duration: 2000 });
+      setTimeout(() => window.location.reload(), 1500);
+    } catch {
+      toast.error('Erro ao limpar cache');
+      setIsSyncing(false);
+    }
+  };
+
+  const handleForceSync = async () => {
+    setIsSyncing(true);
+    try {
+      const { data } = await supabase
+        .from('app_config')
+        .select('value')
+        .eq('key', 'current_version')
+        .single();
+      if (data && data.value !== APP_VERSION) {
+        toast.info('Nova versão detectada! Limpando cache...');
+        await handleClearCache();
+      } else {
+        setIsUpToDate(true);
+        toast.success('✅ App já está atualizado!');
+        setIsSyncing(false);
+      }
+    } catch {
+      toast.error('Erro ao verificar versão');
+      setIsSyncing(false);
+    }
+  };
 
   const handleGoogleLogin = async () => {
     setIsLoading(true);
@@ -29,7 +113,40 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-blue-800 to-slate-900 p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-900 via-blue-800 to-slate-900 p-4 gap-4">
+      {/* Version & Sync Bar */}
+      <div className="w-full max-w-md flex items-center justify-between rounded-lg bg-white/10 backdrop-blur px-4 py-2 text-white text-xs">
+        <span className="font-mono">v{APP_VERSION}</span>
+        <div className="flex items-center gap-2">
+          {isUpToDate === true && (
+            <span className="text-green-300 flex items-center gap-1">✓ Atualizado</span>
+          )}
+          {isUpToDate === false && (
+            <span className="text-yellow-300 flex items-center gap-1">⚠ Desatualizado</span>
+          )}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleForceSync}
+            disabled={isSyncing}
+            className="h-7 px-2 text-white hover:bg-white/20 text-xs gap-1"
+          >
+            <RefreshCw className={`w-3 h-3 ${isSyncing ? 'animate-spin' : ''}`} />
+            Verificar
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleClearCache}
+            disabled={isSyncing}
+            className="h-7 px-2 text-white hover:bg-white/20 text-xs gap-1"
+          >
+            <Trash2 className="w-3 h-3" />
+            Limpar Cache
+          </Button>
+        </div>
+      </div>
+
       <Card className="w-full max-w-md border-0 shadow-2xl bg-card/95 backdrop-blur">
         <CardHeader className="text-center space-y-4 pb-2">
           <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
