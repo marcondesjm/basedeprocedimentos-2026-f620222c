@@ -61,14 +61,13 @@ interface Procedure {
 }
 
 const Index = () => {
+  const APP_VERSION = String(__APP_VERSION__).replace(/^v/i, '');
   const [procedures, setProcedures] = useState<Procedure[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const [expandedProcedures, setExpandedProcedures] = useState<Set<string>>(new Set());
   const [activeView, setActiveView] = useState("painel");
-  const [isAppUpToDate, setIsAppUpToDate] = useState(() => {
-    return localStorage.getItem('app_version') === '2.5.0';
-  });
+  const [isAppUpToDate, setIsAppUpToDate] = useState(() => localStorage.getItem('app_version') === APP_VERSION);
 
   useEffect(() => {
     const handleContextMenu = (e: MouseEvent) => {
@@ -253,8 +252,6 @@ const Index = () => {
 
   // Auto-sync: verificar versão ao abrir e ouvir mudanças em tempo real
   useEffect(() => {
-    const APP_VERSION = '2.8.0';
-
     const checkVersion = async () => {
       try {
         const { data } = await supabase

@@ -9,7 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Shield, RefreshCw, Trash2, LogIn, Sun, Moon } from "lucide-react";
 
-const APP_VERSION = '2.8.0';
+const APP_VERSION = String(__APP_VERSION__).replace(/^v/i, '');
 
 const MatrixBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
