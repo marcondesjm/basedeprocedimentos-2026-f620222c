@@ -22,6 +22,9 @@ const MatrixBackground = () => {
 
     let animationId: number;
     let time = 0;
+    let mouseX = -1000;
+    let mouseY = -1000;
+    const MOUSE_RADIUS = 120;
 
     const resize = () => {
       canvas.width = window.innerWidth;
@@ -29,6 +32,27 @@ const MatrixBackground = () => {
     };
     resize();
     window.addEventListener("resize", resize);
+
+    const onMouseMove = (e: MouseEvent) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    };
+    const onMouseLeave = () => {
+      mouseX = -1000;
+      mouseY = -1000;
+    };
+    const onTouchMove = (e: TouchEvent) => {
+      mouseX = e.touches[0].clientX;
+      mouseY = e.touches[0].clientY;
+    };
+    const onTouchEnd = () => {
+      mouseX = -1000;
+      mouseY = -1000;
+    };
+    canvas.addEventListener("mousemove", onMouseMove);
+    canvas.addEventListener("mouseleave", onMouseLeave);
+    canvas.addEventListener("touchmove", onTouchMove);
+    canvas.addEventListener("touchend", onTouchEnd);
 
     const fontSize = 13;
     const chars = "01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
