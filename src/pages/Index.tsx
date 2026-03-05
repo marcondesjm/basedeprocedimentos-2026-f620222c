@@ -212,15 +212,17 @@ const Index = () => {
     // Detectar nova sessão de navegador e limpar históricos
     const isExistingSession = sessionStorage.getItem('app_session_active');
     if (!isExistingSession) {
-      // Nova sessão — limpar dados de WO history/archive
+      // Nova sessão — limpar dados de WO history/archive e logs de atividade
       const hadHistory = localStorage.getItem('workOrderHistory');
       const hadArchive = localStorage.getItem('workOrderArchive');
+      const hadLogs = localStorage.getItem('activity_logs_local');
       
-      if (hadHistory || hadArchive) {
+      if (hadHistory || hadArchive || hadLogs) {
         localStorage.removeItem('workOrderHistory');
         localStorage.removeItem('workOrderArchive');
-        toast.warning('📋 Nova sessão detectada — histórico de WOs foi limpo.', {
-          description: 'Lembre-se de importar seu backup se necessário.',
+        localStorage.removeItem('activity_logs_local');
+        toast.warning('📋 Nova sessão detectada — históricos e logs foram limpos.', {
+          description: 'Lembre-se de importar seu backup e salvar logs antes de fechar.',
           duration: 8000,
         });
       }
@@ -237,7 +239,7 @@ const Index = () => {
     // Aviso ao sair da aplicação
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       e.preventDefault();
-      e.returnValue = '⚠️ Faça backup dos seus dados antes de sair! O histórico será apagado ao abrir em outro navegador.';
+      e.returnValue = '⚠️ Salve seus logs e faça backup antes de sair! Os dados serão apagados na próxima sessão.';
     };
 
     window.addEventListener('beforeunload', handleBeforeUnload);

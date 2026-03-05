@@ -4,18 +4,9 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Activity, ChevronDown, ChevronUp, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-
-interface LogEntry {
-  id: string;
-  action: string;
-  entity_type: string;
-  entity_id: string | null;
-  details: Record<string, unknown>;
-  created_at: string;
-}
+import { getActivityLogs, type LocalLogEntry } from "@/lib/activityLogger";
 
 const actionLabels: Record<string, string> = {
   create: "Criado",
@@ -41,35 +32,20 @@ const actionColors: Record<string, string> = {
 };
 
 export const ActivityLog = () => {
-  const [logs, setLogs] = useState<LogEntry[]>([]);
+  const [logs, setLogs] = useState<LocalLogEntry[]>([]);
   const [isOpen, setIsOpen] = useState(false);
 
-  useEffect(() => {
-    fetchLogs();
-
-    const channel = supabase
-      .channel("activity_logs_realtime")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "activity_logs" },
-        () => fetchLogs()
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
-
-  const fetchLogs = async () => {
-    const { data } = await supabase
-      .from("activity_logs")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(50);
-
-    if (data) setLogs(data as unknown as LogEntry[]);
+  const refreshLogs = () => {
+    setLogs(getActivityLogs());
   };
+
+  useEffect(() => {
+    refreshLogs();
+
+    const handleUpdate = () => refreshLogs();
+    window.addEventListener("activity_log_updated", handleUpdate);
+    return () => window.removeEventListener("activity_log_updated", handleUpdate);
+  }, []);
 
   const handleDownloadLog = () => {
     if (logs.length === 0) return;
@@ -77,7 +53,7 @@ export const ActivityLog = () => {
       const date = format(new Date(log.created_at), "dd/MM/yyyy HH:mm:ss", { locale: ptBR });
       const action = actionLabels[log.action] || log.action;
       const entity = entityLabels[log.entity_type] || log.entity_type;
-      const id = log.entity_id ? (log.entity_type === "work_order" ? `WO00000${log.entity_id}` : log.entity_id) : "";
+      const id = log.entity_id || "";
       const title = (log.details as any)?.title || "";
       return `${date} | ${action} | ${entity} | ${id} | ${title}`;
     });
@@ -144,7 +120,7 @@ export const ActivityLog = () => {
                   </span>
                   {log.entity_id && (
                     <Badge variant="secondary" className="font-mono text-xs">
-                      {log.entity_type === "work_order" ? `WO00000${log.entity_id}` : log.entity_id}
+                      {log.entity_id}
                     </Badge>
                   )}
                   {log.details && (log.details as any).title && (
