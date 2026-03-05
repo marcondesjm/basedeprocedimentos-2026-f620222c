@@ -16,19 +16,26 @@ serve(async (req) => {
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
   );
 
+  const { email, password } = await req.json();
+
   // Check if user already exists
   const { data: users } = await supabaseAdmin.auth.admin.listUsers();
-  const exists = users?.users?.some((u: any) => u.email === "suporte@gmail.com");
+  const exists = users?.users?.some((u: any) => u.email === email);
 
   if (exists) {
-    return new Response(JSON.stringify({ message: "User already exists" }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    // Update password
+    const user = users?.users?.find((u: any) => u.email === email);
+    if (user) {
+      await supabaseAdmin.auth.admin.updateUser(user.id, { password });
+      return new Response(JSON.stringify({ message: "Password updated" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
   }
 
   const { data, error } = await supabaseAdmin.auth.admin.createUser({
-    email: "suporte@gmail.com",
-    password: "hepta123",
+    email,
+    password,
     email_confirm: true,
   });
 
