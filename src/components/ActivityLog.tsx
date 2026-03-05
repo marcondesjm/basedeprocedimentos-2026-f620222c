@@ -43,7 +43,6 @@ export const ActivityLog = () => {
     const viewport = scrollRef.current?.querySelector('[data-radix-scroll-area-viewport]');
     viewport?.scrollTo({ top: viewport.scrollHeight, behavior: 'smooth' });
   };
-  const [isOpen, setIsOpen] = useState(false);
 
   const refreshLogs = () => {
     setLogs(getActivityLogs());
