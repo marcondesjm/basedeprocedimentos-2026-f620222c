@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Activity, ChevronDown, ChevronUp } from "lucide-react";
+import { Activity, ChevronDown, ChevronUp, Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -67,7 +68,25 @@ export const ActivityLog = () => {
       .order("created_at", { ascending: false })
       .limit(50);
 
-    if (data) setLogs(data as LogEntry[]);
+    if (data) setLogs(data as unknown as LogEntry[]);
+  };
+
+  const handleDownloadLog = () => {
+    if (logs.length === 0) return;
+    const lines = logs.map((log) => {
+      const date = format(new Date(log.created_at), "dd/MM/yyyy HH:mm:ss", { locale: ptBR });
+      const action = actionLabels[log.action] || log.action;
+      const entity = entityLabels[log.entity_type] || log.entity_type;
+      const id = log.entity_id ? (log.entity_type === "work_order" ? `WO00000${log.entity_id}` : log.entity_id) : "";
+      const title = (log.details as any)?.title || "";
+      return `${date} | ${action} | ${entity} | ${id} | ${title}`;
+    });
+    const content = "DATA | AÇÃO | TIPO | ID | TÍTULO\n" + lines.join("\n");
+    const blob = new Blob(["\ufeff" + content], { type: "text/plain;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `log_atividades_${format(new Date(), "yyyy-MM-dd_HHmm")}.txt`;
+    link.click();
   };
 
   return (
@@ -81,6 +100,17 @@ export const ActivityLog = () => {
           <h2 className="text-lg font-bold">Log de Atividades</h2>
         </div>
         <div className="flex items-center gap-2">
+          {isOpen && logs.length > 0 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 px-2 text-xs gap-1"
+              onClick={(e) => { e.stopPropagation(); handleDownloadLog(); }}
+            >
+              <Download className="w-3 h-3" />
+              Salvar
+            </Button>
+          )}
           <Badge variant="outline">{logs.length} registros</Badge>
           {isOpen ? (
             <ChevronUp className="w-5 h-5 text-muted-foreground" />
