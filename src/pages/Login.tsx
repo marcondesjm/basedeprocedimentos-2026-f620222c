@@ -76,6 +76,55 @@ const MatrixBackground = () => {
       }
     };
 
+    // Code snippets floating in background
+    const codeSnippets = [
+      "const init = () => {",
+      "  await fetch('/api/data');",
+      "if (status === 200) {",
+      "  return response.json();",
+      "export default App;",
+      "import React from 'react';",
+      "const [state, setState] =",
+      "  useState<boolean>(false);",
+      "async function loadData() {",
+      "  const result = await db",
+      "    .query('SELECT * FROM');",
+      "try { connect(); }",
+      "catch (err) { log(err); }",
+      "socket.on('message', cb);",
+      "router.get('/health', ok);",
+      "npm install --save-dev",
+      "docker compose up -d",
+      "git push origin main",
+      "CREATE TABLE users (",
+      "  id SERIAL PRIMARY KEY",
+      ");",
+      "console.log('deployed');",
+      "useEffect(() => {}, []);",
+      "interface Props { id: string }",
+      "type Response = { ok: bool }",
+      "kubectl apply -f deploy.yml",
+      "ssh root@192.168.1.100",
+      "sudo systemctl restart",
+      "ping -c 4 10.0.0.1",
+      "chmod 755 ./script.sh",
+    ];
+    const codeLines: { x: number; y: number; text: string; alpha: number; speed: number; fontSize: number }[] = [];
+
+    const addCodeLine = () => {
+      if (Math.random() < 0.025 && codeLines.length < 15) {
+        const snippet = codeSnippets[Math.floor(Math.random() * codeSnippets.length)];
+        codeLines.push({
+          x: Math.random() * (canvas.width - 200),
+          y: -20,
+          text: snippet,
+          alpha: 0.12 + Math.random() * 0.15,
+          speed: 0.15 + Math.random() * 0.35,
+          fontSize: 10 + Math.floor(Math.random() * 3),
+        });
+      }
+    };
+
     // Scanning line
     let scanY = 0;
 
