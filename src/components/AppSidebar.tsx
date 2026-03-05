@@ -1,4 +1,4 @@
-import { Clock, FileText, Monitor, Users, CheckSquare, BookOpen, Sun, Moon, LogOut } from "lucide-react";
+import { Clock, FileText, Monitor, Users, CheckSquare, BookOpen, Sun, Moon, LogOut, RefreshCw } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
