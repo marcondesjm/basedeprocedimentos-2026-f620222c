@@ -11,7 +11,7 @@ import { Shield, RefreshCw, Trash2, LogIn } from "lucide-react";
 
 const APP_VERSION = '2.6.0';
 
-const SpaceBackground = () => {
+const MatrixBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -21,9 +21,6 @@ const SpaceBackground = () => {
     if (!ctx) return;
 
     let animationId: number;
-    const stars: { x: number; y: number; z: number; size: number }[] = [];
-    const shootingStars: { x: number; y: number; vx: number; vy: number; life: number; maxLife: number }[] = [];
-    const NUM_STARS = 300;
 
     const resize = () => {
       canvas.width = window.innerWidth;
@@ -32,92 +29,73 @@ const SpaceBackground = () => {
     resize();
     window.addEventListener("resize", resize);
 
-    for (let i = 0; i < NUM_STARS; i++) {
-      stars.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        z: Math.random() * 3 + 0.5,
-        size: Math.random() * 2 + 0.5,
-      });
-    }
+    const fontSize = 14;
+    const chars = "01";
+    let columns = Math.floor(canvas.width / fontSize);
+    let drops: number[] = new Array(columns).fill(0).map(() => Math.random() * -100);
 
-    const addShootingStar = () => {
-      if (Math.random() < 0.008) {
-        shootingStars.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height * 0.5,
-          vx: (Math.random() - 0.3) * 8,
-          vy: Math.random() * 4 + 2,
-          life: 0,
-          maxLife: 40 + Math.random() * 30,
-        });
-      }
-    };
+    window.addEventListener("resize", () => {
+      columns = Math.floor(canvas.width / fontSize);
+      drops = new Array(columns).fill(0).map(() => Math.random() * -100);
+    });
 
     const animate = () => {
-      ctx.fillStyle = "rgba(3, 7, 18, 0.15)";
+      // Semi-transparent black to create trail effect
+      ctx.fillStyle = "rgba(0, 0, 0, 0.06)";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Stars
-      stars.forEach((star) => {
-        const twinkle = 0.5 + Math.sin(Date.now() * 0.002 * star.z + star.x) * 0.5;
-        const alpha = twinkle * (star.z / 3.5);
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.size * (star.z / 3), 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(200, 220, 255, ${alpha})`;
-        ctx.fill();
+      for (let i = 0; i < drops.length; i++) {
+        const char = chars[Math.floor(Math.random() * chars.length)];
+        const x = i * fontSize;
+        const y = drops[i] * fontSize;
 
-        // Glow
-        if (star.size > 1.2) {
-          ctx.beginPath();
-          ctx.arc(star.x, star.y, star.size * 2, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(150, 180, 255, ${alpha * 0.15})`;
-          ctx.fill();
+        // Bright green head
+        const headAlpha = 0.9 + Math.random() * 0.1;
+        ctx.font = `${fontSize}px 'Courier New', monospace`;
+        ctx.fillStyle = `rgba(0, 255, 70, ${headAlpha})`;
+        ctx.fillText(char, x, y);
+
+        // Glow effect on head
+        ctx.shadowColor = "rgba(0, 255, 70, 0.6)";
+        ctx.shadowBlur = 8;
+        ctx.fillText(char, x, y);
+        ctx.shadowBlur = 0;
+
+        // Trail characters (dimmer)
+        for (let t = 1; t < 12; t++) {
+          const trailY = y - t * fontSize;
+          if (trailY < 0) break;
+          const trailAlpha = Math.max(0, (0.5 - t * 0.04));
+          const trailChar = chars[Math.floor(Math.random() * chars.length)];
+          ctx.fillStyle = `rgba(0, 200, 50, ${trailAlpha})`;
+          ctx.fillText(trailChar, x, trailY);
         }
 
-        star.y += star.z * 0.08;
-        if (star.y > canvas.height) {
-          star.y = 0;
-          star.x = Math.random() * canvas.width;
+        // Reset or advance
+        if (y > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
         }
-      });
-
-      // Shooting stars
-      addShootingStar();
-      for (let i = shootingStars.length - 1; i >= 0; i--) {
-        const s = shootingStars[i];
-        s.x += s.vx;
-        s.y += s.vy;
-        s.life++;
-        const progress = s.life / s.maxLife;
-        const alpha = progress < 0.5 ? progress * 2 : (1 - progress) * 2;
-
-        ctx.beginPath();
-        ctx.moveTo(s.x, s.y);
-        ctx.lineTo(s.x - s.vx * 6, s.y - s.vy * 6);
-        ctx.strokeStyle = `rgba(200, 220, 255, ${alpha * 0.8})`;
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-
-        if (s.life >= s.maxLife) shootingStars.splice(i, 1);
+        drops[i] += 0.6 + Math.random() * 0.4;
       }
 
-      // Nebula glow
-      const gradient = ctx.createRadialGradient(
-        canvas.width * 0.3, canvas.height * 0.4, 0,
-        canvas.width * 0.3, canvas.height * 0.4, canvas.width * 0.5
-      );
-      gradient.addColorStop(0, "rgba(30, 58, 138, 0.03)");
-      gradient.addColorStop(0.5, "rgba(88, 28, 135, 0.02)");
-      gradient.addColorStop(1, "transparent");
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      // Occasional bright flash characters
+      if (Math.random() < 0.3) {
+        const fx = Math.floor(Math.random() * columns) * fontSize;
+        const fy = Math.random() * canvas.height;
+        const flashChar = chars[Math.floor(Math.random() * chars.length)];
+        ctx.font = `${fontSize + 2}px 'Courier New', monospace`;
+        ctx.fillStyle = "rgba(180, 255, 180, 0.9)";
+        ctx.shadowColor = "rgba(0, 255, 70, 0.8)";
+        ctx.shadowBlur = 15;
+        ctx.fillText(flashChar, fx, fy);
+        ctx.shadowBlur = 0;
+      }
 
       animationId = requestAnimationFrame(animate);
     };
 
     // Initial fill
-    ctx.fillStyle = "rgb(3, 7, 18)";
+    ctx.fillStyle = "rgb(0, 0, 0)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     animate();
 
@@ -131,7 +109,7 @@ const SpaceBackground = () => {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 w-full h-full"
-      style={{ background: "rgb(3, 7, 18)" }}
+      style={{ background: "rgb(0, 0, 0)" }}
     />
   );
 };
