@@ -3464,6 +3464,44 @@ SUPORTE TÉCNICO HEPTA`;
                     <strong className="text-violet-600">💡 Dica:</strong> Este manual é atualizado junto com o app. Consulte sempre que tiver dúvidas sobre funcionalidades ou procedimentos técnicos.
                   </p>
                 </div>
+
+                {/* Botão Contribuir */}
+                <div className="flex justify-center">
+                  <Button
+                    className="gap-2"
+                    onClick={() => {
+                      const subject = encodeURIComponent("Contribuição de Procedimento - Base de Procedimentos");
+                      const body = encodeURIComponent(
+`Olá Ticket Manager,
+
+Gostaria de contribuir com um novo procedimento para o aplicativo.
+
+TÍTULO DO PROCEDIMENTO:
+[Descreva o título aqui]
+
+CATEGORIA:
+[Ex: CONFIGURAÇÃO, INSTALAÇÃO, REDE, etc.]
+
+DESCRIÇÃO DO PROBLEMA:
+[Descreva o problema que este procedimento resolve]
+
+SOLUÇÃO / PASSO A PASSO:
+[Descreva a solução detalhada]
+
+TAGS:
+[Palavras-chave separadas por vírgula]
+
+---
+Enviado via Base de Procedimentos`
+                      );
+                      window.open(`mailto:ticketmanager@empresa.com?subject=${subject}&body=${body}`, '_blank');
+                      toast.success("Abrindo seu app de email...");
+                    }}
+                  >
+                    <Mail className="w-4 h-4" />
+                    Contribuir com Procedimento
+                  </Button>
+                </div>
               </div>
             </Card>
           </TabsContent>
