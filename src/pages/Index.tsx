@@ -3544,8 +3544,8 @@ Enviado via Base de Procedimentos`
                 </div>
               </div>
             </Card>
-          </TabsContent>
             )}
+
           </main>
 
       {/* Modal de detalhes do procedimento */}
