@@ -143,6 +143,8 @@ const Login = () => {
   const [isUpToDate, setIsUpToDate] = useState<boolean | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [currentDateTime, setCurrentDateTime] = useState(new Date());
+  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
