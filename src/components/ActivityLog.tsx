@@ -106,8 +106,7 @@ export const ActivityLog = () => {
 
       {isOpen && (
         <div className="relative mt-4">
-          <div ref={scrollRef}>
-          <ScrollArea className="max-h-[400px]">
+          <ScrollArea className="max-h-[400px]" ref={scrollRef}>
             {logs.length === 0 ? (
               <p className="text-center text-muted-foreground text-sm py-4">
                 Nenhuma atividade registrada ainda
@@ -146,7 +145,6 @@ export const ActivityLog = () => {
               </div>
             )}
           </ScrollArea>
-          </div>
           {logs.length > 3 && (
             <div className="absolute right-2 bottom-2 flex flex-col gap-1">
               <Button
