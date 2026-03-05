@@ -32,6 +32,7 @@ import { CompletedWorkOrders } from "@/components/CompletedWorkOrders";
 import { Changelog } from "@/components/Changelog";
 import { ActivityLog } from "@/components/ActivityLog";
 import { logActivity } from "@/lib/activityLogger";
+import { supabase } from "@/integrations/supabase/client";
 
 type NoteType = "procedimento" | "diagnostico";
 
@@ -222,6 +223,63 @@ const Index = () => {
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [procedures.length]);
+
+  // Auto-sync: verificar versão ao abrir e ouvir mudanças em tempo real
+  useEffect(() => {
+    const APP_VERSION = '2.6.0';
+
+    const checkVersion = async () => {
+      try {
+        const { data } = await supabase
+          .from('app_config')
+          .select('value')
+          .eq('key', 'current_version')
+          .single();
+        
+        if (data && data.value !== APP_VERSION) {
+          toast.info('🔄 Nova versão detectada! Atualizando...', { duration: 3000 });
+          // Limpar cache do service worker
+          if ('caches' in window) {
+            const names = await caches.keys();
+            await Promise.all(names.map(name => caches.delete(name)));
+          }
+          localStorage.removeItem('app_version');
+          setTimeout(() => window.location.reload(), 2000);
+        } else {
+          setIsAppUpToDate(true);
+          localStorage.setItem('app_version', APP_VERSION);
+        }
+      } catch (error) {
+        console.error('Erro ao verificar versão:', error);
+      }
+    };
+
+    checkVersion();
+
+    // Escutar mudanças na tabela app_config em tempo real
+    const channel = supabase
+      .channel('app-version-sync')
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'app_config', filter: 'key=eq.current_version' },
+        (payload) => {
+          const newVersion = payload.new?.value;
+          if (newVersion && newVersion !== APP_VERSION) {
+            toast.info('🔄 Atualização disponível! Recarregando...', { duration: 3000 });
+            if ('caches' in window) {
+              caches.keys().then(names => names.forEach(name => caches.delete(name)));
+            }
+            localStorage.removeItem('app_version');
+            setTimeout(() => window.location.reload(), 2000);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   // Atualizar data e hora a cada segundo
   useEffect(() => {
