@@ -2380,10 +2380,10 @@ Micros indicados configurados no Setor ${setor}
 
 ================
 
-PIB:
-PIB:
-PIB:
-PIB:
+PIB do equipamento:
+PIB do equipamento:
+PIB do equipamento:
+PIB do equipamento:
 
 ================
 
