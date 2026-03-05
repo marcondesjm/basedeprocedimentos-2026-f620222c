@@ -14,6 +14,17 @@ interface VersionEntry {
 
 const versions: VersionEntry[] = [
   {
+    version: "v2.7.0",
+    date: "05/03/2026",
+    changes: [
+      "Página de Documentação completa integrada ao sistema (Alt+7)",
+      "Menu lateral com opção de esconder/mostrar (offcanvas)",
+      "Correção das setas de rolagem no Log de Atividades e Changelog",
+      "README técnico, manual do usuário e documentação do banco de dados",
+      "Novo item 'Documentação' no menu lateral com ícone dedicado",
+    ],
+  },
+  {
     version: "v2.6.0",
     date: "04/03/2026",
     changes: [
