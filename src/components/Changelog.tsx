@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { FileText, ChevronDown, ChevronUp, Download } from "lucide-react";
+import { FileText, ChevronDown, ChevronUp, Download, ArrowUp, ArrowDown } from "lucide-react";
 import { format } from "date-fns";
 
 interface VersionEntry {
@@ -42,6 +42,15 @@ const versions: VersionEntry[] = [
 
 export const Changelog = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const scrollToTop = () => {
+    scrollRef.current?.querySelector('[data-radix-scroll-area-viewport]')?.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  const scrollToBottom = () => {
+    const viewport = scrollRef.current?.querySelector('[data-radix-scroll-area-viewport]');
+    viewport?.scrollTo({ top: viewport.scrollHeight, behavior: 'smooth' });
+  };
 
   const handleDownloadChangelog = () => {
     const lines = versions.map((v) => {
@@ -89,23 +98,46 @@ export const Changelog = () => {
       </div>
 
       {isOpen && (
-        <ScrollArea className="mt-4 max-h-[400px]">
-          <div className="space-y-4">
-            {versions.map((v) => (
-              <div key={v.version} className="border-l-2 border-primary/40 pl-4 space-y-1">
-                <div className="flex items-center gap-2">
-                  <Badge variant="default">{v.version}</Badge>
-                  <span className="text-sm text-muted-foreground">{v.date}</span>
+        <div className="relative mt-4">
+          <ScrollArea className="max-h-[400px]" ref={scrollRef}>
+            <div className="space-y-4">
+              {versions.map((v) => (
+                <div key={v.version} className="border-l-2 border-primary/40 pl-4 space-y-1">
+                  <div className="flex items-center gap-2">
+                    <Badge variant="default">{v.version}</Badge>
+                    <span className="text-sm text-muted-foreground">{v.date}</span>
+                  </div>
+                  <ul className="text-sm space-y-1 text-muted-foreground list-disc list-inside">
+                    {v.changes.map((change, idx) => (
+                      <li key={idx}>{change}</li>
+                    ))}
+                  </ul>
                 </div>
-                <ul className="text-sm space-y-1 text-muted-foreground list-disc list-inside">
-                  {v.changes.map((change, idx) => (
-                    <li key={idx}>{change}</li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+              ))}
+            </div>
+          </ScrollArea>
+          {/* Scroll buttons */}
+          <div className="absolute right-2 bottom-2 flex flex-col gap-1">
+            <Button
+              variant="secondary"
+              size="icon"
+              className="h-7 w-7 rounded-full shadow-md opacity-70 hover:opacity-100"
+              onClick={scrollToTop}
+              aria-label="Rolar para o topo"
+            >
+              <ArrowUp className="h-3.5 w-3.5" />
+            </Button>
+            <Button
+              variant="secondary"
+              size="icon"
+              className="h-7 w-7 rounded-full shadow-md opacity-70 hover:opacity-100"
+              onClick={scrollToBottom}
+              aria-label="Rolar para o final"
+            >
+              <ArrowDown className="h-3.5 w-3.5" />
+            </Button>
           </div>
-        </ScrollArea>
+        </div>
       )}
     </Card>
   );
