@@ -237,10 +237,14 @@ const Index = () => {
       setShowImportDialog(true);
     }
 
-    // Aviso ao sair da aplicação
+    // Aviso ao sair da aplicação — só se houver dados locais não salvos
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      e.preventDefault();
-      e.returnValue = '⚠️ Salve seus logs e faça backup antes de sair! Os dados serão apagados na próxima sessão.';
+      const hasHistory = localStorage.getItem('workOrderHistory');
+      const hasLogs = localStorage.getItem('activity_logs_local');
+      if (hasHistory || hasLogs) {
+        e.preventDefault();
+        e.returnValue = '⚠️ Salve seus logs e faça backup antes de sair!';
+      }
     };
 
     window.addEventListener('beforeunload', handleBeforeUnload);
