@@ -253,7 +253,7 @@ const Index = () => {
 
   // Auto-sync: verificar versão ao abrir e ouvir mudanças em tempo real
   useEffect(() => {
-    const APP_VERSION = '2.7.0';
+    const APP_VERSION = '2.8.0';
 
     const checkVersion = async () => {
       try {
