@@ -1300,7 +1300,7 @@ FORAM EXECUTADOS OS PROCEDIMENTOS DE:
 
 ==================
 
-PIB: ${pib}
+PIB do equipamento: ${pib}
 
 PIB Micro: ${pibMicro}
 
@@ -1597,7 +1597,7 @@ FORAM EXECUTADOS OS PROCEDIMENTOS DE:
 
 ==================
 
-PIB: ${pib}
+PIB do equipamento: ${pib}
 
 PIB Micro: ${pibMicro}
 
@@ -1787,7 +1787,7 @@ FORAM EXECUTADOS OS PROCEDIMENTOS DE:
 
 ==================
 
-PIB: ${pib}
+PIB do equipamento: ${pib}
 
 PIB Micro: ${pibMicro}
 
@@ -2091,7 +2091,7 @@ USUÁRIO: ${nome}
 
 ===================
 
-PIB: ${pib}
+PIB do equipamento: ${pib}
 
 PIB Micro: ${pibMicro}
 
@@ -2196,7 +2196,7 @@ USUÁRIO: ${nome}
 
 ===================
 
-PIB: ${pib}
+PIB do equipamento: ${pib}
 
 PIB Micro: ${pibMicro}
 
@@ -2464,7 +2464,7 @@ SUPORTE TÉCNICO HEPTA`;
 
 ==================
 
-PIB: ${pib}
+PIB do equipamento: ${pib}
 
 PIB Micro: ${pibMicro}
 
@@ -2636,7 +2636,7 @@ Equipamento indicado pelo Usuário
 ===================
 
 MODELO: ${modelo}
-PIB: ${pib}
+PIB do equipamento: ${pib}
 IP: ${ip}
 
 ===================
@@ -2853,7 +2853,7 @@ ATENDIMENTO CONCLUIDO REMOTAMENTE
 
 ===================
 
-PIB: ${pib}
+PIB do equipamento: ${pib}
 
 PIB Micro: ${pibMicro}
 
@@ -3789,7 +3789,7 @@ FORAM EXECUTADOS OS PROCEDIMENTOS DE: ${selectedProcedure.title}
 
 ================== 
 
-PIB: ${selectedProcedure.pibEquipamento || '_____________'}
+PIB do equipamento: ${selectedProcedure.pibEquipamento || '_____________'}
 
 ================== 
 
@@ -3909,7 +3909,7 @@ FORAM EXECUTADOS OS PROCEDIMENTOS DE:
 
 ==================
 
-PIB: ${selectedProcedure.pibEquipamento || '_________________'}
+PIB do equipamento: ${selectedProcedure.pibEquipamento || '_________________'}
 
 ==================
 
