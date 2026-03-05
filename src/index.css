@@ -102,6 +102,12 @@ All colors MUST be HSL.
     -moz-osx-font-smoothing: grayscale;
   }
 
+  /* Prevent text overflow on mobile */
+  [role="dialog"] {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
   /* Safe area insets for notched devices */
   .safe-area-top {
     padding-top: env(safe-area-inset-top);
