@@ -1688,7 +1688,7 @@ SUPORTE TÉCNICO HEPTA`;
 
 ==================
 
-PIB indicada pelo usuário: ${pib}
+PIB do equipamento: ${pib}
 
 PIB Micro: ${pibMicro}
 
@@ -3754,7 +3754,7 @@ Enviado via Base de Procedimentos`
 
 ==================
 
-PIB indicada pelo usuário: ${selectedProcedure.pibEquipamento || '_____________'}
+PIB do equipamento: ${selectedProcedure.pibEquipamento || '_____________'}
 
 ==================
 
