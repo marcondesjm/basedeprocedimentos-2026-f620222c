@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.78.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -18,19 +18,20 @@ serve(async (req) => {
 
   const { email, password } = await req.json();
 
-  // Check if user already exists
   const { data: users } = await supabaseAdmin.auth.admin.listUsers();
-  const exists = users?.users?.some((u: any) => u.email === email);
+  const existingUser = users?.users?.find((u: any) => u.email === email);
 
-  if (exists) {
-    // Update password
-    const user = users?.users?.find((u: any) => u.email === email);
-    if (user) {
-      await supabaseAdmin.auth.admin.updateUser(user.id, { password });
-      return new Response(JSON.stringify({ message: "Password updated" }), {
+  if (existingUser) {
+    const { error } = await supabaseAdmin.auth.admin.updateUserById(existingUser.id, { password });
+    if (error) {
+      return new Response(JSON.stringify({ error: error.message }), {
+        status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+    return new Response(JSON.stringify({ message: "Password updated" }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
 
   const { data, error } = await supabaseAdmin.auth.admin.createUser({
