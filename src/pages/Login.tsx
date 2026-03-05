@@ -237,6 +237,20 @@ const MatrixBackground = () => {
         ctx.strokeRect(hb.x - 4, hb.y - 12, 90, 16);
       }
 
+      // Floating code snippets
+      addCodeLine();
+      for (let i = codeLines.length - 1; i >= 0; i--) {
+        const cl = codeLines[i];
+        cl.y += cl.speed;
+        if (cl.y > canvas.height + 20) {
+          codeLines.splice(i, 1);
+          continue;
+        }
+        ctx.font = `${cl.fontSize}px 'Courier New', monospace`;
+        ctx.fillStyle = `rgba(0, 180, 140, ${cl.alpha})`;
+        ctx.fillText(cl.text, cl.x, cl.y);
+      }
+
       // Horizontal scan line
       scanY += 0.8;
       if (scanY > canvas.height) scanY = 0;
