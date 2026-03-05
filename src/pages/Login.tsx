@@ -273,9 +273,23 @@ const Login = () => {
 
       {/* Content */}
       <div className="relative z-10 w-full flex flex-col items-center px-3 sm:px-4 py-4 gap-3 sm:gap-4 max-w-md mx-auto">
+        {/* Date/Time Header */}
+        <div className="w-full text-center text-white">
+          <p className="text-lg sm:text-xl font-bold tracking-wide font-mono">
+            DATA: {currentDateTime.toLocaleDateString('pt-BR')}, {currentDateTime.toLocaleTimeString('pt-BR')}
+          </p>
+        </div>
+
         {/* Version & Sync Bar */}
         <div className="w-full flex flex-wrap items-center justify-between rounded-xl bg-white/5 backdrop-blur-md border border-white/10 px-3 sm:px-4 py-2 text-white text-xs gap-2">
-          <span className="font-mono text-[10px] sm:text-xs opacity-70">v{APP_VERSION}</span>
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-[10px] sm:text-xs opacity-70">v{APP_VERSION}</span>
+            {lastUpdated && (
+              <span className="text-[10px] sm:text-xs opacity-50">
+                • Atualizado: {new Date(lastUpdated).toLocaleDateString('pt-BR')} {new Date(lastUpdated).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+              </span>
+            )}
+          </div>
           <div className="flex items-center gap-1 sm:gap-2 flex-wrap">
             {isUpToDate === true && (
               <span className="text-emerald-400 flex items-center gap-1 text-[10px] sm:text-xs">✓ Atualizado</span>
@@ -291,7 +305,7 @@ const Login = () => {
               className="h-6 sm:h-7 px-1.5 sm:px-2 text-white hover:bg-white/10 text-[10px] sm:text-xs gap-1"
             >
               <RefreshCw className={`w-3 h-3 ${isSyncing ? 'animate-spin' : ''}`} />
-              <span className="hidden xs:inline">Verificar</span>
+              Verificar
             </Button>
             <Button
               variant="ghost"
@@ -301,8 +315,9 @@ const Login = () => {
               className="h-6 sm:h-7 px-1.5 sm:px-2 text-white hover:bg-white/10 text-[10px] sm:text-xs gap-1"
             >
               <Trash2 className="w-3 h-3" />
-              <span className="hidden xs:inline">Cache</span>
+              Limpar Cache
             </Button>
+          </div>
           </div>
         </div>
 
