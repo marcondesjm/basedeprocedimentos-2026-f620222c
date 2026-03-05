@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { lovable } from "@/integrations/lovable/index";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Shield, RefreshCw, Trash2, LogIn } from "lucide-react";
+import { Shield, RefreshCw, Trash2, LogIn, Sun, Moon } from "lucide-react";
 
 const APP_VERSION = '2.7.0';
 
@@ -490,7 +490,26 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return document.documentElement.classList.contains('dark') || 
+        localStorage.getItem('theme') === 'dark' ||
+        (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    }
+    return false;
+  });
   const navigate = useNavigate();
+
+  // Dark mode toggle
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [isDark]);
 
   // Clock
   useEffect(() => {
@@ -635,6 +654,15 @@ const Login = () => {
             >
               <RefreshCw className={`w-3 h-3 ${isSyncing ? 'animate-spin' : ''}`} />
               Verificar
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsDark(!isDark)}
+              className="h-6 sm:h-7 px-1.5 sm:px-2 text-white hover:bg-white/10 text-[10px] sm:text-xs gap-1"
+            >
+              {isDark ? <Sun className="w-3 h-3" /> : <Moon className="w-3 h-3" />}
+              {isDark ? 'Claro' : 'Escuro'}
             </Button>
           </div>
         </div>
