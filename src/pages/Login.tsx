@@ -283,6 +283,53 @@ const MatrixBackground = () => {
       ctx.fillStyle = "rgba(0, 255, 120, 0.015)";
       ctx.fillRect(0, scanY - 20, canvas.width, 40);
 
+      // Mouse interaction - ripple & repel effect
+      if (mouseX > 0 && mouseY > 0) {
+        // Glow circle at cursor
+        const grad = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, MOUSE_RADIUS);
+        grad.addColorStop(0, "rgba(0, 255, 180, 0.12)");
+        grad.addColorStop(0.4, "rgba(0, 200, 140, 0.05)");
+        grad.addColorStop(1, "transparent");
+        ctx.fillStyle = grad;
+        ctx.fillRect(mouseX - MOUSE_RADIUS, mouseY - MOUSE_RADIUS, MOUSE_RADIUS * 2, MOUSE_RADIUS * 2);
+
+        // Pulsing ring
+        const ringRadius = MOUSE_RADIUS * (0.6 + Math.sin(time * 0.08) * 0.15);
+        ctx.beginPath();
+        ctx.arc(mouseX, mouseY, ringRadius, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(0, 255, 170, ${0.15 + Math.sin(time * 0.06) * 0.08})`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // Inner ring
+        ctx.beginPath();
+        ctx.arc(mouseX, mouseY, ringRadius * 0.5, 0, Math.PI * 2);
+        ctx.strokeStyle = "rgba(0, 255, 170, 0.08)";
+        ctx.stroke();
+
+        // Binary burst around cursor
+        ctx.font = "10px 'Courier New', monospace";
+        for (let a = 0; a < 12; a++) {
+          const angle = (a / 12) * Math.PI * 2 + time * 0.02;
+          const dist = 40 + Math.sin(time * 0.05 + a) * 20;
+          const bx = mouseX + Math.cos(angle) * dist;
+          const by = mouseY + Math.sin(angle) * dist;
+          const bchar = Math.random() > 0.5 ? "1" : "0";
+          ctx.fillStyle = `rgba(0, 255, 170, ${0.3 + Math.sin(time * 0.1 + a) * 0.15})`;
+          ctx.fillText(bchar, bx, by);
+        }
+
+        // Crosshair
+        ctx.strokeStyle = "rgba(0, 255, 170, 0.1)";
+        ctx.lineWidth = 0.5;
+        ctx.beginPath();
+        ctx.moveTo(mouseX - 30, mouseY);
+        ctx.lineTo(mouseX + 30, mouseY);
+        ctx.moveTo(mouseX, mouseY - 30);
+        ctx.lineTo(mouseX, mouseY + 30);
+        ctx.stroke();
+      }
+
       animationId = requestAnimationFrame(animate);
     };
 
@@ -294,6 +341,10 @@ const MatrixBackground = () => {
       cancelAnimationFrame(animationId);
       window.removeEventListener("resize", resize);
       window.removeEventListener("resize", resizeHandler);
+      canvas.removeEventListener("mousemove", onMouseMove);
+      canvas.removeEventListener("mouseleave", onMouseLeave);
+      canvas.removeEventListener("touchmove", onTouchMove);
+      canvas.removeEventListener("touchend", onTouchEnd);
     };
   }, []);
 
