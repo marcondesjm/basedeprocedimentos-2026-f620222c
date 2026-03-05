@@ -1948,10 +1948,11 @@ Caso ainda necessite do suporte técnico, solicitamos que registre um novo chama
                 </div>
               </div>
             </Card>
-          </TabsContent>
+           </Card>
+            )}
 
-          <TabsContent value="fila-presencial">
-            <Card className="p-6">
+            {/* === FILA PRESENCIAL VIEW === */}
+            {activeView === "fila-presencial" && (
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <Users className="w-6 h-6 text-primary" />
@@ -2885,9 +2886,10 @@ SUPORTE TÉCNICO HEPTA`;
                 </div>
               </div>
             </Card>
-          </TabsContent>
+            )}
 
-          <TabsContent value="checklists">
+            {/* === CHECKLISTS VIEW === */}
+            {activeView === "checklists" && (
             <Card className="p-6">
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
@@ -3355,9 +3357,10 @@ SUPORTE TÉCNICO HEPTA`;
                 </div>
               </div>
             </Card>
-          </TabsContent>
+            )}
 
-          <TabsContent value="manual">
+            {/* === MANUAL VIEW === */}
+            {activeView === "manual" && (
             <Card className="p-4 sm:p-6">
               <div className="space-y-6">
                 <div className="flex items-center gap-3">
@@ -3542,8 +3545,8 @@ Enviado via Base de Procedimentos`
               </div>
             </Card>
           </TabsContent>
-        </Tabs>
-      </main>
+            )}
+          </main>
 
       {/* Modal de detalhes do procedimento */}
       <Dialog 
@@ -3965,7 +3968,9 @@ SUPORTE TÉCNICO HEPTA`;
           )}
         </DialogContent>
       </Dialog>
-    </div>
+        </div>
+      </div>
+    </SidebarProvider>
   );
 };
 
