@@ -3816,8 +3816,8 @@ SUPORTE TÉCNICO HEPTA`;
                   </div>
                 )}
 
-                <div className="flex flex-col sm:flex-row gap-3 justify-between pt-4 border-t">
-                  <div className="flex gap-3">
+                <div className="flex flex-col gap-3 pt-4 border-t">
+                  <div className="flex flex-wrap gap-2">
                     {isEditMode ? (
                       <>
                         <Button 
@@ -3843,10 +3843,10 @@ SUPORTE TÉCNICO HEPTA`;
                                 Orientações
                               </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-96 p-4" align="end">
+                          <PopoverContent className="w-[90vw] max-w-96 p-3 sm:p-4" align="center" side="top">
                               <div className="space-y-3">
-                                <h4 className="font-semibold text-red-700 flex items-center gap-2">
-                                  <AlertCircle className="w-4 h-4" />
+                                <h4 className="font-semibold text-red-700 flex items-center gap-2 text-sm">
+                                  <AlertCircle className="w-4 h-4 shrink-0" />
                                   Orientações para Diagnóstico
                                 </h4>
                                 <ul className="text-sm space-y-2 text-muted-foreground">
@@ -3872,10 +3872,10 @@ SUPORTE TÉCNICO HEPTA`;
                               Devolução Remoto
                             </Button>
                           </PopoverTrigger>
-                          <PopoverContent className="w-96 p-4" align="end">
+                          <PopoverContent className="w-[90vw] max-w-96 p-3 sm:p-4" align="center" side="top">
                             <div className="space-y-3">
-                              <h4 className="font-semibold text-blue-700 flex items-center gap-2">
-                                <FileText className="w-4 h-4" />
+                              <h4 className="font-semibold text-blue-700 flex items-center gap-2 text-sm">
+                                <FileText className="w-4 h-4 shrink-0" />
                                 Nota de Devolução Remoto → Presencial
                               </h4>
                               <p className="text-sm text-muted-foreground">
@@ -3936,10 +3936,10 @@ SUPORTE TÉCNICO HEPTA`;
                                 Orientações
                               </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-96 p-4" align="end">
+                            <PopoverContent className="w-[90vw] max-w-96 p-3 sm:p-4" align="center" side="top">
                               <div className="space-y-3">
-                                <h4 className="font-semibold text-amber-700 flex items-center gap-2">
-                                  <AlertCircle className="w-4 h-4" />
+                                <h4 className="font-semibold text-amber-700 flex items-center gap-2 text-sm">
+                                  <AlertCircle className="w-4 h-4 shrink-0" />
                                   Orientações
                                 </h4>
                                 <div className="bg-amber-50 border border-amber-200 rounded-md p-3 text-xs space-y-1">
