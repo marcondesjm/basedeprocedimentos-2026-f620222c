@@ -490,7 +490,26 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return document.documentElement.classList.contains('dark') || 
+        localStorage.getItem('theme') === 'dark' ||
+        (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    }
+    return false;
+  });
   const navigate = useNavigate();
+
+  // Dark mode toggle
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [isDark]);
 
   // Clock
   useEffect(() => {
