@@ -206,6 +206,25 @@ const Index = () => {
   useEffect(() => {
     loadProcedures();
     
+    // Detectar nova sessão de navegador e limpar históricos
+    const isExistingSession = sessionStorage.getItem('app_session_active');
+    if (!isExistingSession) {
+      // Nova sessão — limpar dados de WO history/archive
+      const hadHistory = localStorage.getItem('workOrderHistory');
+      const hadArchive = localStorage.getItem('workOrderArchive');
+      
+      if (hadHistory || hadArchive) {
+        localStorage.removeItem('workOrderHistory');
+        localStorage.removeItem('workOrderArchive');
+        toast.warning('📋 Nova sessão detectada — histórico de WOs foi limpo.', {
+          description: 'Lembre-se de importar seu backup se necessário.',
+          duration: 8000,
+        });
+      }
+      
+      sessionStorage.setItem('app_session_active', 'true');
+    }
+    
     // Mostrar dialog de importação se não houver dados salvos
     const savedProcedures = localStorage.getItem('procedures');
     if (!savedProcedures || JSON.parse(savedProcedures).length === 0) {
@@ -214,10 +233,8 @@ const Index = () => {
 
     // Aviso ao sair da aplicação
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (procedures.length > 0) {
-        e.preventDefault();
-        e.returnValue = 'Você tem procedimentos salvos. Lembre-se de fazer backup antes de sair!';
-      }
+      e.preventDefault();
+      e.returnValue = '⚠️ Faça backup dos seus dados antes de sair! O histórico será apagado ao abrir em outro navegador.';
     };
 
     window.addEventListener('beforeunload', handleBeforeUnload);
