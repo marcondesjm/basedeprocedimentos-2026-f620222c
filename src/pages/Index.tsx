@@ -698,121 +698,78 @@ ${proc.description}
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="bg-gradient-primary text-white shadow-elevated">
-        <div className="container mx-auto px-3 py-3 md:px-6 md:py-6">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
-            <div>
-              <h1 className="text-xl md:text-3xl font-bold">Gestão de Procedimentos</h1>
-              <p className="text-white/90 mt-0.5 md:mt-1 text-xs md:text-base">Histórico de procedimentos e soluções realizadas</p>
-            </div>
-            <div className="flex flex-col items-start md:items-end gap-1 w-full md:w-auto">
-              <div className="text-white/95 font-mono text-sm md:text-lg">
-                DATA: {format(currentDateTime, "dd/MM/yyyy, HH:mm:ss")}
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full bg-background">
+        <AppSidebar activeView={activeView} onViewChange={setActiveView} />
+        
+        <div className="flex-1 flex flex-col min-w-0">
+          {/* Compact header */}
+          <header className="bg-gradient-primary text-white shadow-elevated">
+            <div className="px-3 py-2 md:px-6 md:py-3 flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <SidebarTrigger className="text-white hover:bg-white/10" />
+                <div>
+                  <h1 className="text-base md:text-xl font-bold">Gestão de Procedimentos</h1>
+                  <p className="text-white/80 text-[10px] md:text-xs">Sistema de Suporte Técnico</p>
+                </div>
               </div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-white/70 text-[10px] md:text-xs font-mono">
-                  {String(__APP_VERSION__)} • Atualizado: {format(new Date(String(__BUILD_TIMESTAMP__)), "dd/MM/yyyy HH:mm")}
-                </span>
-                {isAppUpToDate ? (
-                  <Badge className="bg-emerald-500/20 text-emerald-200 border-emerald-400/30 text-[10px] md:text-xs cursor-default">
-                    ✓ Atualizado
-                  </Badge>
-                ) : (
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="h-6 px-2 text-[10px] md:text-xs text-amber-200 hover:text-white hover:bg-white/10 border border-amber-400/40"
-                    onClick={() => {
-                      if ('caches' in window) {
-                        caches.keys().then(names => {
-                          names.forEach(name => caches.delete(name));
-                        });
-                      }
-                      localStorage.removeItem('app_version');
-                      window.location.reload();
-                    }}
-                  >
-                    ⟳ Limpar cache e atualizar
-                  </Button>
-                )}
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="h-6 px-2 text-[10px] md:text-xs text-white/70 hover:text-white hover:bg-white/10"
-                  onClick={() => {
-                    const currentVersion = '2.6.0';
-                    const savedVersion = localStorage.getItem('app_version');
-                    if (savedVersion === currentVersion) {
-                      setIsAppUpToDate(true);
-                      toast.success('Aplicação está atualizada!');
-                    } else {
-                      localStorage.setItem('app_version', currentVersion);
-                      setIsAppUpToDate(false);
-                      toast.info('Nova versão detectada. Clique em "Limpar cache" para atualizar.');
-                    }
-                  }}
-                >
-                  Verificar
-                </Button>
+              <div className="flex flex-col items-end gap-0.5">
+                <div className="text-white/95 font-mono text-xs md:text-sm">
+                  {format(currentDateTime, "dd/MM/yyyy, HH:mm:ss")}
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-white/60 text-[10px] font-mono hidden sm:inline">
+                    {String(__APP_VERSION__)}
+                  </span>
+                  {isAppUpToDate ? (
+                    <Badge className="bg-emerald-500/20 text-emerald-200 border-emerald-400/30 text-[10px] cursor-default">
+                      ✓ Atualizado
+                    </Badge>
+                  ) : (
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-5 px-1.5 text-[10px] text-amber-200 hover:text-white hover:bg-white/10 border border-amber-400/40"
+                      onClick={() => {
+                        if ('caches' in window) {
+                          caches.keys().then(names => {
+                            names.forEach(name => caches.delete(name));
+                          });
+                        }
+                        localStorage.removeItem('app_version');
+                        window.location.reload();
+                      }}
+                    >
+                      ⟳ Atualizar
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      </header>
+          </header>
 
-      <main className="container mx-auto px-3 py-4 md:px-6 md:py-8">
-        {/* Timer de Trabalho e Histórico lado a lado */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          <div>
-            <WorkTimer />
-          </div>
-          <div>
-            <CompletedWorkOrders />
-          </div>
-          <div>
-            <ActivityLog />
-          </div>
-          <div>
-            <Changelog />
-          </div>
-        </div>
-        {/* Aviso LGPD */}
-        <Alert className="mb-6 border-primary/20 bg-primary/5">
-          <Shield className="h-5 w-5 text-primary" />
-          <AlertDescription className="ml-2">
-            <strong>Proteção de Dados (LGPD - Lei nº 13.709/2018):</strong> Todos os seus procedimentos são armazenados 
-            exclusivamente no seu computador local (localStorage do navegador). Nenhuma informação é enviada para servidores 
-            externos ou compartilhada com terceiros. Você tem total controle e propriedade dos seus dados. 
-            Recomendamos fazer backups regulares usando o botão "Gravar Histórico".
-          </AlertDescription>
-        </Alert>
+          <main className="flex-1 px-3 py-4 md:px-6 md:py-6 overflow-auto">
+            {/* === PAINEL VIEW === */}
+            {activeView === "painel" && (
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <div><WorkTimer /></div>
+                  <div><CompletedWorkOrders /></div>
+                  <div><ActivityLog /></div>
+                  <div><Changelog /></div>
+                </div>
+              </div>
+            )}
 
-        <Tabs defaultValue="procedimentos" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 h-auto bg-muted/50 p-1.5 rounded-xl shadow-sm border border-border/50">
-            <TabsTrigger value="procedimentos" className="flex items-center gap-2 py-3 px-2 sm:px-4 rounded-lg font-semibold text-sm transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md data-[state=active]:shadow-primary/25 data-[state=inactive]:hover:bg-muted">
-              <FileText className="w-5 h-5" />
-              <span className="hidden sm:inline">Procedimentos</span>
-            </TabsTrigger>
-            <TabsTrigger value="fila-remota" className="flex items-center gap-2 py-3 px-2 sm:px-4 rounded-lg font-semibold text-sm transition-all data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-blue-500/25 data-[state=inactive]:hover:bg-muted">
-              <Monitor className="w-5 h-5" />
-              <span className="hidden sm:inline">Fila Remota</span>
-            </TabsTrigger>
-            <TabsTrigger value="fila-presencial" className="flex items-center gap-2 py-3 px-2 sm:px-4 rounded-lg font-semibold text-sm transition-all data-[state=active]:bg-emerald-600 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-emerald-500/25 data-[state=inactive]:hover:bg-muted">
-              <Users className="w-5 h-5" />
-              <span className="hidden sm:inline">Fila Presencial</span>
-            </TabsTrigger>
-            <TabsTrigger value="checklists" className="flex items-center gap-2 py-3 px-2 sm:px-4 rounded-lg font-semibold text-sm transition-all data-[state=active]:bg-amber-600 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-amber-500/25 data-[state=inactive]:hover:bg-muted">
-              <CheckSquare className="w-5 h-5" />
-              <span className="hidden sm:inline">Checklists</span>
-            </TabsTrigger>
-            <TabsTrigger value="manual" className="flex items-center gap-2 py-3 px-2 sm:px-4 rounded-lg font-semibold text-sm transition-all data-[state=active]:bg-violet-600 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-violet-500/25 data-[state=inactive]:hover:bg-muted">
-              <BookOpen className="w-5 h-5" />
-              <span className="hidden sm:inline">Manual</span>
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="procedimentos">
+            {/* === PROCEDIMENTOS VIEW === */}
+            {activeView === "procedimentos" && (
+              <div className="space-y-6">
+                <Alert className="border-primary/20 bg-primary/5">
+                  <Shield className="h-5 w-5 text-primary" />
+                  <AlertDescription className="ml-2">
+                    <strong>LGPD:</strong> Dados armazenados localmente. Faça backups regulares.
+                  </AlertDescription>
+                </Alert>
         <div className="space-y-6">
           <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
             <div className="flex-1 flex gap-3 w-full md:w-auto">
