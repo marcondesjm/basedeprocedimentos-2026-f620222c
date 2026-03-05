@@ -34,6 +34,16 @@ const actionColors: Record<string, string> = {
 export const ActivityLog = () => {
   const [logs, setLogs] = useState<LocalLogEntry[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const scrollToTop = () => {
+    scrollRef.current?.querySelector('[data-radix-scroll-area-viewport]')?.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  const scrollToBottom = () => {
+    const viewport = scrollRef.current?.querySelector('[data-radix-scroll-area-viewport]');
+    viewport?.scrollTo({ top: viewport.scrollHeight, behavior: 'smooth' });
+  };
+  const [isOpen, setIsOpen] = useState(false);
 
   const refreshLogs = () => {
     setLogs(getActivityLogs());
@@ -97,45 +107,69 @@ export const ActivityLog = () => {
       </div>
 
       {isOpen && (
-        <ScrollArea className="mt-4 max-h-[400px]">
-          {logs.length === 0 ? (
-            <p className="text-center text-muted-foreground text-sm py-4">
-              Nenhuma atividade registrada ainda
-            </p>
-          ) : (
-            <div className="space-y-2">
-              {logs.map((log) => (
-                <div
-                  key={log.id}
-                  className="flex items-center gap-2 p-2 rounded-md bg-background/50 text-sm"
-                >
-                  <Badge
-                    variant="outline"
-                    className={actionColors[log.action] || ""}
+        <div className="relative mt-4">
+          <ScrollArea className="max-h-[400px]" ref={scrollRef}>
+            {logs.length === 0 ? (
+              <p className="text-center text-muted-foreground text-sm py-4">
+                Nenhuma atividade registrada ainda
+              </p>
+            ) : (
+              <div className="space-y-2">
+                {logs.map((log) => (
+                  <div
+                    key={log.id}
+                    className="flex items-center gap-2 p-2 rounded-md bg-background/50 text-sm"
                   >
-                    {actionLabels[log.action] || log.action}
-                  </Badge>
-                  <span className="text-muted-foreground">
-                    {entityLabels[log.entity_type] || log.entity_type}
-                  </span>
-                  {log.entity_id && (
-                    <Badge variant="secondary" className="font-mono text-xs">
-                      {log.entity_id}
+                    <Badge
+                      variant="outline"
+                      className={actionColors[log.action] || ""}
+                    >
+                      {actionLabels[log.action] || log.action}
                     </Badge>
-                  )}
-                  {log.details && (log.details as any).title && (
-                    <span className="text-xs text-muted-foreground truncate max-w-[200px]">
-                      "{(log.details as any).title}"
+                    <span className="text-muted-foreground">
+                      {entityLabels[log.entity_type] || log.entity_type}
                     </span>
-                  )}
-                  <span className="ml-auto text-xs text-muted-foreground whitespace-nowrap">
-                    {format(new Date(log.created_at), "dd/MM HH:mm", { locale: ptBR })}
-                  </span>
-                </div>
-              ))}
+                    {log.entity_id && (
+                      <Badge variant="secondary" className="font-mono text-xs">
+                        {log.entity_id}
+                      </Badge>
+                    )}
+                    {log.details && (log.details as any).title && (
+                      <span className="text-xs text-muted-foreground truncate max-w-[200px]">
+                        "{(log.details as any).title}"
+                      </span>
+                    )}
+                    <span className="ml-auto text-xs text-muted-foreground whitespace-nowrap">
+                      {format(new Date(log.created_at), "dd/MM HH:mm", { locale: ptBR })}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </ScrollArea>
+          {logs.length > 3 && (
+            <div className="absolute right-2 bottom-2 flex flex-col gap-1">
+              <Button
+                variant="secondary"
+                size="icon"
+                className="h-7 w-7 rounded-full shadow-md opacity-70 hover:opacity-100"
+                onClick={scrollToTop}
+                aria-label="Rolar para o topo"
+              >
+                <ArrowUp className="h-3.5 w-3.5" />
+              </Button>
+              <Button
+                variant="secondary"
+                size="icon"
+                className="h-7 w-7 rounded-full shadow-md opacity-70 hover:opacity-100"
+                onClick={scrollToBottom}
+                aria-label="Rolar para o final"
+              >
+                <ArrowDown className="h-3.5 w-3.5" />
+              </Button>
             </div>
           )}
-        </ScrollArea>
+        </div>
       )}
     </Card>
   );
