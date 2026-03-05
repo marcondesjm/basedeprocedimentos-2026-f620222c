@@ -468,6 +468,7 @@ const MatrixBackground = () => {
       document.removeEventListener("mouseleave", onMouseLeave);
       document.removeEventListener("touchmove", onTouchMove);
       document.removeEventListener("touchend", onTouchEnd);
+      document.removeEventListener("click", onClick);
     };
   }, []);
 
