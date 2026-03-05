@@ -247,7 +247,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
-      <SpaceBackground />
+      <MatrixBackground />
 
       {/* Content */}
       <div className="relative z-10 w-full flex flex-col items-center px-3 sm:px-4 py-4 gap-3 sm:gap-4 max-w-md mx-auto">
