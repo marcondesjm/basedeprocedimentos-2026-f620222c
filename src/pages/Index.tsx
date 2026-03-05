@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Search, FileText, Calendar, Tag, Download, Upload, Save, Shield, X, Copy, AlertCircle, Monitor, Users, CheckSquare, ArrowRight, ChevronDown } from "lucide-react";
+import { Plus, Search, FileText, Calendar, Tag, Download, Upload, Save, Shield, X, Copy, AlertCircle, Monitor, Users, CheckSquare, ArrowRight, ChevronDown, BookOpen } from "lucide-react";
 import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -691,22 +692,26 @@ ${proc.description}
         </Alert>
 
         <Tabs defaultValue="procedimentos" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 h-auto bg-muted/50 p-1.5 rounded-xl shadow-sm border border-border/50">
-            <TabsTrigger value="procedimentos" className="flex items-center gap-2 py-3 px-4 rounded-lg font-semibold text-sm transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md data-[state=active]:shadow-primary/25 data-[state=inactive]:hover:bg-muted">
+          <TabsList className="grid w-full grid-cols-5 h-auto bg-muted/50 p-1.5 rounded-xl shadow-sm border border-border/50">
+            <TabsTrigger value="procedimentos" className="flex items-center gap-2 py-3 px-2 sm:px-4 rounded-lg font-semibold text-sm transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md data-[state=active]:shadow-primary/25 data-[state=inactive]:hover:bg-muted">
               <FileText className="w-5 h-5" />
               <span className="hidden sm:inline">Procedimentos</span>
             </TabsTrigger>
-            <TabsTrigger value="fila-remota" className="flex items-center gap-2 py-3 px-4 rounded-lg font-semibold text-sm transition-all data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-blue-500/25 data-[state=inactive]:hover:bg-muted">
+            <TabsTrigger value="fila-remota" className="flex items-center gap-2 py-3 px-2 sm:px-4 rounded-lg font-semibold text-sm transition-all data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-blue-500/25 data-[state=inactive]:hover:bg-muted">
               <Monitor className="w-5 h-5" />
               <span className="hidden sm:inline">Fila Remota</span>
             </TabsTrigger>
-            <TabsTrigger value="fila-presencial" className="flex items-center gap-2 py-3 px-4 rounded-lg font-semibold text-sm transition-all data-[state=active]:bg-emerald-600 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-emerald-500/25 data-[state=inactive]:hover:bg-muted">
+            <TabsTrigger value="fila-presencial" className="flex items-center gap-2 py-3 px-2 sm:px-4 rounded-lg font-semibold text-sm transition-all data-[state=active]:bg-emerald-600 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-emerald-500/25 data-[state=inactive]:hover:bg-muted">
               <Users className="w-5 h-5" />
               <span className="hidden sm:inline">Fila Presencial</span>
             </TabsTrigger>
-            <TabsTrigger value="checklists" className="flex items-center gap-2 py-3 px-4 rounded-lg font-semibold text-sm transition-all data-[state=active]:bg-amber-600 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-amber-500/25 data-[state=inactive]:hover:bg-muted">
+            <TabsTrigger value="checklists" className="flex items-center gap-2 py-3 px-2 sm:px-4 rounded-lg font-semibold text-sm transition-all data-[state=active]:bg-amber-600 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-amber-500/25 data-[state=inactive]:hover:bg-muted">
               <CheckSquare className="w-5 h-5" />
               <span className="hidden sm:inline">Checklists</span>
+            </TabsTrigger>
+            <TabsTrigger value="manual" className="flex items-center gap-2 py-3 px-2 sm:px-4 rounded-lg font-semibold text-sm transition-all data-[state=active]:bg-violet-600 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-violet-500/25 data-[state=inactive]:hover:bg-muted">
+              <BookOpen className="w-5 h-5" />
+              <span className="hidden sm:inline">Manual</span>
             </TabsTrigger>
           </TabsList>
 
@@ -3291,6 +3296,154 @@ SUPORTE TÉCNICO HEPTA`;
                       </div>
                     )}
                   </Card>
+                </div>
+              </div>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="manual">
+            <Card className="p-4 sm:p-6">
+              <div className="space-y-6">
+                <div className="flex items-center gap-3">
+                  <BookOpen className="w-6 h-6 text-violet-600" />
+                  <h2 className="text-xl font-bold text-foreground">Manual do Sistema</h2>
+                </div>
+
+                {/* Guia de Uso do App */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">📱 Guia de Uso do Aplicativo</h3>
+                  
+                  <Collapsible>
+                    <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors text-left">
+                      <span className="font-medium text-sm">⏱️ Timer de Ordens de Serviço</span>
+                      <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="p-3 text-sm space-y-2 text-muted-foreground">
+                      <p><strong>1.</strong> Digite o número da WO (apenas números) no campo e clique <strong>Adicionar</strong>.</p>
+                      <p><strong>2.</strong> O timer inicia automaticamente ao adicionar a WO.</p>
+                      <p><strong>3.</strong> Aos <strong>35 minutos</strong>, um aviso sonoro indica que faltam 5 minutos.</p>
+                      <p><strong>4.</strong> Aos <strong>40 minutos</strong>, um alarme contínuo toca — insira uma nota no Remedy.</p>
+                      <p><strong>5.</strong> Use <strong>Silenciar</strong> para parar o alarme e adicionar +40 min, ou <strong>Concluir</strong> para salvar no histórico.</p>
+                      <p><strong>6.</strong> WOs concluídas ficam registradas no <strong>Histórico de WOs</strong> abaixo do timer.</p>
+                    </CollapsibleContent>
+                  </Collapsible>
+
+                  <Collapsible>
+                    <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors text-left">
+                      <span className="font-medium text-sm">📋 Procedimentos</span>
+                      <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="p-3 text-sm space-y-2 text-muted-foreground">
+                      <p><strong>Cadastrar:</strong> Clique em <strong>Novo Procedimento</strong>, preencha os campos obrigatórios e salve.</p>
+                      <p><strong>Buscar:</strong> Use o campo de pesquisa para filtrar por título, descrição ou tags.</p>
+                      <p><strong>Filtrar:</strong> Use o filtro de categoria para ver apenas procedimentos de uma área específica.</p>
+                      <p><strong>Copiar solução:</strong> Clique no ícone de cópia para copiar a solução direto para o clipboard.</p>
+                      <p><strong>Editar:</strong> Abra o procedimento e clique em <strong>Editar</strong> para modificar os campos.</p>
+                      <p><strong>Backup:</strong> Use <strong>Gravar Histórico</strong> para exportar e <strong>Importar Backup</strong> para restaurar.</p>
+                    </CollapsibleContent>
+                  </Collapsible>
+
+                  <Collapsible>
+                    <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors text-left">
+                      <span className="font-medium text-sm">📡 Filas (Remota / Presencial)</span>
+                      <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="p-3 text-sm space-y-2 text-muted-foreground">
+                      <p><strong>Fila Remota:</strong> Cards com modelos de notas para atendimentos remotos (devolução, diagnóstico, improdutividade, etc.).</p>
+                      <p><strong>Fila Presencial:</strong> Cards para atendimentos presenciais (conclusão, formatação, impressora, SIGESF, etc.).</p>
+                      <p>Preencha os campos de cada card e clique no botão <strong>Copiar</strong> para copiar o texto formatado.</p>
+                      <p>Os cards expandem/recolhem para manter a tela organizada.</p>
+                    </CollapsibleContent>
+                  </Collapsible>
+
+                  <Collapsible>
+                    <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors text-left">
+                      <span className="font-medium text-sm">✅ Checklists</span>
+                      <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="p-3 text-sm space-y-2 text-muted-foreground">
+                      <p>Guias técnicos interativos com procedimentos passo a passo.</p>
+                      <p>Marque os checkboxes conforme completa cada etapa do procedimento.</p>
+                      <p>Inclui guias para: Impressoras Milestone, Formatação Remota, Espanso, SIGESF e Preparação de Pendrive.</p>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </div>
+
+                {/* Documentação Técnica */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold text-foreground border-b border-border pb-2">🔧 Documentação Técnica</h3>
+                  
+                  <Collapsible>
+                    <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors text-left">
+                      <span className="font-medium text-sm">🖥️ Acesso Remoto (VNC / Área de Trabalho Remota)</span>
+                      <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="p-3 text-sm space-y-2 text-muted-foreground">
+                      <p><strong>VNC:</strong> Utilizar o UltraVNC Viewer para acesso via PIB do equipamento.</p>
+                      <p><strong>Área de Trabalho Remota (RDP):</strong> Usar IP do equipamento quando VNC não estiver disponível.</p>
+                      <p><strong>Portas:</strong> VNC usa porta 5900, RDP usa porta 3389.</p>
+                      <p><strong>Importante:</strong> Sempre solicitar autorização do usuário antes de acessar remotamente.</p>
+                    </CollapsibleContent>
+                  </Collapsible>
+
+                  <Collapsible>
+                    <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors text-left">
+                      <span className="font-medium text-sm">🔄 Formatação de Estações</span>
+                      <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="p-3 text-sm space-y-2 text-muted-foreground">
+                      <p><strong>Recovery Windows 8/8.1:</strong> Boot pelo pendrive → Restaurar imagem via ghost.</p>
+                      <p><strong>Recovery Windows 9+:</strong> Boot pelo pendrive → Selecionar imagem compatível → Aguardar restore completo.</p>
+                      <p><strong>Pós-formatação:</strong> Ingressar no domínio, instalar drivers, configurar impressoras, ativar agentes de monitoramento.</p>
+                      <p><strong>Validação:</strong> Testar login do usuário, acesso aos sistemas, impressão e rede.</p>
+                    </CollapsibleContent>
+                  </Collapsible>
+
+                  <Collapsible>
+                    <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors text-left">
+                      <span className="font-medium text-sm">🖨️ Impressoras</span>
+                      <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="p-3 text-sm space-y-2 text-muted-foreground">
+                      <p><strong>Instalação:</strong> Adicionar via IP da impressora no painel de controle → Dispositivos e Impressoras.</p>
+                      <p><strong>Driver:</strong> Usar driver PCL6 ou Universal conforme modelo.</p>
+                      <p><strong>Problemas comuns:</strong> Fila travada (reiniciar spooler), offline (verificar IP/cabo), qualidade (trocar toner/cilindro).</p>
+                      <p><strong>Milestone:</strong> Consultar checklist específico na aba Checklists para configuração completa.</p>
+                    </CollapsibleContent>
+                  </Collapsible>
+
+                  <Collapsible>
+                    <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors text-left">
+                      <span className="font-medium text-sm">🌐 Rede e Conectividade</span>
+                      <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="p-3 text-sm space-y-2 text-muted-foreground">
+                      <p><strong>Diagnóstico:</strong> ipconfig /all, ping, tracert, nslookup para identificar problemas.</p>
+                      <p><strong>Cabo:</strong> Verificar conexão física, testar ponto de rede, usar testador de cabos.</p>
+                      <p><strong>DNS:</strong> Verificar se está apontando para o servidor correto (primário e secundário).</p>
+                      <p><strong>DHCP:</strong> Se IP não atribuído, verificar se cabo está no ponto correto e porta do switch ativa.</p>
+                    </CollapsibleContent>
+                  </Collapsible>
+
+                  <Collapsible>
+                    <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-muted/50 rounded-lg hover:bg-muted transition-colors text-left">
+                      <span className="font-medium text-sm">🔐 Segurança e Boas Práticas</span>
+                      <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="p-3 text-sm space-y-2 text-muted-foreground">
+                      <p><strong>Backup:</strong> Sempre faça backup dos dados do usuário antes de qualquer procedimento de formatação.</p>
+                      <p><strong>Senhas:</strong> Nunca armazene senhas de usuários. Oriente o uso do portal de reset de senha.</p>
+                      <p><strong>Registro:</strong> Documente todas as ações realizadas nas notas do Remedy.</p>
+                      <p><strong>Autorização:</strong> Sempre confirme autorização do usuário antes de acessar remotamente ou realizar alterações.</p>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </div>
+
+                {/* Info */}
+                <div className="p-4 bg-violet-500/10 border border-violet-500/20 rounded-lg">
+                  <p className="text-sm text-muted-foreground">
+                    <strong className="text-violet-600">💡 Dica:</strong> Este manual é atualizado junto com o app. Consulte sempre que tiver dúvidas sobre funcionalidades ou procedimentos técnicos.
+                  </p>
                 </div>
               </div>
             </Card>
