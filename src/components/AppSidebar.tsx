@@ -122,6 +122,31 @@ export function AppSidebar({ activeView, onViewChange }: AppSidebarProps) {
           <Button
             variant="ghost"
             size="sm"
+            onClick={async () => {
+              try {
+                if ('caches' in window) {
+                  const names = await caches.keys();
+                  await Promise.all(names.map(name => caches.delete(name)));
+                }
+                localStorage.removeItem('app_version');
+                if ('serviceWorker' in navigator) {
+                  const registrations = await navigator.serviceWorker.getRegistrations();
+                  await Promise.all(registrations.map(r => r.unregister()));
+                }
+                toast.success('Cache limpo! Recarregando...', { duration: 2000 });
+                setTimeout(() => window.location.reload(), 1500);
+              } catch {
+                toast.error('Erro ao limpar cache');
+              }
+            }}
+            className="w-full justify-start gap-2 h-8 text-xs"
+          >
+            <RefreshCw className="h-4 w-4" />
+            {!collapsed && "Limpar Cache"}
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={() => setIsDark(!isDark)}
             className="w-full justify-start gap-2 h-8 text-xs"
           >
