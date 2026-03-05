@@ -1,4 +1,4 @@
-import { Clock, FileText, Monitor, Users, CheckSquare, BookOpen, Sun, Moon, LogOut, RefreshCw } from "lucide-react";
+import { Clock, FileText, Monitor, Users, CheckSquare, BookOpen, Sun, Moon, LogOut, RefreshCw, FileCode } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -64,6 +64,13 @@ const menuItems = [
     icon: BookOpen,
     description: "Como usar o sistema",
     shortcut: "6",
+  },
+  {
+    title: "Documentação",
+    id: "documentacao",
+    icon: FileCode,
+    description: "Referência técnica completa",
+    shortcut: "7",
   },
 ];
 

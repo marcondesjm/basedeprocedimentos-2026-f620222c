@@ -32,6 +32,7 @@ import { CompletedWorkOrders } from "@/components/CompletedWorkOrders";
 import { Changelog } from "@/components/Changelog";
 import { ActivityLog } from "@/components/ActivityLog";
 import { logActivity } from "@/lib/activityLogger";
+import { DocumentationPage } from "@/components/DocumentationPage";
 import { supabase } from "@/integrations/supabase/client";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
@@ -3545,6 +3546,13 @@ Enviado via Base de Procedimentos`
                 </div>
               </div>
             </Card>
+            )}
+
+            {/* === DOCUMENTAÇÃO VIEW === */}
+            {activeView === "documentacao" && (
+              <section aria-label="Documentação do sistema">
+                <DocumentationPage />
+              </section>
             )}
 
           </main>
