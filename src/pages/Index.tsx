@@ -747,13 +747,13 @@ ${proc.description}
             </div>
 
             <div className="flex flex-wrap gap-2">
-              <Button variant="default" size="lg" onClick={handleExportBackup}>
-                <Save className="w-5 h-5 mr-2" />
-                Gravar Histórico
+              <Button variant="default" size="lg" onClick={handleExportBackup} title="Gravar Histórico">
+                <Save className="w-5 h-5 sm:mr-2" />
+                <span className="hidden sm:inline">Gravar Histórico</span>
               </Button>
-              <Button variant="default" size="lg" onClick={() => document.getElementById('import-file')?.click()}>
-                <Upload className="w-5 h-5 mr-2" />
-                Importar Backup
+              <Button variant="default" size="lg" onClick={() => document.getElementById('import-file')?.click()} title="Importar Backup">
+                <Upload className="w-5 h-5 sm:mr-2" />
+                <span className="hidden sm:inline">Importar Backup</span>
               </Button>
               <input
                 id="import-file"
@@ -764,9 +764,9 @@ ${proc.description}
               />
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button>
-                    <Plus className="w-4 h-4 mr-2" />
-                    Novo Procedimento
+                  <Button title="Novo Procedimento">
+                    <Plus className="w-4 h-4 sm:mr-2" />
+                    <span className="hidden sm:inline">Novo Procedimento</span>
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-2xl w-[95vw] max-h-[85vh] overflow-y-auto p-4 sm:p-6">
