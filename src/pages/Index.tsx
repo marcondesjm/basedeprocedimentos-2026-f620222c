@@ -769,7 +769,7 @@ ${proc.description}
                     Novo Procedimento
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                <DialogContent className="max-w-2xl w-[95vw] max-h-[85vh] overflow-y-auto p-4 sm:p-6">
                 <DialogHeader>
                   <DialogTitle>Cadastrar Novo Procedimento</DialogTitle>
                 </DialogHeader>
@@ -974,7 +974,7 @@ ${proc.description}
 
           {/* Dialog de Importação */}
           <Dialog open={showImportDialog} onOpenChange={setShowImportDialog}>
-            <DialogContent aria-describedby="import-dialog-description">
+            <DialogContent className="w-[95vw] max-w-lg p-4 sm:p-6" aria-describedby="import-dialog-description">
               <DialogHeader>
                 <DialogTitle>Importar Procedimentos</DialogTitle>
               </DialogHeader>
@@ -3307,7 +3307,7 @@ SUPORTE TÉCNICO HEPTA`;
           setEditedProcedure(null);
         }}
       >
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-3xl w-[95vw] max-h-[85vh] overflow-y-auto p-4 sm:p-6">
           {selectedProcedure && (
             <>
               <DialogHeader>
