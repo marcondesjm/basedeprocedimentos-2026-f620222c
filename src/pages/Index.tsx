@@ -1173,9 +1173,11 @@ ${proc.description}
             </div>
           )}
          </div>
-          </TabsContent>
+              </div>
+            )}
 
-          <TabsContent value="fila-remota">
+            {/* === FILA REMOTA VIEW === */}
+            {activeView === "fila-remota" && (
             <Card className="p-6">
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
