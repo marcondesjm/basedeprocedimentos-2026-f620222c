@@ -14,6 +14,15 @@ interface VersionEntry {
 
 const versions: VersionEntry[] = [
   {
+    version: "v2.8.0",
+    date: "05/03/2026",
+    changes: [
+      "Correção do rótulo 'PIB do equipamento' em todos os templates de notas (remoto e presencial)",
+      "Responsividade aprimorada nos cards de procedimentos e popovers para dispositivos móveis",
+      "Popovers de orientações com largura dinâmica e alinhamento centralizado no mobile",
+    ],
+  },
+  {
     version: "v2.7.0",
     date: "05/03/2026",
     changes: [
