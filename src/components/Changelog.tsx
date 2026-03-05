@@ -44,12 +44,11 @@ export const Changelog = () => {
   const [isOpen, setIsOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const scrollToTop = () => {
-    scrollRef.current?.querySelector('[data-radix-scroll-area-viewport]')?.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  const getViewport = () => scrollRef.current?.querySelector<HTMLDivElement>('[data-radix-scroll-area-viewport]');
+  const scrollToTop = () => getViewport()?.scrollTo({ top: 0, behavior: 'smooth' });
   const scrollToBottom = () => {
-    const viewport = scrollRef.current?.querySelector('[data-radix-scroll-area-viewport]');
-    viewport?.scrollTo({ top: viewport.scrollHeight, behavior: 'smooth' });
+    const vp = getViewport();
+    if (vp) vp.scrollTo({ top: vp.scrollHeight, behavior: 'smooth' });
   };
 
   const handleDownloadChangelog = () => {
@@ -99,7 +98,8 @@ export const Changelog = () => {
 
       {isOpen && (
         <div className="relative mt-4">
-          <ScrollArea className="max-h-[400px]" ref={scrollRef}>
+          <div ref={scrollRef}>
+          <ScrollArea className="max-h-[400px]">
             <div className="space-y-4">
               {versions.map((v) => (
                 <div key={v.version} className="border-l-2 border-primary/40 pl-4 space-y-1">
@@ -116,6 +116,7 @@ export const Changelog = () => {
               ))}
             </div>
           </ScrollArea>
+          </div>
           {/* Scroll buttons */}
           <div className="absolute right-2 bottom-2 flex flex-col gap-1">
             <Button

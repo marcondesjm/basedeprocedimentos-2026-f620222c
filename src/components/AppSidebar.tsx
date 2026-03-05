@@ -133,7 +133,7 @@ export function AppSidebar({ activeView, onViewChange }: AppSidebarProps) {
   };
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="offcanvas">
       <SidebarContent className="flex flex-col h-full">
         {/* Logo / Title */}
         {!collapsed && (
