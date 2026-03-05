@@ -118,8 +118,7 @@ export const Changelog = () => {
 
       {isOpen && (
         <div className="relative mt-4">
-          <div ref={scrollRef}>
-          <ScrollArea className="max-h-[400px]">
+          <ScrollArea className="max-h-[400px]" ref={scrollRef}>
             <div className="space-y-4">
               {versions.map((v) => (
                 <div key={v.version} className="border-l-2 border-primary/40 pl-4 space-y-1">
@@ -136,7 +135,6 @@ export const Changelog = () => {
               ))}
             </div>
           </ScrollArea>
-          </div>
           {/* Scroll buttons */}
           <div className="absolute right-2 bottom-2 flex flex-col gap-1">
             <Button
