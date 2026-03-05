@@ -249,11 +249,11 @@ const Index = () => {
 
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [procedures.length]);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Auto-sync: verificar versão ao abrir e ouvir mudanças em tempo real
   useEffect(() => {
-    const APP_VERSION = '2.6.0';
+    const APP_VERSION = '2.7.0';
 
     const checkVersion = async () => {
       try {
