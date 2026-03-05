@@ -3575,11 +3575,11 @@ Enviado via Base de Procedimentos`
           setEditedProcedure(null);
         }}
       >
-        <DialogContent className="max-w-3xl w-[95vw] max-h-[85vh] overflow-y-auto p-4 sm:p-6">
+        <DialogContent className="max-w-3xl w-[95vw] max-h-[85vh] overflow-y-auto p-3 sm:p-6 [&_*]:break-words [&_*]:overflow-wrap-anywhere">
           {selectedProcedure && (
             <>
               <DialogHeader>
-                <DialogTitle className="text-xl">{selectedProcedure.title}</DialogTitle>
+                <DialogTitle className="text-lg sm:text-xl break-words">{selectedProcedure.title}</DialogTitle>
               </DialogHeader>
               <div className="space-y-4 mt-4">
                 <div className="flex items-center gap-2 flex-wrap">
@@ -3625,8 +3625,8 @@ Enviado via Base de Procedimentos`
 
                 <div>
                   <h3 className="font-semibold mb-2 text-foreground">Solução Aplicada</h3>
-                  <div className="bg-muted p-4 rounded-lg">
-                    <p className="text-foreground whitespace-pre-wrap">{selectedProcedure.solution}</p>
+                  <div className="bg-muted p-3 sm:p-4 rounded-lg overflow-x-auto">
+                    <p className="text-foreground whitespace-pre-wrap break-words text-sm sm:text-base" style={{ overflowWrap: 'anywhere' }}>{selectedProcedure.solution}</p>
                   </div>
                 </div>
 
