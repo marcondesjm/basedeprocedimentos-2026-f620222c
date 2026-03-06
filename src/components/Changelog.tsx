@@ -14,6 +14,16 @@ interface VersionEntry {
 
 const versions: VersionEntry[] = [
   {
+    version: "v2.9.0",
+    date: "06/03/2026",
+    changes: [
+      "Refatoração completa do Index.tsx em componentes modulares e hooks customizados",
+      "Preservação de estado do timer ao navegar entre views (CSS hidden)",
+      "Exibição do horário de início e conclusão nas ordens de serviço concluídas",
+      "Registro do título da WO no Log de Atividades ao concluir chamados",
+    ],
+  },
+  {
     version: "v2.8.0",
     date: "05/03/2026",
     changes: [
