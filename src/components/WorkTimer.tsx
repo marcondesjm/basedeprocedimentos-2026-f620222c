@@ -213,7 +213,7 @@ export const WorkTimer = () => {
       window.dispatchEvent(new Event('historyUpdated'));
       
       toast.success(`WO ${wo.number} salva no histórico!`);
-      logActivity("complete", "work_order", wo.number, { duration: wo.elapsedSeconds });
+      logActivity("complete", "work_order", wo.number, { title: wo.number, duration: wo.elapsedSeconds });
     } catch (error) {
       console.error("Error saving completed work order:", error);
       toast.error("Erro ao salvar no histórico");
