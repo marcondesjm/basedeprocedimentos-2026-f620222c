@@ -104,10 +104,10 @@ const Index = () => {
         <div className="flex-1 flex flex-col min-w-0">
           <AppHeader currentDateTime={currentDateTime} isAppUpToDate={isAppUpToDate} />
 
-          <main className="flex-1 px-3 py-4 md:px-6 md:py-6 overflow-auto" role="main">
-            {activeView === "painel" && <PainelView />}
+           <main className="flex-1 px-3 py-4 md:px-6 md:py-6 overflow-auto" role="main">
+            <div className={activeView === "painel" ? "" : "hidden"}><PainelView /></div>
 
-            {activeView === "procedimentos" && (
+            <div className={activeView === "procedimentos" ? "" : "hidden"}>
               <ProcedimentosView
                 procedures={procedures}
                 isLoading={isLoading}
@@ -120,23 +120,23 @@ const Index = () => {
                 onSelectProcedure={setSelectedProcedure}
                 touchProcedureDate={touchProcedureDate}
               />
-            )}
+            </div>
 
-            {activeView === "fila-remota" && (
+            <div className={activeView === "fila-remota" ? "" : "hidden"}>
               <FilaRemotaView procedures={procedures} onSelectProcedure={setSelectedProcedure} touchProcedureDate={touchProcedureDate} />
-            )}
+            </div>
 
-            {activeView === "fila-presencial" && (
+            <div className={activeView === "fila-presencial" ? "" : "hidden"}>
               <FilaPresencialView procedures={procedures} onSelectProcedure={setSelectedProcedure} touchProcedureDate={touchProcedureDate} />
-            )}
+            </div>
 
-            {activeView === "checklists" && <ChecklistsView />}
+            <div className={activeView === "checklists" ? "" : "hidden"}><ChecklistsView /></div>
 
-            {activeView === "manual" && <ManualView />}
+            <div className={activeView === "manual" ? "" : "hidden"}><ManualView /></div>
 
-            {activeView === "documentacao" && (
+            <div className={activeView === "documentacao" ? "" : "hidden"}>
               <section aria-label="Documentação do sistema"><DocumentationPage /></section>
-            )}
+            </div>
           </main>
 
           <ProcedureDetailDialog
