@@ -74,6 +74,9 @@ const Index = () => {
         localStorage.removeItem('workOrderHistory');
         localStorage.removeItem('workOrderArchive');
         localStorage.removeItem('activity_logs_local');
+        // Notify components to refresh their state after cleanup
+        window.dispatchEvent(new CustomEvent('session_data_cleared'));
+        window.dispatchEvent(new CustomEvent('activity_log_updated'));
         toast.warning('📋 Nova sessão detectada — históricos e logs foram limpos.', { description: 'Lembre-se de importar seu backup e salvar logs antes de fechar.', duration: 8000 });
       }
       sessionStorage.setItem('app_session_active', 'true');
@@ -82,9 +85,10 @@ const Index = () => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       const hasHistory = localStorage.getItem('workOrderHistory');
       const hasLogs = localStorage.getItem('activity_logs_local');
-      if (hasHistory || hasLogs) {
+      const hasArchive = localStorage.getItem('workOrderArchive');
+      if (hasHistory || hasLogs || hasArchive) {
         e.preventDefault();
-        e.returnValue = '⚠️ Salve seus logs e faça backup antes de sair!';
+        e.returnValue = '⚠️ Você tem histórico e logs não salvos! Salve antes de sair.';
       }
     };
     window.addEventListener('beforeunload', handleBeforeUnload);

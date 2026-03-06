@@ -60,9 +60,16 @@ export const CompletedWorkOrders = () => {
       loadHistory();
     };
 
+    const handleSessionCleared = () => {
+      loadHistory();
+      loadArchive();
+    };
+
     window.addEventListener('historyUpdated', handleHistoryUpdate);
+    window.addEventListener('session_data_cleared', handleSessionCleared);
     return () => {
       window.removeEventListener('historyUpdated', handleHistoryUpdate);
+      window.removeEventListener('session_data_cleared', handleSessionCleared);
     };
   }, []);
 

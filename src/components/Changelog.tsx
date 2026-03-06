@@ -21,6 +21,8 @@ const versions: VersionEntry[] = [
       "Preservação de estado do timer ao navegar entre views (CSS hidden)",
       "Exibição do horário de início e conclusão nas ordens de serviço concluídas",
       "Registro do título da WO no Log de Atividades ao concluir chamados",
+      "Correção da limpeza automática de histórico e logs ao iniciar nova sessão",
+      "Alerta de dados não salvos ao fechar o navegador inclui arquivos arquivados",
     ],
   },
   {
