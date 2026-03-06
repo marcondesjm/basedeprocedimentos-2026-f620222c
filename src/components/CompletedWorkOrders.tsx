@@ -11,6 +11,7 @@ import { ptBR } from "date-fns/locale";
 interface CompletedWO {
   id: string;
   wo_number: string;
+  started_at?: string;
   completed_at: string;
   total_duration: number;
   images: string[];
@@ -449,9 +450,15 @@ export const CompletedWorkOrders = () => {
                                     <Badge variant="outline" className="font-mono">
                                       WO00000{wo.wo_number}
                                     </Badge>
+                                    {wo.started_at && (
+                                      <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                                        <Clock className="w-3.5 h-3.5" />
+                                        {format(new Date(wo.started_at), "HH:mm")}
+                                      </div>
+                                    )}
                                     <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                                      <Clock className="w-4 h-4" />
-                                      {format(completedDate, "HH:mm", { locale: ptBR })}
+                                      <Clock className="w-3.5 h-3.5" />
+                                      {format(completedDate, "HH:mm")}
                                     </div>
                                     <Badge variant="secondary">
                                       {formatDuration(wo.total_duration)}
