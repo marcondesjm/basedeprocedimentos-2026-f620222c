@@ -22,6 +22,7 @@ interface WorkOrder {
   hasWarned: boolean;
   showGuidance: boolean;
   startTime?: number; // timestamp when timer was last started
+  createdAt: number; // timestamp when the WO was first added
   images: string[];
 }
 
@@ -159,8 +160,9 @@ export const WorkTimer = () => {
       return;
     }
 
+    const now = Date.now();
     const newOrder: WorkOrder = {
-      id: Date.now().toString(),
+      id: now.toString(),
       number: newWO.trim(),
       elapsedSeconds: 0,
       limitSeconds: 40 * 60,
@@ -168,7 +170,8 @@ export const WorkTimer = () => {
       hasFinished: false,
       hasWarned: false,
       showGuidance: false,
-      startTime: Date.now(),
+      startTime: now,
+      createdAt: now,
       images: selectedImages,
     };
 
@@ -196,6 +199,7 @@ export const WorkTimer = () => {
       history[dateKey].push({
         id: crypto.randomUUID(),
         wo_number: wo.number,
+        started_at: new Date(wo.createdAt).toISOString(),
         completed_at: now.toISOString(),
         total_duration: wo.elapsedSeconds,
         images: wo.images,
