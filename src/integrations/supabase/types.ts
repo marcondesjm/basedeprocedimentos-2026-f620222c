@@ -163,22 +163,28 @@ export type Database = {
           active: boolean
           created_at: string
           details: string | null
+          expires_at: string | null
           id: string
           message: string
+          scheduled_at: string | null
         }
         Insert: {
           active?: boolean
           created_at?: string
           details?: string | null
+          expires_at?: string | null
           id?: string
           message: string
+          scheduled_at?: string | null
         }
         Update: {
           active?: boolean
           created_at?: string
           details?: string | null
+          expires_at?: string | null
           id?: string
           message?: string
+          scheduled_at?: string | null
         }
         Relationships: []
       }
