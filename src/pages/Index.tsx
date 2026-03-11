@@ -143,6 +143,10 @@ const Index = () => {
             <div className={activeView === "documentacao" ? "" : "hidden"}>
               <section aria-label="Documentação do sistema"><DocumentationPage /></section>
             </div>
+
+            <div className={activeView === "mensagens-supervisores" ? "" : "hidden"}>
+              <SupervisorMessagesView />
+            </div>
           </main>
 
           <ProcedureDetailDialog
