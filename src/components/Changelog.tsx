@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import { FileText, ChevronDown, ChevronUp, Download, ArrowUp, ArrowDown } from "lucide-react";
 import { format } from "date-fns";
 
+declare const __APP_VERSION__: string;
+declare const __BUILD_TIMESTAMP__: string;
+
 interface VersionEntry {
   version: string;
   date: string;
@@ -13,6 +16,16 @@ interface VersionEntry {
 }
 
 const versions: VersionEntry[] = [
+  {
+    version: "v2.9.1",
+    date: "11/03/2026",
+    changes: [
+      "Sincronização automática da build atual com o backend sem depender de ajuste manual no status",
+      "Fallback por polling para atualização mesmo quando o Realtime falhar",
+      "Login e aplicativo principal agora usam a mesma lógica de verificação de versão",
+      "Log exibe a build atual automaticamente no cabeçalho",
+    ],
+  },
   {
     version: "v2.9.0",
     date: "06/03/2026",
@@ -76,6 +89,7 @@ const versions: VersionEntry[] = [
 export const Changelog = () => {
   const [isOpen, setIsOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const currentBuildLabel = `${String(__APP_VERSION__)} • ${format(new Date(__BUILD_TIMESTAMP__), "dd/MM/yyyy HH:mm")}`;
 
   const scrollToTop = () => scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   const scrollToBottom = () => {
@@ -103,9 +117,14 @@ export const Changelog = () => {
         className="flex items-center justify-between cursor-pointer select-none"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <div className="flex items-center gap-2">
-          <FileText className="w-5 h-5 text-primary" />
-          <h2 className="text-lg font-bold">Log de Modificações</h2>
+        <div className="min-w-0">
+          <div className="flex items-center gap-2">
+            <FileText className="w-5 h-5 text-primary" />
+            <h2 className="text-lg font-bold">Log de Modificações</h2>
+          </div>
+          <p className="mt-1 truncate text-xs text-muted-foreground">
+            Build atual: {currentBuildLabel}
+          </p>
         </div>
         <div className="flex items-center gap-2">
           {isOpen && (

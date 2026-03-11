@@ -6,10 +6,12 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { lovable } from "@/integrations/lovable/index";
 import { supabase } from "@/integrations/supabase/client";
+import { useAppVersion } from "@/hooks/useAppVersion";
 import { toast } from "sonner";
 import { Shield, RefreshCw, Trash2, LogIn, Sun, Moon } from "lucide-react";
 
 const APP_VERSION = String(__APP_VERSION__).replace(/^v/i, '');
+const BUILD_TIMESTAMP = String(__BUILD_TIMESTAMP__);
 
 const MatrixBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -484,12 +486,9 @@ const MatrixBackground = () => {
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-  const [isSyncing, setIsSyncing] = useState(false);
-  const [isUpToDate, setIsUpToDate] = useState<boolean | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
-  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
   const [isDark, setIsDark] = useState(() => {
     if (typeof window !== 'undefined') {
       return document.documentElement.classList.contains('dark') || 
@@ -499,6 +498,7 @@ const Login = () => {
     return false;
   });
   const navigate = useNavigate();
+  const { isAppUpToDate: isUpToDate, lastUpdated, isSyncing, refreshApp } = useAppVersion(APP_VERSION, BUILD_TIMESTAMP);
 
   // Dark mode toggle
   useEffect(() => {
@@ -523,64 +523,9 @@ const Login = () => {
     });
   }, [navigate]);
 
-  useEffect(() => {
-    const checkVersion = async () => {
-      try {
-        const { data } = await supabase
-          .from('app_config')
-          .select('value, updated_at')
-          .eq('key', 'current_version')
-          .single();
-        if (data) {
-          setLastUpdated(data.updated_at);
-          if (data.value !== APP_VERSION) {
-            setIsUpToDate(false);
-            toast.info('🔄 Nova versão disponível!');
-          } else {
-            setIsUpToDate(true);
-          }
-        }
-      } catch { setIsUpToDate(true); }
-    };
-    checkVersion();
-
-    const channel = supabase
-      .channel('login-version-sync')
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'app_config', filter: 'key=eq.current_version' },
-        (payload) => {
-          if (payload.new?.value !== APP_VERSION) {
-            toast.info('🔄 Atualização disponível! Recarregando...');
-            handleClearCache();
-          }
-        })
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, []);
-
-  const handleClearCache = async () => {
-    setIsSyncing(true);
-    try {
-      if ('caches' in window) {
-        const names = await caches.keys();
-        await Promise.all(names.map(name => caches.delete(name)));
-      }
-      localStorage.removeItem('app_version');
-      if ('serviceWorker' in navigator) {
-        const registrations = await navigator.serviceWorker.getRegistrations();
-        await Promise.all(registrations.map(r => r.unregister()));
-      }
-      toast.success('Cache limpo! Recarregando...', { duration: 2000 });
-      setTimeout(() => window.location.reload(), 1500);
-    } catch {
-      toast.error('Erro ao limpar cache');
-      setIsSyncing(false);
-    }
-  };
-
   const handleForceSync = async () => {
-    setIsSyncing(true);
     toast.info('🔄 Limpando cache e atualizando...');
-    await handleClearCache();
+    await refreshApp();
   };
 
   const handleEmailLogin = async (e: React.FormEvent) => {
