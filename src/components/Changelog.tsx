@@ -117,9 +117,14 @@ export const Changelog = () => {
         className="flex items-center justify-between cursor-pointer select-none"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <div className="flex items-center gap-2">
-          <FileText className="w-5 h-5 text-primary" />
-          <h2 className="text-lg font-bold">Log de Modificações</h2>
+        <div className="min-w-0">
+          <div className="flex items-center gap-2">
+            <FileText className="w-5 h-5 text-primary" />
+            <h2 className="text-lg font-bold">Log de Modificações</h2>
+          </div>
+          <p className="mt-1 truncate text-xs text-muted-foreground">
+            Build atual: {currentBuildLabel}
+          </p>
         </div>
         <div className="flex items-center gap-2">
           {isOpen && (

@@ -523,30 +523,9 @@ const Login = () => {
     });
   }, [navigate]);
 
-  const handleClearCache = async () => {
-    setIsSyncing(true);
-    try {
-      if ('caches' in window) {
-        const names = await caches.keys();
-        await Promise.all(names.map(name => caches.delete(name)));
-      }
-      localStorage.removeItem('app_version');
-      if ('serviceWorker' in navigator) {
-        const registrations = await navigator.serviceWorker.getRegistrations();
-        await Promise.all(registrations.map(r => r.unregister()));
-      }
-      toast.success('Cache limpo! Recarregando...', { duration: 2000 });
-      setTimeout(() => window.location.reload(), 1500);
-    } catch {
-      toast.error('Erro ao limpar cache');
-      setIsSyncing(false);
-    }
-  };
-
   const handleForceSync = async () => {
-    setIsSyncing(true);
     toast.info('🔄 Limpando cache e atualizando...');
-    await handleClearCache();
+    await refreshApp();
   };
 
   const handleEmailLogin = async (e: React.FormEvent) => {

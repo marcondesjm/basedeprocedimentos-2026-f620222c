@@ -19,6 +19,7 @@ declare const __APP_VERSION__: string;
 
 const Index = () => {
   const APP_VERSION = String(__APP_VERSION__).replace(/^v/i, '');
+  const BUILD_TIMESTAMP = String(__BUILD_TIMESTAMP__);
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const [activeView, setActiveView] = useState("painel");
   const [selectedProcedure, setSelectedProcedure] = useState<Procedure | null>(null);
@@ -29,7 +30,7 @@ const Index = () => {
     importBackup, exportBackup, touchProcedureDate,
   } = useProcedures();
 
-  const { isAppUpToDate } = useAppVersion(APP_VERSION);
+  const { isAppUpToDate } = useAppVersion(APP_VERSION, BUILD_TIMESTAMP);
 
   // Block context menu and dev tools
   useEffect(() => {
