@@ -106,6 +106,18 @@ export const SupervisorMessagesView = () => {
     fetchMessages();
   };
 
+  if (!isSupervisor) {
+    return (
+      <section className="space-y-6" aria-label="Acesso restrito">
+        <Card className="p-8 text-center">
+          <Megaphone className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+          <h2 className="text-xl font-bold mb-2">Acesso Restrito</h2>
+          <p className="text-muted-foreground">Apenas supervisores autorizados podem gerenciar mensagens.</p>
+        </Card>
+      </section>
+    );
+  }
+
   return (
     <section className="space-y-6" aria-label="Gerenciar mensagens dos supervisores">
       <div className="flex items-center justify-between">
