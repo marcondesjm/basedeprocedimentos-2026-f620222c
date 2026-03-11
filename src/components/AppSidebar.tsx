@@ -72,6 +72,13 @@ const menuItems = [
     description: "Referência técnica completa",
     shortcut: "7",
   },
+  {
+    title: "Mensagens",
+    id: "mensagens-supervisores",
+    icon: Megaphone,
+    description: "Gerenciar avisos",
+    shortcut: "8",
+  },
 ];
 
 export function AppSidebar({ activeView, onViewChange }: AppSidebarProps) {
