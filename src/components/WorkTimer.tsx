@@ -29,7 +29,7 @@ interface WorkOrder {
 export const WorkTimer = () => {
   const [workOrders, setWorkOrders] = useState<WorkOrder[]>([]);
   const [newWO, setNewWO] = useState("");
-  const alarmIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const alarmIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
 
   useEffect(() => {
@@ -154,11 +154,25 @@ export const WorkTimer = () => {
       return;
     }
 
-    const exists = workOrders.some(wo => wo.number === newWO.trim());
+    const exists = workOrders.some(wo => wo.number === woNumber);
     if (exists) {
       toast.error("Esta WO já está na lista");
       return;
     }
+
+    // Check if WO already exists in history
+    try {
+      const historyData = localStorage.getItem('workOrderHistory');
+      const history = historyData ? JSON.parse(historyData) : {};
+      const inHistory = Object.values(history).some((orders: any) =>
+        (orders as any[]).some((o: any) => o.wo_number === woNumber)
+      );
+      if (inHistory) {
+        toast.error("Esta WO já existe no histórico de chamados concluídos!");
+        return;
+      }
+    } catch {}
+
 
     const now = Date.now();
     const newOrder: WorkOrder = {
