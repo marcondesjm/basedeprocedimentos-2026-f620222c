@@ -1,10 +1,10 @@
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-
 import { FileText, ChevronDown, ChevronUp, Download, ArrowUp, ArrowDown } from "lucide-react";
 import { format } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
 
 declare const __APP_VERSION__: string;
 declare const __BUILD_TIMESTAMP__: string;
@@ -15,88 +15,37 @@ interface VersionEntry {
   changes: string[];
 }
 
-const versions: VersionEntry[] = [
-  {
-    version: "v2.9.2",
-    date: "11/03/2026",
-    changes: [
-      "Botão 'Saiba mais' nas mensagens dos supervisores com popup de detalhes",
-      "Campo de detalhes adicionado às mensagens dos supervisores",
-      "Painel dividido entre lembretes de bem-estar e mensagens dos supervisores",
-      "Mensagens dos supervisores sem recarregar o site inteiro (polling a cada 2min)",
-      "Remoção da atualização automática global por versão (sem refresh contínuo)",
-      "Lembretes de água a cada 1h e alongamento a cada 1h30",
-    ],
-  },
-  {
-    version: "v2.9.0",
-    date: "06/03/2026",
-    changes: [
-      "Bloqueio de WO duplicada no histórico de chamados concluídos",
-      "Refatoração completa do Index.tsx em componentes modulares e hooks customizados",
-      "Preservação de estado do timer ao navegar entre views (CSS hidden)",
-      "Exibição do horário de início e conclusão nas ordens de serviço concluídas",
-      "Registro do título da WO no Log de Atividades ao concluir chamados",
-      "Correção da limpeza automática de histórico e logs ao iniciar nova sessão",
-      "Alerta de dados não salvos ao fechar o navegador inclui arquivos arquivados",
-    ],
-  },
-  {
-    version: "v2.8.0",
-    date: "05/03/2026",
-    changes: [
-      "Correção do rótulo 'PIB do equipamento' em todos os templates de notas (remoto e presencial)",
-      "Responsividade aprimorada nos cards de procedimentos e popovers para dispositivos móveis",
-      "Popovers de orientações com largura dinâmica e alinhamento centralizado no mobile",
-    ],
-  },
-  {
-    version: "v2.7.0",
-    date: "05/03/2026",
-    changes: [
-      "Página de Documentação completa integrada ao sistema (Alt+7)",
-      "Menu lateral com opção de esconder/mostrar (offcanvas)",
-      "Correção das setas de rolagem no Log de Atividades e Changelog",
-      "README técnico, manual do usuário e documentação do banco de dados",
-      "Novo item 'Documentação' no menu lateral com ícone dedicado",
-    ],
-  },
-  {
-    version: "v2.6.0",
-    date: "04/03/2026",
-    changes: [
-      "Prefixo WO00000 fixo no campo e badge de ordens de serviço",
-      "Validação numérica com beep sonoro e pop-up ao digitar letras",
-      "Bloqueio de clique direito com beep e mensagem do desenvolvedor",
-      "Histórico agrupado por mês e dia com setas colapsáveis",
-      "Versão e data de atualização sincronizadas automaticamente com o build",
-      "Log automático de atividades no banco de dados",
-      "Changelog visual de modificações",
-    ],
-  },
-  {
-    version: "v2.5.0",
-    date: "03/03/2026",
-    changes: [
-      "Timer de ordens de serviço com contagem progressiva",
-      "Alarme contínuo ao atingir 40 minutos",
-      "Histórico de chamados com arquivamento por dia",
-      "Exportação e importação de backup em JSON",
-      "Cabeçalho com versão e status de sincronização",
-      "Limpeza de cache integrada",
-    ],
-  },
-];
-
 export const Changelog = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [versions, setVersions] = useState<VersionEntry[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
   const currentBuildLabel = `${String(__APP_VERSION__)} • ${format(new Date(__BUILD_TIMESTAMP__), "dd/MM/yyyy HH:mm")}`;
 
-  const scrollToTop = () => scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+  useEffect(() => {
+    const fetchVersions = async () => {
+      const { data, error } = await supabase
+        .from("changelog_versions" as any)
+        .select("version, release_date, changes")
+        .order("release_date", { ascending: false });
+
+      if (data && !error) {
+        setVersions(
+          (data as any[]).map((v) => ({
+            version: v.version,
+            date: format(new Date(v.release_date), "dd/MM/yyyy"),
+            changes: v.changes || [],
+          }))
+        );
+      }
+    };
+
+    fetchVersions();
+  }, []);
+
+  const scrollToTop = () => scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
   const scrollToBottom = () => {
     const vp = scrollRef.current;
-    if (vp) vp.scrollTo({ top: vp.scrollHeight, behavior: 'smooth' });
+    if (vp) vp.scrollTo({ top: vp.scrollHeight, behavior: "smooth" });
   };
 
   const handleDownloadChangelog = () => {
@@ -152,23 +101,26 @@ export const Changelog = () => {
       {isOpen && (
         <div className="relative mt-4">
           <div ref={scrollRef} className="max-h-[400px] overflow-y-auto pr-2">
-            <div className="space-y-4">
-              {versions.map((v) => (
-                <div key={v.version} className="border-l-2 border-primary/40 pl-4 space-y-1">
-                  <div className="flex items-center gap-2">
-                    <Badge variant="default">{v.version}</Badge>
-                    <span className="text-sm text-muted-foreground">{v.date}</span>
+            {versions.length === 0 ? (
+              <p className="text-sm text-muted-foreground italic">Carregando versões...</p>
+            ) : (
+              <div className="space-y-4">
+                {versions.map((v) => (
+                  <div key={v.version} className="border-l-2 border-primary/40 pl-4 space-y-1">
+                    <div className="flex items-center gap-2">
+                      <Badge variant="default">{v.version}</Badge>
+                      <span className="text-sm text-muted-foreground">{v.date}</span>
+                    </div>
+                    <ul className="text-sm space-y-1 text-muted-foreground list-disc list-inside">
+                      {v.changes.map((change, idx) => (
+                        <li key={idx}>{change}</li>
+                      ))}
+                    </ul>
                   </div>
-                  <ul className="text-sm space-y-1 text-muted-foreground list-disc list-inside">
-                    {v.changes.map((change, idx) => (
-                      <li key={idx}>{change}</li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
-          {/* Scroll buttons */}
           <div className="absolute right-2 bottom-2 flex flex-col gap-1">
             <Button
               variant="secondary"
