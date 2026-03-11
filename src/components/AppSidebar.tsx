@@ -1,4 +1,4 @@
-import { Clock, FileText, Monitor, Users, CheckSquare, BookOpen, Sun, Moon, LogOut, RefreshCw, FileCode } from "lucide-react";
+import { Clock, FileText, Monitor, Users, CheckSquare, BookOpen, Sun, Moon, LogOut, RefreshCw, FileCode, Megaphone } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -71,6 +71,13 @@ const menuItems = [
     icon: FileCode,
     description: "Referência técnica completa",
     shortcut: "7",
+  },
+  {
+    title: "Mensagens",
+    id: "mensagens-supervisores",
+    icon: Megaphone,
+    description: "Gerenciar avisos",
+    shortcut: "8",
   },
 ];
 
