@@ -154,8 +154,22 @@ export const WorkTimer = () => {
       return;
     }
 
+    const playErrorBeep = () => {
+      try {
+        const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.frequency.value = 400; osc.type = "square";
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+        osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.3);
+      } catch {}
+    };
+
     const exists = workOrders.some(wo => wo.number === woNumber);
     if (exists) {
+      playErrorBeep();
       toast.error("Esta WO já está na lista");
       return;
     }
@@ -168,6 +182,7 @@ export const WorkTimer = () => {
         (orders as any[]).some((o: any) => o.wo_number === woNumber)
       );
       if (inHistory) {
+        playErrorBeep();
         toast.error("Esta WO já existe no histórico de chamados concluídos!");
         return;
       }
