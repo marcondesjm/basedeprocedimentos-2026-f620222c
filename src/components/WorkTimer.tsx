@@ -29,7 +29,7 @@ interface WorkOrder {
 export const WorkTimer = () => {
   const [workOrders, setWorkOrders] = useState<WorkOrder[]>([]);
   const [newWO, setNewWO] = useState("");
-  const alarmIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const alarmIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
 
   useEffect(() => {
