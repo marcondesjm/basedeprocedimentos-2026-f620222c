@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Card } from "@/components/ui/card";
 import { Droplets, StretchHorizontal, Eye, Coffee, Wind, Heart, Footprints, Smile } from "lucide-react";
+import { SupervisorMessages } from "@/components/SupervisorMessages";
 
 type ReminderCategory = "water" | "stretch" | "general";
 
