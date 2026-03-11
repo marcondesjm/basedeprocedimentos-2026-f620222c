@@ -23,7 +23,7 @@ const reminders: Reminder[] = [
   { icon: <Heart className="w-6 h-6" />, message: "💪 Alongue os pulsos e dedos. Previna lesões!", color: "text-rose-400" },
 ];
 
-const INTERVAL_MS = 30 * 1000; // troca a cada 30 segundos
+const INTERVAL_MS = 3 * 60 * 1000; // troca a cada 3 minutos
 
 export const WellnessReminder = () => {
   const [currentIndex, setCurrentIndex] = useState(() => Math.floor(Math.random() * reminders.length));
