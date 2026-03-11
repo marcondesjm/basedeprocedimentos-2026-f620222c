@@ -17,14 +17,15 @@ interface VersionEntry {
 
 const versions: VersionEntry[] = [
   {
-    version: "v2.9.1",
-    date: "11/03/2026 17:06",
+    version: "v2.9.2",
+    date: "11/03/2026",
     changes: [
+      "Botão 'Saiba mais' nas mensagens dos supervisores com popup de detalhes",
+      "Campo de detalhes adicionado às mensagens dos supervisores",
       "Painel dividido entre lembretes de bem-estar e mensagens dos supervisores",
-      "Mensagens dos supervisores ajustadas para não recarregar o site inteiro",
-      "Remoção da atualização automática global por versão para evitar refresh contínuo",
-      "Lembretes de bem-estar no painel (água, alongamento, postura, pausas)",
-      "Log exibe a build atual automaticamente no cabeçalho",
+      "Mensagens dos supervisores sem recarregar o site inteiro (polling a cada 2min)",
+      "Remoção da atualização automática global por versão (sem refresh contínuo)",
+      "Lembretes de água a cada 1h e alongamento a cada 1h30",
     ],
   },
   {
