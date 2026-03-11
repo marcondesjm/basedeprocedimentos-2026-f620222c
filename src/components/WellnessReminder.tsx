@@ -35,7 +35,7 @@ export const WellnessReminder = () => {
       setTimeout(() => {
         setCurrentIndex((prev) => (prev + 1) % reminders.length);
         setIsVisible(true);
-      }, 500);
+      }, 1300);
     }, INTERVAL_MS);
 
     return () => clearInterval(interval);
