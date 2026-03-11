@@ -21,8 +21,9 @@ export const SupervisorMessages = () => {
 
   useEffect(() => {
     const fetchMessages = async () => {
+      // RLS policy already filters: active=true, scheduled_at<=now, expires_at>now
       const { data } = await supabase
-        .from("supervisor_messages" as any)
+        .from("supervisor_messages")
         .select("*")
         .eq("active", true)
         .order("created_at", { ascending: false })
