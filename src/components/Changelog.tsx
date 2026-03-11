@@ -20,6 +20,7 @@ const versions: VersionEntry[] = [
     version: "v2.9.1",
     date: "11/03/2026",
     changes: [
+      "Lembretes de bem-estar no painel (água, alongamento, postura, pausas)",
       "Sincronização automática da build atual com o backend sem depender de ajuste manual no status",
       "Fallback por polling para atualização mesmo quando o Realtime falhar",
       "Login e aplicativo principal agora usam a mesma lógica de verificação de versão",
