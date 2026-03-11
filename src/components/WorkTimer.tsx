@@ -448,7 +448,7 @@ export const WorkTimer = () => {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between gap-1">
                     <div className="flex items-center gap-2 min-w-0 flex-1">
-                      <Badge variant={wo.hasFinished ? "destructive" : wo.isRunning ? "default" : "secondary"} className="truncate text-xs">
+                      <Badge variant={wo.hasFinished ? "destructive" : wo.isRunning ? "default" : "secondary"} className="text-[10px] break-all whitespace-normal leading-tight">
                         WO00000{wo.number}
                       </Badge>
                       {wo.hasFinished && (
