@@ -59,6 +59,30 @@ export type Database = {
         }
         Relationships: []
       }
+      changelog_versions: {
+        Row: {
+          changes: string[]
+          created_at: string
+          id: string
+          release_date: string
+          version: string
+        }
+        Insert: {
+          changes?: string[]
+          created_at?: string
+          id?: string
+          release_date?: string
+          version: string
+        }
+        Update: {
+          changes?: string[]
+          created_at?: string
+          id?: string
+          release_date?: string
+          version?: string
+        }
+        Relationships: []
+      }
       completed_work_orders: {
         Row: {
           completed_at: string
