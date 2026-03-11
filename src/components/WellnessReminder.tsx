@@ -69,27 +69,33 @@ export const WellnessReminder = () => {
   }, [transition]);
 
   return (
-    <Card className="p-4 md:p-6 bg-gradient-to-br from-muted/20 to-muted/40 border-muted-foreground/10 flex items-center gap-4 overflow-hidden">
-      <div
-        className={`shrink-0 ${current.color}`}
-        style={{
-          transition: "opacity 1.2s ease-in-out, transform 1.2s ease-in-out",
-          opacity: isVisible ? 1 : 0,
-          transform: isVisible ? "scale(1)" : "scale(0.85)",
-        }}
-      >
-        {current.icon}
-      </div>
-      <p
-        className="text-sm md:text-base font-medium text-foreground/80"
-        style={{
-          transition: "opacity 1.2s ease-in-out, transform 1.2s ease-in-out",
-          opacity: isVisible ? 1 : 0,
-          transform: isVisible ? "translateX(0)" : "translateX(-8px)",
-        }}
-      >
-        {current.message}
-      </p>
-    </Card>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      {/* Bem-estar */}
+      <Card className="p-4 md:p-5 bg-gradient-to-br from-muted/20 to-muted/40 border-muted-foreground/10 flex items-center gap-4 overflow-hidden">
+        <div
+          className={`shrink-0 ${current.color}`}
+          style={{
+            transition: "opacity 1.2s ease-in-out, transform 1.2s ease-in-out",
+            opacity: isVisible ? 1 : 0,
+            transform: isVisible ? "scale(1)" : "scale(0.85)",
+          }}
+        >
+          {current.icon}
+        </div>
+        <p
+          className="text-sm md:text-base font-medium text-foreground/80"
+          style={{
+            transition: "opacity 1.2s ease-in-out, transform 1.2s ease-in-out",
+            opacity: isVisible ? 1 : 0,
+            transform: isVisible ? "translateX(0)" : "translateX(-8px)",
+          }}
+        >
+          {current.message}
+        </p>
+      </Card>
+
+      {/* Mensagens dos Supervisores */}
+      <SupervisorMessages />
+    </div>
   );
 };
