@@ -89,6 +89,7 @@ const versions: VersionEntry[] = [
 export const Changelog = () => {
   const [isOpen, setIsOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const currentBuildLabel = `${String(__APP_VERSION__)} • ${format(new Date(__BUILD_TIMESTAMP__), "dd/MM/yyyy HH:mm")}`;
 
   const scrollToTop = () => scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   const scrollToBottom = () => {
