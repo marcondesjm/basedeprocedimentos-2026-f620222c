@@ -17,6 +17,7 @@ const versions: VersionEntry[] = [
     version: "v2.9.0",
     date: "06/03/2026",
     changes: [
+      "Bloqueio de WO duplicada no histórico de chamados concluídos",
       "Refatoração completa do Index.tsx em componentes modulares e hooks customizados",
       "Preservação de estado do timer ao navegar entre views (CSS hidden)",
       "Exibição do horário de início e conclusão nas ordens de serviço concluídas",
