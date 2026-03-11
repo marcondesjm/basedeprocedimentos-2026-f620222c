@@ -23,7 +23,7 @@ const reminders: Reminder[] = [
   { icon: <Heart className="w-6 h-6" />, message: "💪 Alongue os pulsos e dedos. Previna lesões!", color: "text-rose-400" },
 ];
 
-const INTERVAL_MS = 30 * 1000; // troca a cada 30 segundos
+const INTERVAL_MS = 3 * 60 * 1000; // troca a cada 3 minutos
 
 export const WellnessReminder = () => {
   const [currentIndex, setCurrentIndex] = useState(() => Math.floor(Math.random() * reminders.length));
@@ -35,7 +35,7 @@ export const WellnessReminder = () => {
       setTimeout(() => {
         setCurrentIndex((prev) => (prev + 1) % reminders.length);
         setIsVisible(true);
-      }, 500);
+      }, 1300);
     }, INTERVAL_MS);
 
     return () => clearInterval(interval);
@@ -46,16 +46,22 @@ export const WellnessReminder = () => {
   return (
     <Card className="p-4 md:p-6 bg-gradient-to-br from-muted/20 to-muted/40 border-muted-foreground/10 flex items-center gap-4 overflow-hidden">
       <div
-        className={`shrink-0 ${reminder.color} transition-all duration-500 ${
-          isVisible ? "opacity-100 scale-100" : "opacity-0 scale-75"
-        }`}
+        className={`shrink-0 ${reminder.color}`}
+        style={{
+          transition: "opacity 1.2s ease-in-out, transform 1.2s ease-in-out",
+          opacity: isVisible ? 1 : 0,
+          transform: isVisible ? "scale(1)" : "scale(0.85)",
+        }}
       >
         {reminder.icon}
       </div>
       <p
-        className={`text-sm md:text-base font-medium text-foreground/80 transition-all duration-500 ${
-          isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4"
-        }`}
+        className="text-sm md:text-base font-medium text-foreground/80"
+        style={{
+          transition: "opacity 1.2s ease-in-out, transform 1.2s ease-in-out",
+          opacity: isVisible ? 1 : 0,
+          transform: isVisible ? "translateX(0)" : "translateX(-8px)",
+        }}
       >
         {reminder.message}
       </p>
