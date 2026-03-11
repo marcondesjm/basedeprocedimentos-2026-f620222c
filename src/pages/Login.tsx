@@ -523,40 +523,6 @@ const Login = () => {
     });
   }, [navigate]);
 
-  useEffect(() => {
-    const checkVersion = async () => {
-      try {
-        const { data } = await supabase
-          .from('app_config')
-          .select('value, updated_at')
-          .eq('key', 'current_version')
-          .single();
-        if (data) {
-          setLastUpdated(data.updated_at);
-          if (data.value !== APP_VERSION) {
-            setIsUpToDate(false);
-            toast.info('🔄 Nova versão disponível!');
-          } else {
-            setIsUpToDate(true);
-          }
-        }
-      } catch { setIsUpToDate(true); }
-    };
-    checkVersion();
-
-    const channel = supabase
-      .channel('login-version-sync')
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'app_config', filter: 'key=eq.current_version' },
-        (payload) => {
-          if (payload.new?.value !== APP_VERSION) {
-            toast.info('🔄 Atualização disponível! Recarregando...');
-            handleClearCache();
-          }
-        })
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, []);
-
   const handleClearCache = async () => {
     setIsSyncing(true);
     try {
