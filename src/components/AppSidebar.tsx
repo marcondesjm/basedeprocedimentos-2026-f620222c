@@ -17,6 +17,8 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 
+const SUPERVISOR_EMAIL = "supervisores.hepta@gmail.com";
+
 interface AppSidebarProps {
   activeView: string;
   onViewChange: (view: string) => void;
@@ -78,6 +80,7 @@ const menuItems = [
     icon: Megaphone,
     description: "Gerenciar avisos",
     shortcut: "8",
+    supervisorOnly: true,
   },
 ];
 
