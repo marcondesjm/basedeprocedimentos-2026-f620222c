@@ -61,9 +61,6 @@ export function useAppVersion(APP_VERSION: string, BUILD_TIMESTAMP: string) {
   const syncVersion = useCallback(async () => {
     const payloadValue = `${APP_VERSION}|${BUILD_TIMESTAMP}`;
 
-    // Prevent reload loop: if we already tried reloading this session, don't reload again
-    const alreadyReloaded = sessionStorage.getItem("app_version_reloaded");
-
     try {
       const { data, error } = await supabase
         .from("app_config")
@@ -82,16 +79,10 @@ export function useAppVersion(APP_VERSION: string, BUILD_TIMESTAMP: string) {
       if (remote.buildTimestamp) {
         if (remote.buildTimestamp > BUILD_TIMESTAMP) {
           setIsAppUpToDate(false);
-          if (!alreadyReloaded) {
-            sessionStorage.setItem("app_version_reloaded", "true");
-            toast.info("🔄 Atualização disponível! Recarregando...", { duration: 3000 });
-            await refreshApp();
-          }
           return;
         }
 
         if (remote.buildTimestamp < BUILD_TIMESTAMP) {
-          sessionStorage.removeItem("app_version_reloaded");
           const { data: upserted, error: upsertError } = await supabase
             .from("app_config")
             .upsert({ key: "current_version", value: payloadValue }, { onConflict: "key" })
@@ -106,7 +97,6 @@ export function useAppVersion(APP_VERSION: string, BUILD_TIMESTAMP: string) {
         const semverDiff = data?.value ? compareSemver(APP_VERSION, remote.version) : 1;
 
         if (!data || semverDiff >= 0) {
-          sessionStorage.removeItem("app_version_reloaded");
           const { data: upserted, error: upsertError } = await supabase
             .from("app_config")
             .upsert({ key: "current_version", value: payloadValue }, { onConflict: "key" })
@@ -118,60 +108,21 @@ export function useAppVersion(APP_VERSION: string, BUILD_TIMESTAMP: string) {
           setLastUpdated(upserted?.updated_at ?? new Date().toISOString());
         } else {
           setIsAppUpToDate(false);
-          if (!alreadyReloaded) {
-            sessionStorage.setItem("app_version_reloaded", "true");
-            toast.info("🔄 Nova versão detectada! Atualizando...", { duration: 3000 });
-            await refreshApp();
-          }
           return;
         }
       }
 
       setIsAppUpToDate(true);
-      sessionStorage.removeItem("app_version_reloaded");
       localStorage.setItem("app_version", APP_VERSION);
       localStorage.setItem("app_build_timestamp", BUILD_TIMESTAMP);
     } catch (error) {
       console.error("Erro ao verificar versão:", error);
       setIsAppUpToDate(true);
     }
-  }, [APP_VERSION, BUILD_TIMESTAMP, refreshApp]);
+  }, [APP_VERSION, BUILD_TIMESTAMP]);
 
   useEffect(() => {
-    let isActive = true;
-    let pollDelay = 4000;
-    let timeoutId: number | undefined;
-
-    const schedulePoll = () => {
-      if (!isActive) return;
-
-      timeoutId = window.setTimeout(async () => {
-        await syncVersion();
-        pollDelay = Math.min(Math.round(pollDelay * 1.5), 30000);
-        schedulePoll();
-      }, pollDelay);
-    };
-
     syncVersion();
-    schedulePoll();
-
-    const channel = supabase
-      .channel("app-version-sync")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "app_config", filter: "key=eq.current_version" },
-        async () => {
-          pollDelay = 4000;
-          await syncVersion();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      isActive = false;
-      if (timeoutId) window.clearTimeout(timeoutId);
-      supabase.removeChannel(channel);
-    };
   }, [syncVersion]);
 
   return { isAppUpToDate, lastUpdated, isSyncing, refreshApp };
