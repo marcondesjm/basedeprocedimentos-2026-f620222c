@@ -419,7 +419,7 @@ export const WorkTimer = () => {
                     });
                     return;
                   }
-                  setNewWO(val.replace(/\D/g, ''));
+                  setNewWO(val.replace(/\D/g, '').replace(/^0+/, ''));
                 }}
                 onKeyDown={(e) => e.key === "Enter" && addWorkOrder()}
                 inputMode="numeric"
