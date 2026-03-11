@@ -195,6 +195,15 @@ export const WorkTimer = () => {
         history[dateKey] = [];
       }
       
+      // Check for duplicate WO number across ALL dates
+      const isDuplicate = Object.values(history).some((orders: any[]) =>
+        orders.some((o: any) => o.wo_number === wo.number)
+      );
+      if (isDuplicate) {
+        toast.warning(`WO ${wo.number} já existe no histórico. Registro ignorado.`);
+        return;
+      }
+
       // Add completed work order to the date's array
       history[dateKey].push({
         id: crypto.randomUUID(),
