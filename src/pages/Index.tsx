@@ -9,6 +9,7 @@ import { FilaRemotaView } from "@/components/views/FilaRemotaView";
 import { FilaPresencialView } from "@/components/views/FilaPresencialView";
 import { ChecklistsView } from "@/components/views/ChecklistsView";
 import { ManualView } from "@/components/views/ManualView";
+import { SupervisorMessagesView } from "@/components/views/SupervisorMessagesView";
 import { DocumentationPage } from "@/components/DocumentationPage";
 import { ProcedureDetailDialog } from "@/components/ProcedureDetailDialog";
 import { useProcedures } from "@/hooks/useProcedures";
