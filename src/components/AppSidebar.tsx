@@ -88,11 +88,21 @@ export function AppSidebar({ activeView, onViewChange }: AppSidebarProps) {
   const { state, setOpenMobile } = useSidebar();
   const collapsed = state === "collapsed";
   const navigate = useNavigate();
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   
   const [isDark, setIsDark] = useState(() => {
     return document.documentElement.classList.contains('dark') || 
       localStorage.getItem('theme') === 'dark';
   });
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUserEmail(session?.user?.email || null);
+    });
+  }, []);
+
+  const isSupervisor = userEmail === SUPERVISOR_EMAIL;
+  const visibleMenuItems = menuItems.filter(item => !item.supervisorOnly || isSupervisor);
 
   useEffect(() => {
     if (isDark) {
