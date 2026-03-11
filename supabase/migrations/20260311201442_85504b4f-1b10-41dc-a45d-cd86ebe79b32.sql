@@ -1,0 +1,1 @@
+ALTER TABLE public.supervisor_messages ADD COLUMN details TEXT DEFAULT NULL;
