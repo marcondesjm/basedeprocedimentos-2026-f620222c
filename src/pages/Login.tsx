@@ -6,10 +6,12 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { lovable } from "@/integrations/lovable/index";
 import { supabase } from "@/integrations/supabase/client";
+import { useAppVersion } from "@/hooks/useAppVersion";
 import { toast } from "sonner";
 import { Shield, RefreshCw, Trash2, LogIn, Sun, Moon } from "lucide-react";
 
 const APP_VERSION = String(__APP_VERSION__).replace(/^v/i, '');
+const BUILD_TIMESTAMP = String(__BUILD_TIMESTAMP__);
 
 const MatrixBackground = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);

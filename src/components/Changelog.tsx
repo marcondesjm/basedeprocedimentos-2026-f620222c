@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import { FileText, ChevronDown, ChevronUp, Download, ArrowUp, ArrowDown } from "lucide-react";
 import { format } from "date-fns";
 
+declare const __APP_VERSION__: string;
+declare const __BUILD_TIMESTAMP__: string;
+
 interface VersionEntry {
   version: string;
   date: string;
@@ -13,6 +16,16 @@ interface VersionEntry {
 }
 
 const versions: VersionEntry[] = [
+  {
+    version: "v2.9.1",
+    date: "11/03/2026",
+    changes: [
+      "Sincronização automática da build atual com o backend sem depender de ajuste manual no status",
+      "Fallback por polling para atualização mesmo quando o Realtime falhar",
+      "Login e aplicativo principal agora usam a mesma lógica de verificação de versão",
+      "Log exibe a build atual automaticamente no cabeçalho",
+    ],
+  },
   {
     version: "v2.9.0",
     date: "06/03/2026",
