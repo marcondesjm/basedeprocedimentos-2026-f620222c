@@ -20,12 +20,21 @@ interface SupervisorMessage {
   created_at: string;
 }
 
+const SUPERVISOR_EMAIL = "supervisores.hepta@gmail.com";
+
 export const SupervisorMessagesView = () => {
   const [messages, setMessages] = useState<SupervisorMessage[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editDialog, setEditDialog] = useState<{ open: boolean; message: SupervisorMessage | null }>({ open: false, message: null });
   const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; id: string | null }>({ open: false, id: null });
   const [form, setForm] = useState({ message: "", details: "", active: true });
+  const [isSupervisor, setIsSupervisor] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsSupervisor(session?.user?.email === SUPERVISOR_EMAIL);
+    });
+  }, []);
 
   const fetchMessages = async () => {
     setIsLoading(true);
@@ -96,6 +105,18 @@ export const SupervisorMessagesView = () => {
     if (error) { toast.error("Erro ao atualizar status"); return; }
     fetchMessages();
   };
+
+  if (!isSupervisor) {
+    return (
+      <section className="space-y-6" aria-label="Acesso restrito">
+        <Card className="p-8 text-center">
+          <Megaphone className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+          <h2 className="text-xl font-bold mb-2">Acesso Restrito</h2>
+          <p className="text-muted-foreground">Apenas supervisores autorizados podem gerenciar mensagens.</p>
+        </Card>
+      </section>
+    );
+  }
 
   return (
     <section className="space-y-6" aria-label="Gerenciar mensagens dos supervisores">

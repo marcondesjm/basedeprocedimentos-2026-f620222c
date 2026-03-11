@@ -17,6 +17,8 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 
+const SUPERVISOR_EMAIL = "supervisores.hepta@gmail.com";
+
 interface AppSidebarProps {
   activeView: string;
   onViewChange: (view: string) => void;
@@ -78,6 +80,7 @@ const menuItems = [
     icon: Megaphone,
     description: "Gerenciar avisos",
     shortcut: "8",
+    supervisorOnly: true,
   },
 ];
 
@@ -85,11 +88,21 @@ export function AppSidebar({ activeView, onViewChange }: AppSidebarProps) {
   const { state, setOpenMobile } = useSidebar();
   const collapsed = state === "collapsed";
   const navigate = useNavigate();
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   
   const [isDark, setIsDark] = useState(() => {
     return document.documentElement.classList.contains('dark') || 
       localStorage.getItem('theme') === 'dark';
   });
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUserEmail(session?.user?.email || null);
+    });
+  }, []);
+
+  const isSupervisor = userEmail === SUPERVISOR_EMAIL;
+  const visibleMenuItems = menuItems.filter(item => !item.supervisorOnly || isSupervisor);
 
   useEffect(() => {
     if (isDark) {
@@ -163,7 +176,7 @@ export function AppSidebar({ activeView, onViewChange }: AppSidebarProps) {
           </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {menuItems.map((item) => (
+              {visibleMenuItems.map((item) => (
                 <SidebarMenuItem key={item.id}>
                   <SidebarMenuButton
                     onClick={() => handleNavClick(item.id)}
