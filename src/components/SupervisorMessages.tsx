@@ -17,12 +17,12 @@ export const SupervisorMessages = () => {
   useEffect(() => {
     const fetchMessages = async () => {
       const { data } = await supabase
-        .from("supervisor_messages")
+        .from("supervisor_messages" as any)
         .select("*")
         .eq("active", true)
         .order("created_at", { ascending: false })
         .limit(20);
-      if (data) setMessages(data as SupervisorMessage[]);
+      if (data) setMessages(data as any as SupervisorMessage[]);
     };
 
     fetchMessages();
