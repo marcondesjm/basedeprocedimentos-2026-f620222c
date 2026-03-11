@@ -27,14 +27,9 @@ export const SupervisorMessages = () => {
 
     fetchMessages();
 
-    const channel = supabase
-      .channel("supervisor_messages_changes")
-      .on("postgres_changes", { event: "*", schema: "public", table: "supervisor_messages" }, () => {
-        fetchMessages();
-      })
-      .subscribe();
-
-    return () => { supabase.removeChannel(channel); };
+    // Refresh every 2 minutes instead of realtime to avoid constant updates
+    const refreshTimer = setInterval(fetchMessages, 2 * 60 * 1000);
+    return () => clearInterval(refreshTimer);
   }, []);
 
   // Rotate messages every 15 seconds
