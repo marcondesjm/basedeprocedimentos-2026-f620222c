@@ -20,12 +20,21 @@ interface SupervisorMessage {
   created_at: string;
 }
 
+const SUPERVISOR_EMAIL = "supervisores.hepta@gmail.com";
+
 export const SupervisorMessagesView = () => {
   const [messages, setMessages] = useState<SupervisorMessage[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editDialog, setEditDialog] = useState<{ open: boolean; message: SupervisorMessage | null }>({ open: false, message: null });
   const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; id: string | null }>({ open: false, id: null });
   const [form, setForm] = useState({ message: "", details: "", active: true });
+  const [isSupervisor, setIsSupervisor] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsSupervisor(session?.user?.email === SUPERVISOR_EMAIL);
+    });
+  }, []);
 
   const fetchMessages = async () => {
     setIsLoading(true);
