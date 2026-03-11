@@ -46,16 +46,22 @@ export const WellnessReminder = () => {
   return (
     <Card className="p-4 md:p-6 bg-gradient-to-br from-muted/20 to-muted/40 border-muted-foreground/10 flex items-center gap-4 overflow-hidden">
       <div
-        className={`shrink-0 ${reminder.color} transition-all duration-500 ${
-          isVisible ? "opacity-100 scale-100" : "opacity-0 scale-75"
-        }`}
+        className={`shrink-0 ${reminder.color}`}
+        style={{
+          transition: "opacity 1.2s ease-in-out, transform 1.2s ease-in-out",
+          opacity: isVisible ? 1 : 0,
+          transform: isVisible ? "scale(1)" : "scale(0.85)",
+        }}
       >
         {reminder.icon}
       </div>
       <p
-        className={`text-sm md:text-base font-medium text-foreground/80 transition-all duration-500 ${
-          isVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4"
-        }`}
+        className="text-sm md:text-base font-medium text-foreground/80"
+        style={{
+          transition: "opacity 1.2s ease-in-out, transform 1.2s ease-in-out",
+          opacity: isVisible ? 1 : 0,
+          transform: isVisible ? "translateX(0)" : "translateX(-8px)",
+        }}
       >
         {reminder.message}
       </p>
