@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -13,29 +13,71 @@ interface SupervisorMessage {
   created_at: string;
 }
 
+const playNotificationSound = () => {
+  try {
+    const ctx = new AudioContext();
+    const oscillator = ctx.createOscillator();
+    const gain = ctx.createGain();
+    oscillator.connect(gain);
+    gain.connect(ctx.destination);
+    oscillator.frequency.value = 880;
+    oscillator.type = "sine";
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+    oscillator.start(ctx.currentTime);
+    oscillator.stop(ctx.currentTime + 0.5);
+    // Second beep
+    const osc2 = ctx.createOscillator();
+    const gain2 = ctx.createGain();
+    osc2.connect(gain2);
+    gain2.connect(ctx.destination);
+    osc2.frequency.value = 1100;
+    osc2.type = "sine";
+    gain2.gain.setValueAtTime(0.3, ctx.currentTime + 0.15);
+    gain2.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.6);
+    osc2.start(ctx.currentTime + 0.15);
+    osc2.stop(ctx.currentTime + 0.6);
+  } catch {}
+};
+
 export const SupervisorMessages = () => {
   const [messages, setMessages] = useState<SupervisorMessage[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
   const [selectedMessage, setSelectedMessage] = useState<SupervisorMessage | null>(null);
+  const knownIdsRef = useRef<Set<string>>(new Set());
+  const isFirstLoadRef = useRef(true);
+
+  const fetchMessages = useCallback(async () => {
+    const { data } = await supabase
+      .from("supervisor_messages")
+      .select("*")
+      .eq("active", true)
+      .order("created_at", { ascending: false })
+      .limit(20);
+    if (data) {
+      const msgs = data as any as SupervisorMessage[];
+      
+      if (isFirstLoadRef.current) {
+        knownIdsRef.current = new Set(msgs.map((m) => m.id));
+        isFirstLoadRef.current = false;
+      } else {
+        const hasNew = msgs.some((m) => !knownIdsRef.current.has(m.id));
+        if (hasNew) {
+          playNotificationSound();
+        }
+        knownIdsRef.current = new Set(msgs.map((m) => m.id));
+      }
+      
+      setMessages(msgs);
+    }
+  }, []);
 
   useEffect(() => {
-    const fetchMessages = async () => {
-      // RLS policy already filters: active=true, scheduled_at<=now, expires_at>now
-      const { data } = await supabase
-        .from("supervisor_messages")
-        .select("*")
-        .eq("active", true)
-        .order("created_at", { ascending: false })
-        .limit(20);
-      if (data) setMessages(data as any as SupervisorMessage[]);
-    };
-
     fetchMessages();
     const refreshTimer = setInterval(fetchMessages, 2 * 60 * 1000);
     return () => clearInterval(refreshTimer);
-  }, []);
-
+  }, [fetchMessages]);
   useEffect(() => {
     if (messages.length <= 1) return;
     const timer = setInterval(() => {
