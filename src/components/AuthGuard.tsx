@@ -6,6 +6,7 @@ import { toast } from "sonner";
 const ALLOWED_EMAILS = [
   "suporte@gmail.com",
   "marcondesgestaotrafego@gmail.com",
+  "supervisores.hepta@gmail.com",
 ];
 
 interface AuthGuardProps {
