@@ -446,18 +446,19 @@ export const WorkTimer = () => {
             {workOrders.map((wo) => (
               <Card key={wo.id} className="p-3 md:p-4 bg-background/50">
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Badge variant={wo.hasFinished ? "destructive" : wo.isRunning ? "default" : "secondary"}>
+                  <div className="flex items-center justify-between gap-1">
+                    <div className="flex items-center gap-2 min-w-0 flex-1">
+                      <Badge variant={wo.hasFinished ? "destructive" : wo.isRunning ? "default" : "secondary"} className="truncate text-xs">
                         WO00000{wo.number}
                       </Badge>
                       {wo.hasFinished && (
-                        <CheckCircle className="w-4 h-4 text-destructive" />
+                        <CheckCircle className="w-4 h-4 text-destructive shrink-0" />
                       )}
                     </div>
                     <Button
                       variant="ghost"
-                      size="sm"
+                      size="icon"
+                      className="h-8 w-8 shrink-0"
                       onClick={() => removeWorkOrder(wo.id)}
                     >
                       <Trash2 className="w-4 h-4 text-muted-foreground" />
