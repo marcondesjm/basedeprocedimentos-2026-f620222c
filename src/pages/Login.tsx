@@ -486,12 +486,9 @@ const MatrixBackground = () => {
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-  const [isSyncing, setIsSyncing] = useState(false);
-  const [isUpToDate, setIsUpToDate] = useState<boolean | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
-  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
   const [isDark, setIsDark] = useState(() => {
     if (typeof window !== 'undefined') {
       return document.documentElement.classList.contains('dark') || 
@@ -501,6 +498,7 @@ const Login = () => {
     return false;
   });
   const navigate = useNavigate();
+  const { isAppUpToDate: isUpToDate, lastUpdated, isSyncing, refreshApp } = useAppVersion(APP_VERSION, BUILD_TIMESTAMP);
 
   // Dark mode toggle
   useEffect(() => {
