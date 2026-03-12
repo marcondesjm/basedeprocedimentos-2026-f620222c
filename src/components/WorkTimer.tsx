@@ -32,6 +32,13 @@ export const WorkTimer = () => {
   const alarmIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
 
+  // Request notification permission on mount for background alerts
+  useEffect(() => {
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+  }, []);
+
   useEffect(() => {
     const interval = setInterval(() => {
       const now = Date.now();
@@ -59,6 +66,8 @@ export const WorkTimer = () => {
               description: "Insira uma nota no Remedy agora!",
               duration: 30000,
             });
+            // Send system notification (works when minimized)
+            sendBackgroundNotification(wo.number);
             return { ...wo, hasFinished: true };
           }
 
@@ -69,6 +78,24 @@ export const WorkTimer = () => {
 
     return () => clearInterval(interval);
   }, []);
+
+  const sendBackgroundNotification = (woNumber: string) => {
+    if ('Notification' in window && Notification.permission === 'granted') {
+      try {
+        const notification = new Notification(`⏰ WO ${woNumber}: 40 minutos!`, {
+          body: 'Insira uma nota no Remedy agora!',
+          icon: '/icon-192.png',
+          tag: `wo-alarm-${woNumber}`,
+          requireInteraction: true,
+          vibrate: [300, 100, 300, 100, 300],
+        } as NotificationOptions);
+        notification.onclick = () => {
+          window.focus();
+          notification.close();
+        };
+      } catch {}
+    }
+  };
 
   const playBeep = () => {
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
