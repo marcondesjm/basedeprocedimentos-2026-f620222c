@@ -388,7 +388,7 @@ export const DocumentationPage = () => {
             { label: "Seções", value: sections.length, color: "text-primary" },
             { label: "Tabelas DB", value: "4", color: "text-emerald-500" },
             { label: "Atalhos", value: "7", color: "text-amber-500" },
-            { label: "Versão", value: "v2.8.0", color: "text-violet-500" },
+            { label: "Versão", value: APP_VERSION, color: "text-violet-500" },
           ].map((stat) => (
             <div key={stat.label} className="text-center p-3 rounded-md bg-muted/50 border">
               <p className={`text-lg font-bold ${stat.color}`}>{stat.value}</p>
