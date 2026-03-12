@@ -79,6 +79,24 @@ export const WorkTimer = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const sendBackgroundNotification = (woNumber: string) => {
+    if ('Notification' in window && Notification.permission === 'granted') {
+      try {
+        const notification = new Notification(`⏰ WO ${woNumber}: 40 minutos!`, {
+          body: 'Insira uma nota no Remedy agora!',
+          icon: '/icon-192.png',
+          tag: `wo-alarm-${woNumber}`,
+          requireInteraction: true,
+          vibrate: [300, 100, 300, 100, 300],
+        } as NotificationOptions);
+        notification.onclick = () => {
+          window.focus();
+          notification.close();
+        };
+      } catch {}
+    }
+  };
+
   const playBeep = () => {
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
     const oscillator = audioContext.createOscillator();
