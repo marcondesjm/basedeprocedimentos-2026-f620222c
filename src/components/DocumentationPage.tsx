@@ -10,6 +10,8 @@ import {
   Upload, Archive, Layers, Code, Cpu, HardDrive, Globe, Zap
 } from "lucide-react";
 
+declare const __APP_VERSION__: string;
+
 interface DocSection {
   id: string;
   title: string;
