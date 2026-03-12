@@ -66,6 +66,8 @@ export const WorkTimer = () => {
               description: "Insira uma nota no Remedy agora!",
               duration: 30000,
             });
+            // Send system notification (works when minimized)
+            sendBackgroundNotification(wo.number);
             return { ...wo, hasFinished: true };
           }
 
