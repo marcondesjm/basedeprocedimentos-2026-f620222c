@@ -10,6 +10,8 @@ import {
   Upload, Archive, Layers, Code, Cpu, HardDrive, Globe, Zap
 } from "lucide-react";
 
+declare const __APP_VERSION__: string;
+
 interface DocSection {
   id: string;
   title: string;
@@ -324,6 +326,7 @@ const VersionDoc = () => (
 );
 
 export const DocumentationPage = () => {
+  const APP_VERSION = String(__APP_VERSION__);
   const [openSections, setOpenSections] = useState<Set<string>>(new Set(["atalhos"]));
 
   const toggleSection = (id: string) => {
@@ -385,7 +388,7 @@ export const DocumentationPage = () => {
             { label: "Seções", value: sections.length, color: "text-primary" },
             { label: "Tabelas DB", value: "4", color: "text-emerald-500" },
             { label: "Atalhos", value: "7", color: "text-amber-500" },
-            { label: "Versão", value: "v2.8.0", color: "text-violet-500" },
+            { label: "Versão", value: APP_VERSION, color: "text-violet-500" },
           ].map((stat) => (
             <div key={stat.label} className="text-center p-3 rounded-md bg-muted/50 border">
               <p className={`text-lg font-bold ${stat.color}`}>{stat.value}</p>
