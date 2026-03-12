@@ -32,6 +32,13 @@ export const WorkTimer = () => {
   const alarmIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
 
+  // Request notification permission on mount for background alerts
+  useEffect(() => {
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+  }, []);
+
   useEffect(() => {
     const interval = setInterval(() => {
       const now = Date.now();
