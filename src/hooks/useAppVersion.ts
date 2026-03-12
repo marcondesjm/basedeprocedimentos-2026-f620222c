@@ -73,8 +73,9 @@ export function useAppVersion(APP_VERSION: string, BUILD_TIMESTAMP: string) {
       const remote = parseVersionPayload(data?.value);
       const semverDiff = remote.version ? compareSemver(APP_VERSION, remote.version) : 1;
 
-      if (data?.updated_at) {
-        setLastUpdated(data.updated_at);
+      const latestTimestamp = remote.buildTimestamp ?? data?.updated_at ?? null;
+      if (latestTimestamp) {
+        setLastUpdated(latestTimestamp);
       }
 
       if (semverDiff < 0) {
