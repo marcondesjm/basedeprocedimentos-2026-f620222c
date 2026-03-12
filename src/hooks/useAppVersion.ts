@@ -71,45 +71,34 @@ export function useAppVersion(APP_VERSION: string, BUILD_TIMESTAMP: string) {
       if (error) throw error;
 
       const remote = parseVersionPayload(data?.value);
+      const semverDiff = remote.version ? compareSemver(APP_VERSION, remote.version) : 1;
 
       if (data?.updated_at) {
         setLastUpdated(data.updated_at);
       }
 
-      if (remote.buildTimestamp) {
-        if (remote.buildTimestamp > BUILD_TIMESTAMP) {
-          setIsAppUpToDate(false);
-          return;
-        }
+      if (semverDiff < 0) {
+        setIsAppUpToDate(false);
+        return;
+      }
 
-        if (remote.buildTimestamp < BUILD_TIMESTAMP) {
-          const { data: upserted, error: upsertError } = await supabase
-            .from("app_config")
-            .upsert({ key: "current_version", value: payloadValue }, { onConflict: "key" })
-            .select("updated_at")
-            .single();
+      const shouldUpsert =
+        !data ||
+        semverDiff > 0 ||
+        (!!remote.buildTimestamp && remote.buildTimestamp < BUILD_TIMESTAMP) ||
+        (!remote.buildTimestamp && semverDiff >= 0);
 
-          if (upsertError) throw upsertError;
+      if (shouldUpsert) {
+        const nowIso = new Date().toISOString();
+        const { data: upserted, error: upsertError } = await supabase
+          .from("app_config")
+          .upsert({ key: "current_version", value: payloadValue, updated_at: nowIso }, { onConflict: "key" })
+          .select("updated_at")
+          .single();
 
-          setLastUpdated(upserted?.updated_at ?? new Date().toISOString());
-        }
-      } else {
-        const semverDiff = data?.value ? compareSemver(APP_VERSION, remote.version) : 1;
+        if (upsertError) throw upsertError;
 
-        if (!data || semverDiff >= 0) {
-          const { data: upserted, error: upsertError } = await supabase
-            .from("app_config")
-            .upsert({ key: "current_version", value: payloadValue }, { onConflict: "key" })
-            .select("updated_at")
-            .single();
-
-          if (upsertError) throw upsertError;
-
-          setLastUpdated(upserted?.updated_at ?? new Date().toISOString());
-        } else {
-          setIsAppUpToDate(false);
-          return;
-        }
+        setLastUpdated(upserted?.updated_at ?? nowIso);
       }
 
       setIsAppUpToDate(true);
