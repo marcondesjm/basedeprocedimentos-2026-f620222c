@@ -23,7 +23,35 @@ const Index = () => {
   const BUILD_TIMESTAMP = String(__BUILD_TIMESTAMP__);
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const [activeView, setActiveView] = useState("painel");
+  const [viewHistory, setViewHistory] = useState<string[]>(["painel"]);
   const [selectedProcedure, setSelectedProcedure] = useState<Procedure | null>(null);
+
+  // Wrap setActiveView to also push browser history
+  const handleViewChange = useCallback((view: string) => {
+    setActiveView(view);
+    setViewHistory(prev => [...prev, view]);
+    window.history.pushState({ view }, "", "/");
+  }, []);
+
+  // Intercept native back button
+  useEffect(() => {
+    // Push initial state
+    window.history.replaceState({ view: "painel" }, "", "/");
+
+    const handlePopState = (e: PopStateEvent) => {
+      if (e.state?.view) {
+        setActiveView(e.state.view);
+        setViewHistory(prev => prev.slice(0, -1));
+      } else {
+        // If no more view history, push state again to prevent leaving the page
+        setActiveView("painel");
+        window.history.pushState({ view: "painel" }, "", "/");
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
 
   const {
     procedures, isLoading, showImportDialog, setShowImportDialog,
