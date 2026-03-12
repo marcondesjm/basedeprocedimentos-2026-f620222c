@@ -326,6 +326,7 @@ const VersionDoc = () => (
 );
 
 export const DocumentationPage = () => {
+  const APP_VERSION = String(__APP_VERSION__);
   const [openSections, setOpenSections] = useState<Set<string>>(new Set(["atalhos"]));
 
   const toggleSection = (id: string) => {
