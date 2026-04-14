@@ -389,6 +389,27 @@ export const WorkTimer = () => {
     toast.success("Timer: +40 minutos adicionados!");
   };
 
+  const addNotaReset = (id: string) => {
+    stopAlarm();
+    const now = Date.now();
+    setWorkOrders(
+      workOrders.map((wo) => {
+        if (wo.id !== id) return wo;
+        return {
+          ...wo,
+          elapsedSeconds: 0,
+          limitSeconds: 40 * 60,
+          isRunning: true,
+          hasFinished: false,
+          hasWarned: false,
+          showGuidance: false,
+          startTime: now,
+        };
+      })
+    );
+    toast.success("Nota adicionada! Timer reiniciado para 40 minutos.");
+  };
+
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -561,13 +582,22 @@ export const WorkTimer = () => {
                             Iniciar
                           </Button>
                         ) : (
-                          <Button
-                            onClick={() => completeWorkOrder(wo.id)}
-                            className="flex-1 h-9 text-sm font-bold bg-violet-600 hover:bg-violet-700 text-white shadow-md shadow-violet-600/40"
-                          >
-                            <CheckCircle className="w-4 h-4 mr-1" />
-                            Concluir
-                          </Button>
+                          <>
+                            <Button
+                              onClick={() => addNotaReset(wo.id)}
+                              className="flex-1 h-9 text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white shadow-md shadow-amber-500/40"
+                            >
+                              <RotateCcw className="w-4 h-4 mr-1" />
+                              ADD Nota
+                            </Button>
+                            <Button
+                              onClick={() => completeWorkOrder(wo.id)}
+                              className="flex-1 h-9 text-xs font-bold bg-violet-600 hover:bg-violet-700 text-white shadow-md shadow-violet-600/40"
+                            >
+                              <CheckCircle className="w-4 h-4 mr-1" />
+                              Concluir
+                            </Button>
+                          </>
                         )}
                       </div>
                     )}
