@@ -12,18 +12,24 @@ import { Clock, Play, RotateCcw, AlertCircle, Plus, Trash2, CheckCircle, Image a
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { format } from "date-fns";
 
+interface NoteEntry {
+  timestamp: number;
+  elapsedAtNote: number;
+}
+
 interface WorkOrder {
   id: string;
   number: string;
-  elapsedSeconds: number; // accumulated elapsed time when paused
-  limitSeconds: number; // alarm threshold (default 40min)
+  elapsedSeconds: number;
+  limitSeconds: number;
   isRunning: boolean;
   hasFinished: boolean;
   hasWarned: boolean;
   showGuidance: boolean;
-  startTime?: number; // timestamp when timer was last started
-  createdAt: number; // timestamp when the WO was first added
+  startTime?: number;
+  createdAt: number;
   images: string[];
+  noteEntries: NoteEntry[];
 }
 
 export const WorkTimer = () => {
