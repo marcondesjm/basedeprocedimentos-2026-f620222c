@@ -540,7 +540,7 @@ export const CompletedWorkOrders = () => {
                                 </div>
 
                                 <div className="flex gap-1">
-                                  {((wo.notes && wo.notes.length > 0) || (wo.images && wo.images.length > 0)) && (
+                                  {((wo.notes && wo.notes.length > 0) || (wo.images && wo.images.length > 0) || (wo.note_entries && wo.note_entries.length > 0)) && (
                                     <Button
                                       onClick={() => toggleExpand(wo.id)}
                                       size="sm"
