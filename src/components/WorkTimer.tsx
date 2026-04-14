@@ -235,6 +235,7 @@ export const WorkTimer = () => {
       startTime: now,
       createdAt: now,
       images: selectedImages,
+      noteEntries: [],
     };
 
     setWorkOrders([...workOrders, newOrder]);
@@ -325,9 +326,9 @@ export const WorkTimer = () => {
 
     stopAlarm();
 
-    // Save with the exact elapsed time shown on the clock
-    const elapsed = getElapsed(woToComplete);
-    const woWithTime = { ...woToComplete, elapsedSeconds: elapsed };
+    // Total time = from createdAt to now
+    const totalSeconds = Math.floor((Date.now() - woToComplete.createdAt) / 1000);
+    const woWithTime = { ...woToComplete, elapsedSeconds: totalSeconds };
     saveCompletedWorkOrder(woWithTime);
 
     setWorkOrders(prev => prev.filter(wo => wo.id !== id));
@@ -401,6 +402,11 @@ export const WorkTimer = () => {
     setWorkOrders(
       workOrders.map((wo) => {
         if (wo.id !== id) return wo;
+        const currentElapsed = getElapsed(wo);
+        const newNote: NoteEntry = {
+          timestamp: now,
+          elapsedAtNote: currentElapsed,
+        };
         return {
           ...wo,
           elapsedSeconds: 0,
@@ -410,6 +416,7 @@ export const WorkTimer = () => {
           hasWarned: false,
           showGuidance: false,
           startTime: now,
+          noteEntries: [...wo.noteEntries, newNote],
         };
       })
     );
