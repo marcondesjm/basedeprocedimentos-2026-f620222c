@@ -389,6 +389,27 @@ export const WorkTimer = () => {
     toast.success("Timer: +40 minutos adicionados!");
   };
 
+  const addNotaReset = (id: string) => {
+    stopAlarm();
+    const now = Date.now();
+    setWorkOrders(
+      workOrders.map((wo) => {
+        if (wo.id !== id) return wo;
+        return {
+          ...wo,
+          elapsedSeconds: 0,
+          limitSeconds: 40 * 60,
+          isRunning: true,
+          hasFinished: false,
+          hasWarned: false,
+          showGuidance: false,
+          startTime: now,
+        };
+      })
+    );
+    toast.success("Nota adicionada! Timer reiniciado para 40 minutos.");
+  };
+
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
