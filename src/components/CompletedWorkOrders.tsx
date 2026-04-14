@@ -8,6 +8,11 @@ import { Calendar, Clock, Image as ImageIcon, Trash2, ChevronDown, ChevronUp, Do
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
+interface NoteEntry {
+  timestamp: number;
+  elapsedAtNote: number;
+}
+
 interface CompletedWO {
   id: string;
   wo_number: string;
@@ -16,6 +21,7 @@ interface CompletedWO {
   total_duration: number;
   images: string[];
   notes: string | null;
+  note_entries?: NoteEntry[];
 }
 
 interface HistoryByDate {
