@@ -561,13 +561,22 @@ export const WorkTimer = () => {
                             Iniciar
                           </Button>
                         ) : (
-                          <Button
-                            onClick={() => completeWorkOrder(wo.id)}
-                            className="flex-1 h-9 text-sm font-bold bg-violet-600 hover:bg-violet-700 text-white shadow-md shadow-violet-600/40"
-                          >
-                            <CheckCircle className="w-4 h-4 mr-1" />
-                            Concluir
-                          </Button>
+                          <>
+                            <Button
+                              onClick={() => addNotaReset(wo.id)}
+                              className="flex-1 h-9 text-xs font-bold bg-amber-500 hover:bg-amber-600 text-white shadow-md shadow-amber-500/40"
+                            >
+                              <RotateCcw className="w-4 h-4 mr-1" />
+                              ADD Nota
+                            </Button>
+                            <Button
+                              onClick={() => completeWorkOrder(wo.id)}
+                              className="flex-1 h-9 text-xs font-bold bg-violet-600 hover:bg-violet-700 text-white shadow-md shadow-violet-600/40"
+                            >
+                              <CheckCircle className="w-4 h-4 mr-1" />
+                              Concluir
+                            </Button>
+                          </>
                         )}
                       </div>
                     )}
