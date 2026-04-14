@@ -551,7 +551,22 @@ export const WorkTimer = () => {
 
                   <Progress value={getProgress(wo)} className="h-2" />
 
-
+                  {/* Histórico de notas */}
+                  {wo.noteEntries.length > 0 && (
+                    <div className="space-y-1 p-2 bg-muted/50 rounded-md border border-border">
+                      <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Notas adicionadas</p>
+                      {wo.noteEntries.map((note, idx) => (
+                        <div key={idx} className="flex justify-between text-xs text-foreground">
+                          <span className="text-muted-foreground">Nota {idx + 1}</span>
+                          <span className="font-mono font-medium">{formatTime(note.elapsedAtNote)}</span>
+                        </div>
+                      ))}
+                      <div className="border-t border-border pt-1 mt-1 flex justify-between text-xs font-bold text-primary">
+                        <span>Tempo total</span>
+                        <span className="font-mono">{formatTime(Math.floor((Date.now() - wo.createdAt) / 1000))}</span>
+                      </div>
+                    </div>
+                  )}
                   {wo.images && wo.images.length > 0 && (
                     <div className="grid grid-cols-4 gap-2">
                       {wo.images.map((img, idx) => (
