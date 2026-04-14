@@ -276,6 +276,7 @@ export const WorkTimer = () => {
         total_duration: wo.elapsedSeconds,
         images: wo.images,
         notes: woNotes || null,
+        note_entries: wo.noteEntries.length > 0 ? wo.noteEntries : undefined,
       });
       
       // Save back to localStorage
