@@ -8,6 +8,11 @@ import { Calendar, Clock, Image as ImageIcon, Trash2, ChevronDown, ChevronUp, Do
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
+interface NoteEntry {
+  timestamp: number;
+  elapsedAtNote: number;
+}
+
 interface CompletedWO {
   id: string;
   wo_number: string;
@@ -16,6 +21,7 @@ interface CompletedWO {
   total_duration: number;
   images: string[];
   notes: string | null;
+  note_entries?: NoteEntry[];
 }
 
 interface HistoryByDate {
@@ -470,6 +476,11 @@ export const CompletedWorkOrders = () => {
                                     <Badge variant="secondary">
                                       {formatDuration(wo.total_duration)}
                                     </Badge>
+                                    {wo.note_entries && wo.note_entries.length > 0 && (
+                                      <Badge variant="outline" className="gap-1 text-amber-600 border-amber-500/30">
+                                        {wo.note_entries.length} {wo.note_entries.length === 1 ? 'nota' : 'notas'}
+                                      </Badge>
+                                    )}
                                     {wo.images && wo.images.length > 0 && (
                                       <Badge variant="outline" className="gap-1">
                                         <ImageIcon className="w-3 h-3" />
@@ -480,6 +491,18 @@ export const CompletedWorkOrders = () => {
 
                                   {isExpanded && (
                                     <div className="pt-2 space-y-3 border-t">
+                                      {wo.note_entries && wo.note_entries.length > 0 && (
+                                        <div className="space-y-1 p-2 bg-muted/50 rounded-md border border-border">
+                                          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Notas adicionadas</p>
+                                          {wo.note_entries.map((note, idx) => (
+                                            <div key={idx} className="flex justify-between text-xs text-foreground">
+                                              <span className="text-muted-foreground">Nota {idx + 1}</span>
+                                              <span className="font-mono font-medium">{formatDuration(note.elapsedAtNote)}</span>
+                                            </div>
+                                          ))}
+                                        </div>
+                                      )}
+
                                       {wo.notes && (
                                         <div>
                                           <p className="text-sm font-medium mb-1">Observações:</p>
@@ -517,7 +540,7 @@ export const CompletedWorkOrders = () => {
                                 </div>
 
                                 <div className="flex gap-1">
-                                  {((wo.notes && wo.notes.length > 0) || (wo.images && wo.images.length > 0)) && (
+                                  {((wo.notes && wo.notes.length > 0) || (wo.images && wo.images.length > 0) || (wo.note_entries && wo.note_entries.length > 0)) && (
                                     <Button
                                       onClick={() => toggleExpand(wo.id)}
                                       size="sm"
