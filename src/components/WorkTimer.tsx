@@ -12,18 +12,24 @@ import { Clock, Play, RotateCcw, AlertCircle, Plus, Trash2, CheckCircle, Image a
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { format } from "date-fns";
 
+interface NoteEntry {
+  timestamp: number;
+  elapsedAtNote: number;
+}
+
 interface WorkOrder {
   id: string;
   number: string;
-  elapsedSeconds: number; // accumulated elapsed time when paused
-  limitSeconds: number; // alarm threshold (default 40min)
+  elapsedSeconds: number;
+  limitSeconds: number;
   isRunning: boolean;
   hasFinished: boolean;
   hasWarned: boolean;
   showGuidance: boolean;
-  startTime?: number; // timestamp when timer was last started
-  createdAt: number; // timestamp when the WO was first added
+  startTime?: number;
+  createdAt: number;
   images: string[];
+  noteEntries: NoteEntry[];
 }
 
 export const WorkTimer = () => {
@@ -229,6 +235,7 @@ export const WorkTimer = () => {
       startTime: now,
       createdAt: now,
       images: selectedImages,
+      noteEntries: [],
     };
 
     setWorkOrders([...workOrders, newOrder]);
@@ -319,9 +326,9 @@ export const WorkTimer = () => {
 
     stopAlarm();
 
-    // Save with the exact elapsed time shown on the clock
-    const elapsed = getElapsed(woToComplete);
-    const woWithTime = { ...woToComplete, elapsedSeconds: elapsed };
+    // Total time = from createdAt to now
+    const totalSeconds = Math.floor((Date.now() - woToComplete.createdAt) / 1000);
+    const woWithTime = { ...woToComplete, elapsedSeconds: totalSeconds };
     saveCompletedWorkOrder(woWithTime);
 
     setWorkOrders(prev => prev.filter(wo => wo.id !== id));
@@ -395,6 +402,11 @@ export const WorkTimer = () => {
     setWorkOrders(
       workOrders.map((wo) => {
         if (wo.id !== id) return wo;
+        const currentElapsed = getElapsed(wo);
+        const newNote: NoteEntry = {
+          timestamp: now,
+          elapsedAtNote: currentElapsed,
+        };
         return {
           ...wo,
           elapsedSeconds: 0,
@@ -404,6 +416,7 @@ export const WorkTimer = () => {
           hasWarned: false,
           showGuidance: false,
           startTime: now,
+          noteEntries: [...wo.noteEntries, newNote],
         };
       })
     );
@@ -538,7 +551,22 @@ export const WorkTimer = () => {
 
                   <Progress value={getProgress(wo)} className="h-2" />
 
-
+                  {/* Histórico de notas */}
+                  {wo.noteEntries.length > 0 && (
+                    <div className="space-y-1 p-2 bg-muted/50 rounded-md border border-border">
+                      <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Notas adicionadas</p>
+                      {wo.noteEntries.map((note, idx) => (
+                        <div key={idx} className="flex justify-between text-xs text-foreground">
+                          <span className="text-muted-foreground">Nota {idx + 1}</span>
+                          <span className="font-mono font-medium">{formatTime(note.elapsedAtNote)}</span>
+                        </div>
+                      ))}
+                      <div className="border-t border-border pt-1 mt-1 flex justify-between text-xs font-bold text-primary">
+                        <span>Tempo total</span>
+                        <span className="font-mono">{formatTime(Math.floor((Date.now() - wo.createdAt) / 1000))}</span>
+                      </div>
+                    </div>
+                  )}
                   {wo.images && wo.images.length > 0 && (
                     <div className="grid grid-cols-4 gap-2">
                       {wo.images.map((img, idx) => (
