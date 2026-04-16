@@ -39,19 +39,6 @@ export const ProcedimentosView = ({
   touchProcedureDate,
   lastBackupInfo,
 }: ProcedimentosViewProps) => {
-
-export const ProcedimentosView = ({
-  procedures,
-  isLoading,
-  showImportDialog,
-  setShowImportDialog,
-  createProcedure,
-  exportBackup,
-  importBackup,
-  moveProcedure,
-  onSelectProcedure,
-  touchProcedureDate,
-}: ProcedimentosViewProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
