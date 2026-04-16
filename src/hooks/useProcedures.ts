@@ -37,6 +37,14 @@ export function useProcedures() {
   const [procedures, setProcedures] = useState<Procedure[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showImportDialog, setShowImportDialog] = useState(false);
+  const [lastBackupInfo, setLastBackupInfo] = useState<BackupInfo | null>(() => {
+    try {
+      const raw = localStorage.getItem('lastBackupInfo');
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  });
 
   const saveProcedures = (updatedProcedures: Procedure[]) => {
     try {
