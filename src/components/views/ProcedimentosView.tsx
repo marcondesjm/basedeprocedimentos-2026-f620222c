@@ -116,6 +116,25 @@ export const ProcedimentosView = ({
         </AlertDescription>
       </Alert>
 
+      {lastBackupInfo && (
+        <Alert className="border-emerald-500/30 bg-emerald-500/5">
+          <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+          <AlertDescription className="ml-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+            <span><strong>Último backup importado:</strong></span>
+            <Badge variant="secondary" className="font-mono">v{lastBackupInfo.version}</Badge>
+            <span className="text-muted-foreground">
+              Gerado em: <strong className="text-foreground">{lastBackupInfo.exportDate !== "desconhecida" ? new Date(lastBackupInfo.exportDate).toLocaleString('pt-BR') : "—"}</strong>
+            </span>
+            <span className="text-muted-foreground">
+              Importado em: <strong className="text-foreground">{new Date(lastBackupInfo.importedAt).toLocaleString('pt-BR')}</strong>
+            </span>
+            <span className="text-muted-foreground">
+              {lastBackupInfo.count} procedimento(s) • <span className="font-mono text-xs">{lastBackupInfo.fileName}</span>
+            </span>
+          </AlertDescription>
+        </Alert>
+      )}
+
       <div className="space-y-6">
         <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
           <div className="flex-1 flex gap-3 w-full md:w-auto">
