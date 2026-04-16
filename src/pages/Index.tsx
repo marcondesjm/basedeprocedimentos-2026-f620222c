@@ -58,7 +58,7 @@ const Index = () => {
   const {
     procedures, isLoading, showImportDialog, setShowImportDialog,
     createProcedure, updateProcedure, moveProcedure,
-    importBackup, exportBackup, touchProcedureDate,
+    importBackup, exportBackup, touchProcedureDate, lastBackupInfo,
   } = useProcedures();
 
   const { isAppUpToDate } = useAppVersion(APP_VERSION, BUILD_TIMESTAMP);
