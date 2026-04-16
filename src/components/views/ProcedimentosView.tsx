@@ -23,7 +23,22 @@ interface ProcedimentosViewProps {
   moveProcedure: (id: string, cat: string) => void;
   onSelectProcedure: (proc: Procedure) => void;
   touchProcedureDate: (id: string) => Procedure | null;
+  lastBackupInfo?: BackupInfo | null;
 }
+
+export const ProcedimentosView = ({
+  procedures,
+  isLoading,
+  showImportDialog,
+  setShowImportDialog,
+  createProcedure,
+  exportBackup,
+  importBackup,
+  moveProcedure,
+  onSelectProcedure,
+  touchProcedureDate,
+  lastBackupInfo,
+}: ProcedimentosViewProps) => {
 
 export const ProcedimentosView = ({
   procedures,
