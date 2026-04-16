@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Plus, Search, FileText, Calendar, Tag, Upload, Save, Shield, X, ChevronDown } from "lucide-react";
+import { Plus, Search, FileText, Calendar, Tag, Upload, Save, Shield, X, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { Procedure, NoteType, CATEGORIES, FILA_REMOTA_CATEGORIES, FILA_PRESENCIAL_CATEGORIES } from "@/types/procedure";
 
 interface ProcedimentosViewProps {
@@ -40,6 +40,8 @@ export const ProcedimentosView = ({
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [expandedProcedures, setExpandedProcedures] = useState<Set<string>>(new Set());
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
 
   const [newProcedure, setNewProcedure] = useState({
     title: "",
@@ -69,7 +71,14 @@ export const ProcedimentosView = ({
       (proc.usuarioAtendido && proc.usuarioAtendido.toLowerCase().includes(searchQuery.toLowerCase()));
     const matchesCategory = categoryFilter === "all" || proc.category === categoryFilter;
     return matchesSearch && matchesCategory;
-  });
+  }).sort((a, b) => a.title.localeCompare(b.title, 'pt-BR', { sensitivity: 'base' }));
+
+  const totalPages = Math.max(1, Math.ceil(filteredProcedures.length / ITEMS_PER_PAGE));
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+  const paginatedProcedures = filteredProcedures.slice(
+    (safeCurrentPage - 1) * ITEMS_PER_PAGE,
+    safeCurrentPage * ITEMS_PER_PAGE
+  );
 
   const handleCreateProcedure = (e: React.FormEvent) => {
     e.preventDefault();
@@ -102,16 +111,16 @@ export const ProcedimentosView = ({
               <Input
                 placeholder="Buscar por título, descrição, solução, técnico, PIB, usuário..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
                 className="pl-10 pr-10"
               />
               {searchQuery && (
-                <Button variant="ghost" size="sm" className="absolute right-1 top-1/2 transform -translate-y-1/2 h-7 w-7 p-0" onClick={() => setSearchQuery("")}>
+                <Button variant="ghost" size="sm" className="absolute right-1 top-1/2 transform -translate-y-1/2 h-7 w-7 p-0" onClick={() => { setSearchQuery(""); setCurrentPage(1); }}>
                   <X className="w-4 h-4" />
                 </Button>
               )}
             </div>
-            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+            <Select value={categoryFilter} onValueChange={(v) => { setCategoryFilter(v); setCurrentPage(1); }}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Categoria" />
               </SelectTrigger>
@@ -281,81 +290,126 @@ export const ProcedimentosView = ({
             <p className="text-muted-foreground">Carregando procedimentos...</p>
           </div>
         ) : (
-          <div className="space-y-1">
-            {filteredProcedures.map((procedure) => {
-              const isOpen = expandedProcedures.has(procedure.id);
-              return (
-                <Card key={procedure.id} className="overflow-hidden">
-                  <div
-                    className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-muted/50 transition-colors"
-                    onClick={() => {
-                      const next = new Set(expandedProcedures);
-                      if (next.has(procedure.id)) next.delete(procedure.id);
-                      else next.add(procedure.id);
-                      setExpandedProcedures(next);
-                    }}
-                  >
-                    <ChevronDown className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform ${isOpen ? 'rotate-0' : '-rotate-90'}`} />
-                    <FileText className="w-4 h-4 text-primary shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm truncate">{procedure.title}</p>
-                      <p className="text-xs text-muted-foreground truncate">{procedure.description}</p>
+          <>
+            <div className="flex items-center justify-between text-xs text-muted-foreground px-1">
+              <span>{filteredProcedures.length} procedimento(s) • Página {safeCurrentPage} de {totalPages}</span>
+              <span>Ordenado A–Z</span>
+            </div>
+            <div className="space-y-1">
+              {paginatedProcedures.map((procedure) => {
+                const isOpen = expandedProcedures.has(procedure.id);
+                return (
+                  <Card key={procedure.id} className="overflow-hidden">
+                    <div
+                      className="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-muted/50 transition-colors"
+                      onClick={() => {
+                        const next = new Set(expandedProcedures);
+                        if (next.has(procedure.id)) next.delete(procedure.id);
+                        else next.add(procedure.id);
+                        setExpandedProcedures(next);
+                      }}
+                    >
+                      <ChevronDown className={`w-4 h-4 text-muted-foreground shrink-0 transition-transform ${isOpen ? 'rotate-0' : '-rotate-90'}`} />
+                      <FileText className="w-4 h-4 text-primary shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm truncate">{procedure.title}</p>
+                        <p className="text-xs text-muted-foreground truncate">{procedure.description}</p>
+                      </div>
+                      <Badge variant="secondary" className="text-xs shrink-0">{procedure.category}</Badge>
                     </div>
-                    <Badge variant="secondary" className="text-xs shrink-0">{procedure.category}</Badge>
-                  </div>
 
-                  {isOpen && (
-                    <div className="px-4 pb-4 pt-1 border-t space-y-3">
-                      <div className="bg-muted/50 p-3 rounded-lg">
-                        <p className="text-sm text-foreground whitespace-pre-wrap">{procedure.solution}</p>
-                      </div>
-                      <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-                        <div className="flex items-center gap-1">
-                          <Calendar className="w-4 h-4" />
-                          {new Date(procedure.createdAt).toLocaleDateString('pt-BR')}
+                    {isOpen && (
+                      <div className="px-4 pb-4 pt-1 border-t space-y-3">
+                        <div className="bg-muted/50 p-3 rounded-lg">
+                          <p className="text-sm text-foreground whitespace-pre-wrap">{procedure.solution}</p>
                         </div>
-                        <div className="flex items-center gap-1"><span>•</span>{procedure.createdBy}</div>
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <Tag className="w-4 h-4" />
-                          {procedure.tags.map((tag, idx) => (
-                            <Badge key={idx} variant="outline" className="text-xs">{tag}</Badge>
-                          ))}
+                        <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+                          <div className="flex items-center gap-1">
+                            <Calendar className="w-4 h-4" />
+                            {new Date(procedure.createdAt).toLocaleDateString('pt-BR')}
+                          </div>
+                          <div className="flex items-center gap-1"><span>•</span>{procedure.createdBy}</div>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <Tag className="w-4 h-4" />
+                            {procedure.tags.map((tag, idx) => (
+                              <Badge key={idx} variant="outline" className="text-xs">{tag}</Badge>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2 pt-2 border-t">
+                          <Button size="sm" variant="outline" className="text-xs" onClick={(e) => {
+                            e.stopPropagation();
+                            const updated = touchProcedureDate(procedure.id);
+                            if (updated) onSelectProcedure(updated);
+                          }}>
+                            <FileText className="w-3 h-3 mr-1" />Abrir
+                          </Button>
+                          <div className="flex-1" onClick={(e) => e.stopPropagation()}>
+                            <Select
+                              value={procedure.filaRemotaCategory || procedure.filaPresencialCategory || "none"}
+                              onValueChange={(value) => moveProcedure(procedure.id, value === "none" ? "" : value)}
+                            >
+                              <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Mover para..." /></SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="none">Sem fila</SelectItem>
+                                <SelectItem disabled value="__header_remota__" className="font-bold text-xs text-muted-foreground">── Fila Remota ──</SelectItem>
+                                {FILA_REMOTA_CATEGORIES.map((cat) => (
+                                  <SelectItem key={cat.id} value={cat.id}>{cat.label}</SelectItem>
+                                ))}
+                                <SelectItem disabled value="__header_presencial__" className="font-bold text-xs text-muted-foreground">── Fila Presencial ──</SelectItem>
+                                {FILA_PRESENCIAL_CATEGORIES.map((cat) => (
+                                  <SelectItem key={cat.id} value={cat.id}>{cat.label}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2 pt-2 border-t">
-                        <Button size="sm" variant="outline" className="text-xs" onClick={(e) => {
-                          e.stopPropagation();
-                          const updated = touchProcedureDate(procedure.id);
-                          if (updated) onSelectProcedure(updated);
-                        }}>
-                          <FileText className="w-3 h-3 mr-1" />Abrir
-                        </Button>
-                        <div className="flex-1" onClick={(e) => e.stopPropagation()}>
-                          <Select
-                            value={procedure.filaRemotaCategory || procedure.filaPresencialCategory || "none"}
-                            onValueChange={(value) => moveProcedure(procedure.id, value === "none" ? "" : value)}
-                          >
-                            <SelectTrigger className="h-8 text-xs"><SelectValue placeholder="Mover para..." /></SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="none">Sem fila</SelectItem>
-                              <SelectItem disabled value="__header_remota__" className="font-bold text-xs text-muted-foreground">── Fila Remota ──</SelectItem>
-                              {FILA_REMOTA_CATEGORIES.map((cat) => (
-                                <SelectItem key={cat.id} value={cat.id}>{cat.label}</SelectItem>
-                              ))}
-                              <SelectItem disabled value="__header_presencial__" className="font-bold text-xs text-muted-foreground">── Fila Presencial ──</SelectItem>
-                              {FILA_PRESENCIAL_CATEGORIES.map((cat) => (
-                                <SelectItem key={cat.id} value={cat.id}>{cat.label}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </Card>
-              );
-            })}
-          </div>
+                    )}
+                  </Card>
+                );
+              })}
+            </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center gap-2 pt-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={safeCurrentPage <= 1}
+                  onClick={() => setCurrentPage(safeCurrentPage - 1)}
+                  className="gap-1"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  <span className="hidden sm:inline">Anterior</span>
+                </Button>
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <Button
+                      key={page}
+                      variant={page === safeCurrentPage ? "default" : "outline"}
+                      size="sm"
+                      className="w-8 h-8 p-0"
+                      onClick={() => setCurrentPage(page)}
+                    >
+                      {page}
+                    </Button>
+                  ))}
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={safeCurrentPage >= totalPages}
+                  onClick={() => setCurrentPage(safeCurrentPage + 1)}
+                  className="gap-1"
+                >
+                  <span className="hidden sm:inline">Próxima</span>
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              </div>
+            )}
+          </>
         )}
 
         {!isLoading && filteredProcedures.length === 0 && (
