@@ -71,7 +71,14 @@ export const ProcedimentosView = ({
       (proc.usuarioAtendido && proc.usuarioAtendido.toLowerCase().includes(searchQuery.toLowerCase()));
     const matchesCategory = categoryFilter === "all" || proc.category === categoryFilter;
     return matchesSearch && matchesCategory;
-  });
+  }).sort((a, b) => a.title.localeCompare(b.title, 'pt-BR', { sensitivity: 'base' }));
+
+  const totalPages = Math.max(1, Math.ceil(filteredProcedures.length / ITEMS_PER_PAGE));
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+  const paginatedProcedures = filteredProcedures.slice(
+    (safeCurrentPage - 1) * ITEMS_PER_PAGE,
+    safeCurrentPage * ITEMS_PER_PAGE
+  );
 
   const handleCreateProcedure = (e: React.FormEvent) => {
     e.preventDefault();
