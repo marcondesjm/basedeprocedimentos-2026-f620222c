@@ -167,6 +167,7 @@ const Index = () => {
                 moveProcedure={moveProcedure}
                 onSelectProcedure={setSelectedProcedure}
                 touchProcedureDate={touchProcedureDate}
+                lastBackupInfo={lastBackupInfo}
               />
             </div>
 
