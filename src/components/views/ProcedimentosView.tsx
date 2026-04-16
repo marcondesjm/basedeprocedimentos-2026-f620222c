@@ -115,12 +115,12 @@ export const ProcedimentosView = ({
                 className="pl-10 pr-10"
               />
               {searchQuery && (
-                <Button variant="ghost" size="sm" className="absolute right-1 top-1/2 transform -translate-y-1/2 h-7 w-7 p-0" onClick={() => setSearchQuery("")}>
+                <Button variant="ghost" size="sm" className="absolute right-1 top-1/2 transform -translate-y-1/2 h-7 w-7 p-0" onClick={() => { setSearchQuery(""); setCurrentPage(1); }}>
                   <X className="w-4 h-4" />
                 </Button>
               )}
             </div>
-            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+            <Select value={categoryFilter} onValueChange={(v) => { setCategoryFilter(v); setCurrentPage(1); }}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Categoria" />
               </SelectTrigger>
