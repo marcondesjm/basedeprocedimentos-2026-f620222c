@@ -253,5 +253,6 @@ export function useProcedures() {
     exportBackup,
     saveProcedures,
     touchProcedureDate,
+    lastBackupInfo,
   };
 }
