@@ -301,9 +301,45 @@ export const ProcedimentosView = ({
           </div>
         ) : (
           <>
+            {/* Alphabet filter bar */}
+            <div className="flex flex-wrap items-center gap-1 p-2 bg-muted/30 rounded-lg border">
+              <button
+                type="button"
+                onClick={() => { setLetterFilter(null); setCurrentPage(1); }}
+                className={`px-2 h-7 text-xs font-medium rounded transition-colors ${
+                  letterFilter === null
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                }`}
+              >
+                Todas
+              </button>
+              {ALPHABET.map((letter) => {
+                const enabled = availableLetters.has(letter);
+                const isActive = letterFilter === letter;
+                return (
+                  <button
+                    key={letter}
+                    type="button"
+                    disabled={!enabled}
+                    onClick={() => { setLetterFilter(letter); setCurrentPage(1); }}
+                    className={`w-7 h-7 text-xs font-semibold rounded transition-colors ${
+                      isActive
+                        ? 'bg-primary text-primary-foreground'
+                        : enabled
+                          ? 'text-foreground hover:bg-muted'
+                          : 'text-muted-foreground/40 cursor-not-allowed'
+                    }`}
+                  >
+                    {letter}
+                  </button>
+                );
+              })}
+            </div>
+
             <div className="flex items-center justify-between text-xs text-muted-foreground px-1">
               <span>{filteredProcedures.length} procedimento(s) • Página {safeCurrentPage} de {totalPages}</span>
-              <span>Ordenado A–Z</span>
+              <span>{letterFilter ? `Letra: ${letterFilter}` : 'Ordenado A–Z'}</span>
             </div>
             <div className="space-y-1">
               {paginatedProcedures.map((procedure) => {
