@@ -103,7 +103,8 @@ export function AppSidebar({ activeView, onViewChange }: AppSidebarProps) {
   const collapsed = state === "collapsed";
   const navigate = useNavigate();
   const [userEmail, setUserEmail] = useState<string | null>(null);
-  
+  const [userName, setUserName] = useState<string | null>(null);
+
   const [isDark, setIsDark] = useState(() => {
     return document.documentElement.classList.contains('dark') || 
       localStorage.getItem('theme') === 'dark';
@@ -111,7 +112,11 @@ export function AppSidebar({ activeView, onViewChange }: AppSidebarProps) {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setUserEmail(session?.user?.email || null);
+      const email = session?.user?.email || null;
+      setUserEmail(email);
+      const meta = session?.user?.user_metadata as { full_name?: string; name?: string } | undefined;
+      const name = meta?.full_name || meta?.name || (email ? email.split("@")[0] : null);
+      setUserName(name);
     });
   }, []);
 
@@ -223,6 +228,23 @@ export function AppSidebar({ activeView, onViewChange }: AppSidebarProps) {
 
         {/* Bottom actions */}
         <div className="mt-auto border-t border-border">
+          {!collapsed && userEmail && (
+            <div className="px-3 py-2 border-b border-border bg-muted/30">
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="h-7 w-7 shrink-0 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center text-[11px] font-bold text-primary-foreground uppercase">
+                  {(userName || userEmail).charAt(0)}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-semibold text-foreground truncate" title={userName || ""}>
+                    {userName}
+                  </p>
+                  <p className="text-[10px] text-muted-foreground truncate" title={userEmail}>
+                    {userEmail}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
           <nav className="p-2 space-y-0.5" aria-label="Ações do sistema">
             <Button
               variant="ghost"
