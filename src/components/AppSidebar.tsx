@@ -112,7 +112,11 @@ export function AppSidebar({ activeView, onViewChange }: AppSidebarProps) {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setUserEmail(session?.user?.email || null);
+      const email = session?.user?.email || null;
+      setUserEmail(email);
+      const meta = session?.user?.user_metadata as { full_name?: string; name?: string } | undefined;
+      const name = meta?.full_name || meta?.name || (email ? email.split("@")[0] : null);
+      setUserName(name);
     });
   }, []);
 
