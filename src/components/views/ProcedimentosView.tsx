@@ -62,7 +62,7 @@ export const ProcedimentosView = ({
     nomeArquivoBC: "",
   });
 
-  const filteredProcedures = procedures.filter((proc) => {
+  const baseFiltered = procedures.filter((proc) => {
     const matchesSearch =
       proc.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       proc.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -74,6 +74,14 @@ export const ProcedimentosView = ({
     const matchesCategory = categoryFilter === "all" || proc.category === categoryFilter;
     return matchesSearch && matchesCategory;
   }).sort((a, b) => a.title.localeCompare(b.title, 'pt-BR', { sensitivity: 'base' }));
+
+  const availableLetters = new Set(
+    baseFiltered.map(p => (p.title.trim()[0] || "").toUpperCase()).filter(c => /[A-Z]/.test(c))
+  );
+
+  const filteredProcedures = letterFilter
+    ? baseFiltered.filter(p => (p.title.trim()[0] || "").toUpperCase() === letterFilter)
+    : baseFiltered;
 
   const totalPages = Math.max(1, Math.ceil(filteredProcedures.length / ITEMS_PER_PAGE));
   const safeCurrentPage = Math.min(currentPage, totalPages);
