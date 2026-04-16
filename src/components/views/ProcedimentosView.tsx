@@ -41,7 +41,9 @@ export const ProcedimentosView = ({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [expandedProcedures, setExpandedProcedures] = useState<Set<string>>(new Set());
   const [currentPage, setCurrentPage] = useState(1);
+  const [letterFilter, setLetterFilter] = useState<string | null>(null);
   const ITEMS_PER_PAGE = 10;
+  const ALPHABET = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
 
   const [newProcedure, setNewProcedure] = useState({
     title: "",
@@ -60,7 +62,7 @@ export const ProcedimentosView = ({
     nomeArquivoBC: "",
   });
 
-  const filteredProcedures = procedures.filter((proc) => {
+  const baseFiltered = procedures.filter((proc) => {
     const matchesSearch =
       proc.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       proc.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -72,6 +74,14 @@ export const ProcedimentosView = ({
     const matchesCategory = categoryFilter === "all" || proc.category === categoryFilter;
     return matchesSearch && matchesCategory;
   }).sort((a, b) => a.title.localeCompare(b.title, 'pt-BR', { sensitivity: 'base' }));
+
+  const availableLetters = new Set(
+    baseFiltered.map(p => (p.title.trim()[0] || "").toUpperCase()).filter(c => /[A-Z]/.test(c))
+  );
+
+  const filteredProcedures = letterFilter
+    ? baseFiltered.filter(p => (p.title.trim()[0] || "").toUpperCase() === letterFilter)
+    : baseFiltered;
 
   const totalPages = Math.max(1, Math.ceil(filteredProcedures.length / ITEMS_PER_PAGE));
   const safeCurrentPage = Math.min(currentPage, totalPages);
@@ -291,9 +301,45 @@ export const ProcedimentosView = ({
           </div>
         ) : (
           <>
+            {/* Alphabet filter bar */}
+            <div className="flex flex-wrap items-center gap-1 p-2 bg-muted/30 rounded-lg border">
+              <button
+                type="button"
+                onClick={() => { setLetterFilter(null); setCurrentPage(1); }}
+                className={`px-2 h-7 text-xs font-medium rounded transition-colors ${
+                  letterFilter === null
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                }`}
+              >
+                Todas
+              </button>
+              {ALPHABET.map((letter) => {
+                const enabled = availableLetters.has(letter);
+                const isActive = letterFilter === letter;
+                return (
+                  <button
+                    key={letter}
+                    type="button"
+                    disabled={!enabled}
+                    onClick={() => { setLetterFilter(letter); setCurrentPage(1); }}
+                    className={`w-7 h-7 text-xs font-semibold rounded transition-colors ${
+                      isActive
+                        ? 'bg-primary text-primary-foreground'
+                        : enabled
+                          ? 'text-foreground hover:bg-muted'
+                          : 'text-muted-foreground/40 cursor-not-allowed'
+                    }`}
+                  >
+                    {letter}
+                  </button>
+                );
+              })}
+            </div>
+
             <div className="flex items-center justify-between text-xs text-muted-foreground px-1">
               <span>{filteredProcedures.length} procedimento(s) • Página {safeCurrentPage} de {totalPages}</span>
-              <span>Ordenado A–Z</span>
+              <span>{letterFilter ? `Letra: ${letterFilter}` : 'Ordenado A–Z'}</span>
             </div>
             <div className="space-y-1">
               {paginatedProcedures.map((procedure) => {
