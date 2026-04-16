@@ -41,7 +41,9 @@ export const ProcedimentosView = ({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [expandedProcedures, setExpandedProcedures] = useState<Set<string>>(new Set());
   const [currentPage, setCurrentPage] = useState(1);
+  const [letterFilter, setLetterFilter] = useState<string | null>(null);
   const ITEMS_PER_PAGE = 10;
+  const ALPHABET = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
 
   const [newProcedure, setNewProcedure] = useState({
     title: "",
