@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import AuthGuard from "./components/AuthGuard";
+import { DeveloperContextMenu } from "./components/DeveloperContextMenu";
 
 const queryClient = new QueryClient();
 
