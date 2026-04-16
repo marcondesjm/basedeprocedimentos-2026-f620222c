@@ -40,6 +40,8 @@ export const ProcedimentosView = ({
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [expandedProcedures, setExpandedProcedures] = useState<Set<string>>(new Set());
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 10;
 
   const [newProcedure, setNewProcedure] = useState({
     title: "",
