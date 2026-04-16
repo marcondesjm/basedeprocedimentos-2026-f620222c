@@ -383,7 +383,7 @@ export const ProcedimentosView = ({
                           </div>
                         </div>
                         <div className="flex items-center gap-2 pt-2 border-t">
-                          <Button size="sm" variant="outline" className="text-xs" onClick={(e) => {
+                          <Button size="sm" className="text-xs bg-primary text-primary-foreground hover:bg-primary/90 shadow-md font-semibold" onClick={(e) => {
                             e.stopPropagation();
                             const updated = touchProcedureDate(procedure.id);
                             if (updated) onSelectProcedure(updated);
