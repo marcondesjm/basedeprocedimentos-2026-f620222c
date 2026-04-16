@@ -1,4 +1,4 @@
-import { Clock, FileText, Monitor, Users, CheckSquare, BookOpen, Sun, Moon, LogOut, RefreshCw, FileCode, Megaphone, Terminal } from "lucide-react";
+import { Clock, FileText, Monitor, Users, CheckSquare, BookOpen, Sun, Moon, LogOut, RefreshCw, FileCode, Megaphone, Terminal, HardDrive } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -82,11 +82,18 @@ const menuItems = [
     shortcut: "8",
   },
   {
+    title: "Formatação",
+    id: "formatacao",
+    icon: HardDrive,
+    description: "Política de backup e LGPD",
+    shortcut: "9",
+  },
+  {
     title: "Mensagens",
     id: "mensagens-supervisores",
     icon: Megaphone,
     description: "Gerenciar avisos",
-    shortcut: "9",
+    shortcut: "0",
     supervisorOnly: true,
   },
 ];
