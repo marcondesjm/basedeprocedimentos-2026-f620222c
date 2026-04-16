@@ -181,8 +181,24 @@ export function useProcedures() {
           setProcedures(mergedProcedures);
           saveProcedures(mergedProcedures);
 
+          const info: BackupInfo = {
+            version: backup.appVersion || backup.version || "desconhecida",
+            exportDate: backup.exportDate || "desconhecida",
+            importedAt: currentDate,
+            count: backup.procedures.length,
+            fileName: file.name,
+          };
+          setLastBackupInfo(info);
+          try { localStorage.setItem('lastBackupInfo', JSON.stringify(info)); } catch {}
+
           setShowImportDialog(false);
-          toast.success(`${newProcedures.length} procedimentos importados com sucesso!`);
+          const dateStr = info.exportDate !== "desconhecida"
+            ? new Date(info.exportDate).toLocaleString('pt-BR')
+            : "data desconhecida";
+          toast.success(
+            `Backup importado! Versão: ${info.version} • Gerado em: ${dateStr} • ${newProcedures.length} novos procedimento(s)`,
+            { duration: 6000 }
+          );
         } else {
           toast.error('Formato de arquivo inválido!');
         }
@@ -198,6 +214,7 @@ export function useProcedures() {
     const backup = {
       exportDate: new Date().toISOString(),
       version: "1.0",
+      appVersion: typeof __APP_VERSION__ !== "undefined" ? String(__APP_VERSION__) : "desconhecida",
       procedures: procedures
     };
 
@@ -206,12 +223,12 @@ export function useProcedures() {
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
     link.setAttribute('href', url);
-    link.setAttribute('download', `backup_procedimentos_${new Date().toISOString().split('T')[0]}.json`);
+    link.setAttribute('download', `backup_procedimentos_${backup.appVersion}_${new Date().toISOString().split('T')[0]}.json`);
     link.style.visibility = 'hidden';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    toast.success('Backup exportado com sucesso!');
+    toast.success(`Backup exportado! Versão ${backup.appVersion}`);
   };
 
   const touchProcedureDate = (procId: string) => {
