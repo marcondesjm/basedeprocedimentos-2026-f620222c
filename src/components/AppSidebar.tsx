@@ -210,7 +210,7 @@ export function AppSidebar({ activeView, onViewChange }: AppSidebarProps) {
                       </div>
                     )}
                     {!collapsed && (
-                      <kbd className="hidden group-hover:inline-flex items-center text-[9px] text-muted-foreground/50 bg-muted/50 rounded px-1 h-4 font-mono shrink-0" aria-hidden="true">
+                      <kbd className="inline-flex items-center text-[10px] font-bold text-primary-foreground bg-primary/90 border border-primary rounded px-1.5 h-5 font-mono shrink-0 shadow-sm" aria-hidden="true">
                         Alt+{item.shortcut}
                       </kbd>
                     )}
