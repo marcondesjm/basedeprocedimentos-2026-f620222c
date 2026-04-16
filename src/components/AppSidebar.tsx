@@ -250,7 +250,7 @@ export function AppSidebar({ activeView, onViewChange }: AppSidebarProps) {
               variant="ghost"
               size="sm"
               onClick={handleClearCache}
-              className="w-full justify-start gap-2.5 h-9 text-xs font-medium hover:bg-muted/80 transition-colors"
+              className="w-full justify-start gap-2.5 h-9 text-xs font-medium text-foreground hover:bg-muted hover:text-foreground transition-colors"
               aria-label="Limpar cache do navegador e recarregar"
             >
               <RefreshCw className="h-4 w-4 shrink-0" />
@@ -260,7 +260,7 @@ export function AppSidebar({ activeView, onViewChange }: AppSidebarProps) {
               variant="ghost"
               size="sm"
               onClick={() => setIsDark(!isDark)}
-              className="w-full justify-start gap-2.5 h-9 text-xs font-medium hover:bg-muted/80 transition-colors"
+              className="w-full justify-start gap-2.5 h-9 text-xs font-medium text-foreground hover:bg-muted hover:text-foreground transition-colors"
               aria-label={isDark ? "Ativar modo claro" : "Ativar modo escuro"}
             >
               {isDark ? <Sun className="h-4 w-4 shrink-0" /> : <Moon className="h-4 w-4 shrink-0" />}
