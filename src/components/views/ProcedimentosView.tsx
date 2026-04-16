@@ -8,8 +8,9 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Plus, Search, FileText, Calendar, Tag, Upload, Save, Shield, X, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, Search, FileText, Calendar, Tag, Upload, Save, Shield, X, ChevronDown, ChevronLeft, ChevronRight, CheckCircle2 } from "lucide-react";
 import { Procedure, NoteType, CATEGORIES, FILA_REMOTA_CATEGORIES, FILA_PRESENCIAL_CATEGORIES } from "@/types/procedure";
+import type { BackupInfo } from "@/hooks/useProcedures";
 
 interface ProcedimentosViewProps {
   procedures: Procedure[];
@@ -22,6 +23,7 @@ interface ProcedimentosViewProps {
   moveProcedure: (id: string, cat: string) => void;
   onSelectProcedure: (proc: Procedure) => void;
   touchProcedureDate: (id: string) => Procedure | null;
+  lastBackupInfo?: BackupInfo | null;
 }
 
 export const ProcedimentosView = ({
@@ -35,6 +37,7 @@ export const ProcedimentosView = ({
   moveProcedure,
   onSelectProcedure,
   touchProcedureDate,
+  lastBackupInfo,
 }: ProcedimentosViewProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
@@ -112,6 +115,25 @@ export const ProcedimentosView = ({
           <strong>LGPD:</strong> Dados armazenados localmente. Faça backups regulares.
         </AlertDescription>
       </Alert>
+
+      {lastBackupInfo && (
+        <Alert className="border-emerald-500/30 bg-emerald-500/5">
+          <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+          <AlertDescription className="ml-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+            <span><strong>Último backup importado:</strong></span>
+            <Badge variant="secondary" className="font-mono">v{lastBackupInfo.version}</Badge>
+            <span className="text-muted-foreground">
+              Gerado em: <strong className="text-foreground">{lastBackupInfo.exportDate !== "desconhecida" ? new Date(lastBackupInfo.exportDate).toLocaleString('pt-BR') : "—"}</strong>
+            </span>
+            <span className="text-muted-foreground">
+              Importado em: <strong className="text-foreground">{new Date(lastBackupInfo.importedAt).toLocaleString('pt-BR')}</strong>
+            </span>
+            <span className="text-muted-foreground">
+              {lastBackupInfo.count} procedimento(s) • <span className="font-mono text-xs">{lastBackupInfo.fileName}</span>
+            </span>
+          </AlertDescription>
+        </Alert>
+      )}
 
       <div className="space-y-6">
         <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
