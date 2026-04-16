@@ -3,6 +3,16 @@ import { toast } from "sonner";
 import { logActivity } from "@/lib/activityLogger";
 import { Procedure, NoteType, ALL_FILA_CATEGORIES } from "@/types/procedure";
 
+declare const __APP_VERSION__: string;
+
+export interface BackupInfo {
+  version: string;
+  exportDate: string;
+  importedAt: string;
+  count: number;
+  fileName: string;
+}
+
 const defaultProcedures: Procedure[] = [
   {
     id: "default-pinpad-001",
