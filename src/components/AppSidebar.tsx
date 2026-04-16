@@ -1,4 +1,4 @@
-import { Clock, FileText, Monitor, Users, CheckSquare, BookOpen, Sun, Moon, LogOut, RefreshCw, FileCode, Megaphone } from "lucide-react";
+import { Clock, FileText, Monitor, Users, CheckSquare, BookOpen, Sun, Moon, LogOut, RefreshCw, FileCode, Megaphone, Terminal } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -75,11 +75,18 @@ const menuItems = [
     shortcut: "7",
   },
   {
+    title: "Robocopy",
+    id: "robocopy",
+    icon: Terminal,
+    description: "Comando de cópia em rede",
+    shortcut: "8",
+  },
+  {
     title: "Mensagens",
     id: "mensagens-supervisores",
     icon: Megaphone,
     description: "Gerenciar avisos",
-    shortcut: "8",
+    shortcut: "9",
     supervisorOnly: true,
   },
 ];
