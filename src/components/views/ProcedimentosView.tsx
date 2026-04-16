@@ -111,7 +111,7 @@ export const ProcedimentosView = ({
               <Input
                 placeholder="Buscar por título, descrição, solução, técnico, PIB, usuário..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
                 className="pl-10 pr-10"
               />
               {searchQuery && (
