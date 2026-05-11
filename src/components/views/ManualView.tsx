@@ -3,6 +3,8 @@ import { Card } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { BookOpen, ChevronDown, Mail } from "lucide-react";
 import { toast } from "sonner";
+import vncPorta5555 from "@/assets/vnc-porta-5555.png";
+import pingPibExemplo from "@/assets/ping-pib-exemplo.png";
 
 export const ManualView = () => (
   <Card className="p-6">
@@ -60,9 +62,15 @@ export const ManualView = () => (
         {[
           { icon: "🖥️", title: "Acesso Remoto (VNC / Área de Trabalho Remota)", content: [
             "VNC: Utilizar o UltraVNC Viewer para acesso via PIB do equipamento.",
+            "Formato VNC Server: PIB:5555 (ex.: 10.39.222.230:5555). Veja o exemplo abaixo.",
             "Área de Trabalho Remota (RDP): Usar IP do equipamento quando VNC não estiver disponível.",
-            "Portas: VNC usa porta 5900, RDP usa porta 3389.",
+            "Consultar IP via CMD: ping + m + sigla do estado + PIB. Ex.: ping mceo12083839 (CE, PIB 12083839).",
+            "Atendimento: ping + m + sigla do estado + a + PIB. Ex.: ping mcea12083839.",
+            "Portas: VNC usa porta 5555, RDP usa porta 3389.",
             "Importante: Sempre solicitar autorização do usuário antes de acessar remotamente.",
+          ], images: [
+            { src: vncPorta5555, alt: "Exemplo de conexão VNC com porta 5555 no UltraVNC Viewer", caption: "Exemplo: VNC Server preenchido como PIB:5555" },
+            { src: pingPibExemplo, alt: "Exemplo de comando ping no CMD para descobrir IP do PIB", caption: "Exemplo: ping mceo12083839 retornando o IP do equipamento" },
           ]},
           { icon: "🔄", title: "Formatação de Estações", content: [
             "Recovery Windows 8/8.1: Boot pelo pendrive → Restaurar imagem via ghost.",
@@ -96,6 +104,17 @@ export const ManualView = () => (
             </CollapsibleTrigger>
             <CollapsibleContent className="p-3 text-sm space-y-2 text-muted-foreground">
               {section.content.map((line, i) => <p key={i}><strong>{line.split(':')[0]}:</strong>{line.includes(':') ? line.substring(line.indexOf(':') + 1) : ''}</p>)}
+              {"images" in section && section.images?.map((img, i) => (
+                <figure key={i} className="mt-3 space-y-1">
+                  <img
+                    src={img.src}
+                    alt={img.alt}
+                    loading="lazy"
+                    className="rounded-md border border-border max-w-full h-auto"
+                  />
+                  <figcaption className="text-xs text-muted-foreground italic">{img.caption}</figcaption>
+                </figure>
+              ))}
             </CollapsibleContent>
           </Collapsible>
         ))}
