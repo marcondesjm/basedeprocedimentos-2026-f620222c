@@ -31,13 +31,13 @@ export const Changelog = () => {
 
   const fetchVersions = useCallback(async () => {
     const { data, error } = await supabase
-      .from("changelog_versions" as any)
+      .from("changelog_versions")
       .select("version, release_date, changes")
       .order("release_date", { ascending: false });
 
     if (data && !error) {
       setVersions(
-        (data as any[]).map((v) => ({
+        data.map((v) => ({
           version: v.version,
           date: format(new Date(v.release_date), "dd/MM/yyyy"),
           changes: v.changes || [],
