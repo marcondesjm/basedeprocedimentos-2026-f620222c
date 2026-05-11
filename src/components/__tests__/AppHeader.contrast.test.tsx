@@ -5,7 +5,9 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppHeader } from "@/components/AppHeader";
 import "@/index.css";
 
-const IS_BROWSER = typeof process !== "undefined" && process.env.A11Y_BROWSER === "1";
+declare const process: { env: Record<string, string | undefined> } | undefined;
+const IS_BROWSER =
+  typeof process !== "undefined" && process?.env?.A11Y_BROWSER === "1";
 
 const setViewport = (width: number) => {
   Object.defineProperty(window, "innerWidth", { configurable: true, writable: true, value: width });
