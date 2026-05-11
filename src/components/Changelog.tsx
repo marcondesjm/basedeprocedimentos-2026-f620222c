@@ -15,31 +15,57 @@ interface VersionEntry {
   changes: string[];
 }
 
+interface AppVersionSyncedEvent extends CustomEvent {
+  detail: {
+    version?: string;
+    buildTimestamp?: string | null;
+    updatedAt?: string | null;
+  };
+}
+
 export const Changelog = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [versions, setVersions] = useState<VersionEntry[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
   const currentBuildLabel = `${String(__APP_VERSION__)} • ${format(new Date(__BUILD_TIMESTAMP__), "dd/MM/yyyy HH:mm")}`;
 
-  useEffect(() => {
-    const fetchVersions = async () => {
-      const { data, error } = await supabase
-        .from("changelog_versions" as any)
-        .select("version, release_date, changes")
-        .order("release_date", { ascending: false });
+  const fetchVersions = async () => {
+    const { data, error } = await supabase
+      .from("changelog_versions" as any)
+      .select("version, release_date, changes")
+      .order("release_date", { ascending: false });
 
-      if (data && !error) {
-        setVersions(
-          (data as any[]).map((v) => ({
-            version: v.version,
-            date: format(new Date(v.release_date), "dd/MM/yyyy"),
-            changes: v.changes || [],
-          }))
+    if (data && !error) {
+      setVersions(
+        (data as any[]).map((v) => ({
+          version: v.version,
+          date: format(new Date(v.release_date), "dd/MM/yyyy"),
+          changes: v.changes || [],
+        }))
+      );
+    }
+  };
+
+  useEffect(() => {
+    fetchVersions();
+
+    const handleVersionSynced = (event: Event) => {
+      const { buildTimestamp, updatedAt } = (event as AppVersionSyncedEvent).detail ?? {};
+      const versionDate = buildTimestamp || updatedAt;
+      if (versionDate) {
+        setVersions((current) =>
+          current.map((version) =>
+            version.version === `v${String(__APP_VERSION__).replace(/^v/i, "")}`
+              ? { ...version, date: format(new Date(versionDate), "dd/MM/yyyy") }
+              : version
+          )
         );
       }
+      fetchVersions();
     };
 
-    fetchVersions();
+    window.addEventListener("app_version_synced", handleVersionSynced);
+    return () => window.removeEventListener("app_version_synced", handleVersionSynced);
   }, []);
 
   const scrollToTop = () => scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
