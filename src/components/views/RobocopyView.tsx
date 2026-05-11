@@ -15,7 +15,6 @@ import {
   Lightbulb,
   Zap,
   CheckCircle2,
-  ArrowLeft,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -46,11 +45,7 @@ const ERRORS = [
   },
 ];
 
-interface RobocopyViewProps {
-  onBack?: () => void;
-}
-
-export const RobocopyView = ({ onBack }: RobocopyViewProps) => {
+export const RobocopyView = () => {
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const handleCopy = (text: string, id: string) => {
@@ -62,12 +57,6 @@ export const RobocopyView = ({ onBack }: RobocopyViewProps) => {
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
-      {onBack && (
-        <Button variant="ghost" size="sm" onClick={onBack} className="gap-2 -ml-2">
-          <ArrowLeft className="w-4 h-4" />
-          Voltar
-        </Button>
-      )}
       {/* Header */}
       <div className="flex items-start gap-3">
         <div className="p-2 rounded-lg bg-primary/10">
