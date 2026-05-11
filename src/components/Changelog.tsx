@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -29,7 +29,7 @@ export const Changelog = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const currentBuildLabel = `${String(__APP_VERSION__)} • ${format(new Date(__BUILD_TIMESTAMP__), "dd/MM/yyyy HH:mm")}`;
 
-  const fetchVersions = async () => {
+  const fetchVersions = useCallback(async () => {
     const { data, error } = await supabase
       .from("changelog_versions" as any)
       .select("version, release_date, changes")
@@ -44,7 +44,7 @@ export const Changelog = () => {
         }))
       );
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchVersions();
@@ -66,7 +66,7 @@ export const Changelog = () => {
 
     window.addEventListener("app_version_synced", handleVersionSynced);
     return () => window.removeEventListener("app_version_synced", handleVersionSynced);
-  }, []);
+  }, [fetchVersions]);
 
   const scrollToTop = () => scrollRef.current?.scrollTo({ top: 0, behavior: "smooth" });
   const scrollToBottom = () => {
