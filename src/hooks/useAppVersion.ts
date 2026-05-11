@@ -25,6 +25,14 @@ const compareSemver = (a: string, b: string) => {
   return 0;
 };
 
+const notifyAppVersionSynced = (detail: {
+  version: string;
+  buildTimestamp: string | null;
+  updatedAt: string | null;
+}) => {
+  window.dispatchEvent(new CustomEvent("app_version_synced", { detail }));
+};
+
 export function useAppVersion(APP_VERSION: string, BUILD_TIMESTAMP: string) {
   const [isAppUpToDate, setIsAppUpToDate] = useState<boolean | null>(
     () => localStorage.getItem("app_build_timestamp") === BUILD_TIMESTAMP
@@ -80,6 +88,11 @@ export function useAppVersion(APP_VERSION: string, BUILD_TIMESTAMP: string) {
 
       if (semverDiff < 0) {
         setIsAppUpToDate(false);
+        notifyAppVersionSynced({
+          version: remote.version,
+          buildTimestamp: remote.buildTimestamp,
+          updatedAt: data?.updated_at ?? null,
+        });
         return;
       }
 
@@ -90,6 +103,11 @@ export function useAppVersion(APP_VERSION: string, BUILD_TIMESTAMP: string) {
         remote.buildTimestamp > BUILD_TIMESTAMP
       ) {
         setIsAppUpToDate(false);
+        notifyAppVersionSynced({
+          version: remote.version,
+          buildTimestamp: remote.buildTimestamp,
+          updatedAt: data?.updated_at ?? null,
+        });
         return;
       }
 
@@ -110,6 +128,17 @@ export function useAppVersion(APP_VERSION: string, BUILD_TIMESTAMP: string) {
         if (upsertError) throw upsertError;
 
         setLastUpdated(upserted?.updated_at ?? nowIso);
+        notifyAppVersionSynced({
+          version: APP_VERSION,
+          buildTimestamp: BUILD_TIMESTAMP,
+          updatedAt: upserted?.updated_at ?? nowIso,
+        });
+      } else {
+        notifyAppVersionSynced({
+          version: remote.version || APP_VERSION,
+          buildTimestamp: remote.buildTimestamp ?? BUILD_TIMESTAMP,
+          updatedAt: data?.updated_at ?? null,
+        });
       }
 
       setIsAppUpToDate(true);
