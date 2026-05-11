@@ -188,7 +188,7 @@ const Index = () => {
             </div>
 
             <div className={activeView === "robocopy" ? "" : "hidden"}>
-              <RobocopyView />
+              <RobocopyView onBack={() => handleViewChange("painel")} />
             </div>
 
             <div className={activeView === "formatacao" ? "" : "hidden"}>
