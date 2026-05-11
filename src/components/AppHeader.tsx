@@ -38,9 +38,16 @@ export const AppHeader = ({ currentDateTime, isAppUpToDate }: AppHeaderProps) =>
           >
             {String(__APP_VERSION__)}
           </span>
+          <div
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+            data-testid="app-update-status"
+            className="contents"
+          >
           {isAppUpToDate ? (
             <Badge
-              className="bg-emerald-500/20 text-emerald-200 border-emerald-400/30 text-[10px] cursor-default hidden sm:inline-flex"
+              className="bg-emerald-500/20 text-emerald-50 border-emerald-300/50 text-[10px] cursor-default hidden sm:inline-flex"
               aria-label="Aplicação está atualizada"
             >
               ✓ Atualizado
@@ -49,7 +56,7 @@ export const AppHeader = ({ currentDateTime, isAppUpToDate }: AppHeaderProps) =>
             <Button
               size="sm"
               variant="ghost"
-              className="h-9 px-3 text-xs text-amber-200 hover:text-white hover:bg-white/10 border border-amber-400/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
+              className="h-9 px-3 text-xs text-amber-50 hover:text-white hover:bg-white/10 border border-amber-300/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
               onClick={() => {
                 if ('caches' in window) {
                   caches.keys().then(names => {
@@ -64,6 +71,7 @@ export const AppHeader = ({ currentDateTime, isAppUpToDate }: AppHeaderProps) =>
               ⟳ Atualizar
             </Button>
           )}
+          </div>
         </div>
       </div>
     </header>
