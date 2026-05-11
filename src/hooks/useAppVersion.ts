@@ -83,6 +83,16 @@ export function useAppVersion(APP_VERSION: string, BUILD_TIMESTAMP: string) {
         return;
       }
 
+      // Same semver but remote build is newer → user has stale bundle, must refresh
+      if (
+        semverDiff === 0 &&
+        remote.buildTimestamp &&
+        remote.buildTimestamp > BUILD_TIMESTAMP
+      ) {
+        setIsAppUpToDate(false);
+        return;
+      }
+
       const shouldUpsert =
         !data ||
         semverDiff > 0 ||
