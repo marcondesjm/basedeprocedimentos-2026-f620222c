@@ -57,14 +57,21 @@ export const AppHeader = ({ currentDateTime, isAppUpToDate }: AppHeaderProps) =>
               size="sm"
               variant="ghost"
               className="h-9 px-3 text-xs text-amber-50 hover:text-white hover:bg-white/10 border border-amber-300/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
-              onClick={() => {
-                if ('caches' in window) {
-                  caches.keys().then(names => {
-                    names.forEach(name => caches.delete(name));
-                  });
+              onClick={async () => {
+                try {
+                  if ('caches' in window) {
+                    const names = await caches.keys();
+                    await Promise.all(names.map((n) => caches.delete(n)));
+                  }
+                  localStorage.removeItem('app_version');
+                  localStorage.removeItem('app_build_timestamp');
+                  if ('serviceWorker' in navigator) {
+                    const regs = await navigator.serviceWorker.getRegistrations();
+                    await Promise.all(regs.map((r) => r.unregister()));
+                  }
+                } finally {
+                  window.location.reload();
                 }
-                localStorage.removeItem('app_version');
-                window.location.reload();
               }}
               aria-label="Nova versão disponível. Clique para atualizar a aplicação"
             >
