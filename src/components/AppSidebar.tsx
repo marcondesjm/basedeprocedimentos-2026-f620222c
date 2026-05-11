@@ -167,6 +167,7 @@ export function AppSidebar({ activeView, onViewChange }: AppSidebarProps) {
         await Promise.all(names.map(name => caches.delete(name)));
       }
       localStorage.removeItem('app_version');
+      localStorage.removeItem('app_build_timestamp');
       if ('serviceWorker' in navigator) {
         const registrations = await navigator.serviceWorker.getRegistrations();
         await Promise.all(registrations.map(r => r.unregister()));
