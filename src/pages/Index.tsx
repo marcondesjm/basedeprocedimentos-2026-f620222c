@@ -17,6 +17,8 @@ import { ProcedureDetailDialog } from "@/components/ProcedureDetailDialog";
 import { useProcedures } from "@/hooks/useProcedures";
 import { useAppVersion } from "@/hooks/useAppVersion";
 import { Procedure } from "@/types/procedure";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 
 declare const __APP_VERSION__: string;
 
@@ -153,6 +155,20 @@ const Index = () => {
           <AppHeader currentDateTime={currentDateTime} isAppUpToDate={isAppUpToDate} />
 
            <main className="flex-1 px-3 py-4 md:px-6 md:py-6 overflow-auto" role="main">
+            {activeView !== "painel" && (
+              <div className="mb-4">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleViewChange("painel")}
+                  className="gap-2 -ml-2"
+                  aria-label="Voltar ao painel"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Voltar ao Painel
+                </Button>
+              </div>
+            )}
             <div className={activeView === "painel" ? "" : "hidden"}><PainelView /></div>
 
             <div className={activeView === "procedimentos" ? "" : "hidden"}>
@@ -188,7 +204,7 @@ const Index = () => {
             </div>
 
             <div className={activeView === "robocopy" ? "" : "hidden"}>
-              <RobocopyView onBack={() => handleViewChange("painel")} />
+              <RobocopyView />
             </div>
 
             <div className={activeView === "formatacao" ? "" : "hidden"}>
