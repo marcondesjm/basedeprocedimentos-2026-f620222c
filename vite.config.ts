@@ -19,6 +19,10 @@ export default defineConfig(({ mode }) => ({
     mode === "development" && componentTagger(),
     VitePWA({
       registerType: "autoUpdate",
+      injectRegister: false,
+      devOptions: {
+        enabled: false,
+      },
       includeAssets: ["icon-192.png", "icon-512.png", "favicon.ico"],
       manifest: {
         name: "Gestão de Procedimentos",
