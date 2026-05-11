@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { refreshAppShell } from "@/lib/appRefresh";
 import { format } from "date-fns";
 
 interface AppHeaderProps {
@@ -9,6 +10,7 @@ interface AppHeaderProps {
 }
 
 declare const __APP_VERSION__: string;
+declare const __BUILD_TIMESTAMP__: string;
 
 export const AppHeader = ({ currentDateTime, isAppUpToDate }: AppHeaderProps) => {
   return (
@@ -58,20 +60,7 @@ export const AppHeader = ({ currentDateTime, isAppUpToDate }: AppHeaderProps) =>
               variant="ghost"
               className="h-9 px-3 text-xs text-amber-50 hover:text-white hover:bg-white/10 border border-amber-300/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary"
               onClick={async () => {
-                try {
-                  if ('caches' in window) {
-                    const names = await caches.keys();
-                    await Promise.all(names.map((n) => caches.delete(n)));
-                  }
-                  localStorage.removeItem('app_version');
-                  localStorage.removeItem('app_build_timestamp');
-                  if ('serviceWorker' in navigator) {
-                    const regs = await navigator.serviceWorker.getRegistrations();
-                    await Promise.all(regs.map((r) => r.unregister()));
-                  }
-                } finally {
-                  window.location.reload();
-                }
+                await refreshAppShell(String(__APP_VERSION__), String(__BUILD_TIMESTAMP__));
               }}
               aria-label="Nova versão disponível. Clique para atualizar a aplicação"
             >

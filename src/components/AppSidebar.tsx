@@ -16,6 +16,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
+import { refreshAppShell } from "@/lib/appRefresh";
+
+const APP_VERSION = String(__APP_VERSION__).replace(/^v/i, '');
+const BUILD_TIMESTAMP = String(__BUILD_TIMESTAMP__);
 
 const SUPERVISOR_EMAIL = "supervisores.hepta@gmail.com";
 
@@ -162,18 +166,8 @@ export function AppSidebar({ activeView, onViewChange }: AppSidebarProps) {
 
   const handleClearCache = async () => {
     try {
-      if ('caches' in window) {
-        const names = await caches.keys();
-        await Promise.all(names.map(name => caches.delete(name)));
-      }
-      localStorage.removeItem('app_version');
-      localStorage.removeItem('app_build_timestamp');
-      if ('serviceWorker' in navigator) {
-        const registrations = await navigator.serviceWorker.getRegistrations();
-        await Promise.all(registrations.map(r => r.unregister()));
-      }
-      toast.success('Cache limpo! Recarregando...', { duration: 2000 });
-      setTimeout(() => window.location.reload(), 1500);
+      toast.success('Nova versão registrada. Limpando cache...', { duration: 2000 });
+      await refreshAppShell(APP_VERSION, BUILD_TIMESTAMP);
     } catch {
       toast.error('Erro ao limpar cache');
     }

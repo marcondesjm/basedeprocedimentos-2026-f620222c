@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { refreshAppShell } from "@/lib/appRefresh";
 
 const parseVersionPayload = (value: string | null | undefined) => {
   if (!value) return { version: "", buildTimestamp: null as string | null };
@@ -44,27 +45,14 @@ export function useAppVersion(APP_VERSION: string, BUILD_TIMESTAMP: string) {
     setIsSyncing(true);
 
     try {
-      if ("caches" in window) {
-        const names = await caches.keys();
-        await Promise.all(names.map((name) => caches.delete(name)));
-      }
-
-      localStorage.removeItem("app_version");
-      localStorage.removeItem("app_build_timestamp");
-
-      if ("serviceWorker" in navigator) {
-        const registrations = await navigator.serviceWorker.getRegistrations();
-        await Promise.all(registrations.map((registration) => registration.unregister()));
-      }
-
-      toast.success("Cache limpo! Recarregando...", { duration: 2000 });
-      setTimeout(() => window.location.reload(), 1500);
+      toast.success("Nova versão registrada. Limpando cache...", { duration: 2000 });
+      await refreshAppShell(APP_VERSION, BUILD_TIMESTAMP);
     } catch (error) {
       console.error("Erro ao limpar cache:", error);
       toast.error("Erro ao limpar cache");
       setIsSyncing(false);
     }
-  }, []);
+  }, [APP_VERSION, BUILD_TIMESTAMP]);
 
   const syncVersion = useCallback(async () => {
     const payloadValue = `${APP_VERSION}|${BUILD_TIMESTAMP}`;
