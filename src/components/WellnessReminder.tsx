@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from "react";
 import { Card } from "@/components/ui/card";
 import { Droplets, StretchHorizontal, Eye, Coffee, Wind, Heart, Footprints, Smile } from "lucide-react";
 import { SupervisorMessages } from "@/components/SupervisorMessages";
-import { NationalHolidays } from "@/components/NationalHolidays";
 
 type ReminderCategory = "water" | "stretch" | "general";
 
@@ -98,9 +97,6 @@ export const WellnessReminder = () => {
 
       {/* Mensagens dos Supervisores */}
       <SupervisorMessages />
-
-      {/* Próximos Feriados Nacionais */}
-      <NationalHolidays />
     </div>
   );
 };
