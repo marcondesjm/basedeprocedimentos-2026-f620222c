@@ -11,7 +11,68 @@ interface SupervisorMessage {
   message: string;
   details: string | null;
   created_at: string;
+  isHoliday?: boolean;
 }
+
+interface Holiday {
+  date: string;
+  name: string;
+  type: string;
+}
+
+const HOLIDAYS_CACHE_KEY = "national_holidays_cache_v1";
+const HOLIDAYS_TTL_MS = 24 * 60 * 60 * 1000;
+
+const fmtBR = (iso: string) => {
+  const [y, m, d] = iso.split("-").map(Number);
+  return `${String(d).padStart(2, "0")}/${String(m).padStart(2, "0")}/${y}`;
+};
+
+const daysUntil = (iso: string) => {
+  const [y, m, d] = iso.split("-").map(Number);
+  const target = new Date(y, m - 1, d);
+  target.setHours(0, 0, 0, 0);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return Math.round((target.getTime() - today.getTime()) / 86400000);
+};
+
+const loadHolidays = async (): Promise<Holiday[]> => {
+  try {
+    const cached = localStorage.getItem(HOLIDAYS_CACHE_KEY);
+    if (cached) {
+      const parsed = JSON.parse(cached) as { ts: number; data: Holiday[] };
+      if (Date.now() - parsed.ts < HOLIDAYS_TTL_MS) return parsed.data;
+    }
+    const year = new Date().getFullYear();
+    const fetchYear = async (y: number) => {
+      const r = await fetch(`https://brasilapi.com.br/api/feriados/v1/${y}`);
+      if (!r.ok) throw new Error("falha");
+      return (await r.json()) as Holiday[];
+    };
+    const [a, b] = await Promise.all([
+      fetchYear(year),
+      fetchYear(year + 1).catch(() => [] as Holiday[]),
+    ]);
+    const all = [...a, ...b];
+    localStorage.setItem(HOLIDAYS_CACHE_KEY, JSON.stringify({ ts: Date.now(), data: all }));
+    return all;
+  } catch {
+    return [];
+  }
+};
+
+const holidayToMessage = (h: Holiday): SupervisorMessage => {
+  const days = daysUntil(h.date);
+  const when = days === 0 ? "hoje" : days === 1 ? "amanhã" : `em ${days} dias`;
+  return {
+    id: `holiday-${h.date}`,
+    message: `Feriado Nacional - ${fmtBR(h.date)} - ${h.name} (${when})`,
+    details: `Feriado nacional brasileiro: ${h.name}\nData: ${fmtBR(h.date)}\nFalta: ${when}\n\nFonte oficial: BrasilAPI (calendário nacional).`,
+    created_at: new Date().toISOString(),
+    isHoliday: true,
+  };
+};
 
 const playNotificationSound = () => {
   try {
@@ -55,22 +116,27 @@ export const SupervisorMessages = () => {
       .eq("active", true)
       .order("created_at", { ascending: false })
       .limit(20);
-    if (data) {
-      const msgs = data as any as SupervisorMessage[];
-      
-      if (isFirstLoadRef.current) {
-        knownIdsRef.current = new Set(msgs.map((m) => m.id));
-        isFirstLoadRef.current = false;
-      } else {
-        const hasNew = msgs.some((m) => !knownIdsRef.current.has(m.id));
-        if (hasNew) {
-          playNotificationSound();
-        }
-        knownIdsRef.current = new Set(msgs.map((m) => m.id));
-      }
-      
-      setMessages(msgs);
+    const supMsgs = (data ?? []) as any as SupervisorMessage[];
+
+    const holidays = await loadHolidays();
+    const upcomingHolidays = holidays
+      .filter((h) => daysUntil(h.date) >= 0)
+      .sort((a, b) => a.date.localeCompare(b.date))
+      .slice(0, 4)
+      .map(holidayToMessage);
+
+    const merged = [...supMsgs, ...upcomingHolidays];
+
+    if (isFirstLoadRef.current) {
+      knownIdsRef.current = new Set(merged.map((m) => m.id));
+      isFirstLoadRef.current = false;
+    } else {
+      const hasNew = merged.some((m) => !knownIdsRef.current.has(m.id) && !m.isHoliday);
+      if (hasNew) playNotificationSound();
+      knownIdsRef.current = new Set(merged.map((m) => m.id));
     }
+
+    setMessages(merged);
   }, []);
 
   useEffect(() => {
