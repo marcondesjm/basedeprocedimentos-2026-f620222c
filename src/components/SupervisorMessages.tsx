@@ -11,6 +11,8 @@ interface SupervisorMessage {
   message: string;
   details: string | null;
   created_at: string;
+  scheduled_at?: string | null;
+  expires_at?: string | null;
   isHoliday?: boolean;
 }
 
@@ -116,7 +118,12 @@ export const SupervisorMessages = () => {
       .eq("active", true)
       .order("created_at", { ascending: false })
       .limit(20);
-    const supMsgs = (data ?? []) as any as SupervisorMessage[];
+    const now = Date.now();
+    const supMsgs = ((data ?? []) as any as SupervisorMessage[]).filter((m) => {
+      if (m.scheduled_at && new Date(m.scheduled_at).getTime() > now) return false;
+      if (m.expires_at && new Date(m.expires_at).getTime() <= now) return false;
+      return true;
+    });
 
     const holidays = await loadHolidays();
     const upcomingHolidays = holidays
