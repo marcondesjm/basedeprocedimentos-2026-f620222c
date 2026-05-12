@@ -583,51 +583,34 @@ export const WorkTimer = () => {
                   )}
 
                   <div className="flex flex-col gap-2">
-                    {wo.hasFinished ? (
-                      <>
+                    {!wo.isRunning && !wo.hasFinished ? (
+                      <Button
+                        onClick={() => toggleTimer(wo.id)}
+                        className="w-full h-9 text-sm font-bold shadow-md bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-500/40"
+                      >
+                        <Play className="w-4 h-4 mr-1" />
+                        Iniciar
+                      </Button>
+                    ) : (
+                      <div className="flex flex-col gap-2 w-full">
                         <Button
-                          onClick={() => silenceAlarm(wo.id)}
-                          className="w-full h-9 text-xs md:text-sm font-bold bg-red-500 hover:bg-red-600 text-white shadow-lg shadow-red-500/40 animate-pulse"
+                          onClick={() => addNotaReset(wo.id)}
+                          className={`w-full h-9 text-sm font-bold text-white shadow-md ${
+                            wo.hasFinished
+                              ? "bg-red-500 hover:bg-red-600 shadow-red-500/40 animate-pulse"
+                              : "bg-amber-500 hover:bg-amber-600 shadow-amber-500/40"
+                          }`}
                         >
-                          <AlertCircle className="w-4 h-4 mr-1 shrink-0" />
-                          Silenciar
+                          <RotateCcw className="w-4 h-4 mr-1 shrink-0" />
+                          ADD Nota
                         </Button>
                         <Button
                           onClick={() => completeWorkOrder(wo.id)}
-                          className="w-full h-9 text-xs md:text-sm font-bold bg-emerald-500 hover:bg-emerald-600 text-white shadow-lg shadow-emerald-500/40"
+                          className="w-full h-9 text-sm font-bold bg-violet-600 hover:bg-violet-700 text-white shadow-md shadow-violet-600/40"
                         >
                           <CheckCircle className="w-4 h-4 mr-1 shrink-0" />
-                          Salvar
+                          Concluir
                         </Button>
-                      </>
-                    ) : (
-                      <div className="flex gap-2">
-                        {!wo.isRunning ? (
-                          <Button
-                            onClick={() => toggleTimer(wo.id)}
-                            className="flex-1 h-9 text-sm font-bold shadow-md bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-500/40"
-                          >
-                            <Play className="w-4 h-4 mr-1" />
-                            Iniciar
-                          </Button>
-                        ) : (
-                          <div className="flex flex-col gap-2 w-full">
-                            <Button
-                              onClick={() => addNotaReset(wo.id)}
-                              className="w-full h-9 text-sm font-bold bg-amber-500 hover:bg-amber-600 text-white shadow-md shadow-amber-500/40"
-                            >
-                              <RotateCcw className="w-4 h-4 mr-1 shrink-0" />
-                              ADD Nota
-                            </Button>
-                            <Button
-                              onClick={() => completeWorkOrder(wo.id)}
-                              className="w-full h-9 text-sm font-bold bg-violet-600 hover:bg-violet-700 text-white shadow-md shadow-violet-600/40"
-                            >
-                              <CheckCircle className="w-4 h-4 mr-1 shrink-0" />
-                              Concluir
-                            </Button>
-                          </div>
-                        )}
                       </div>
                     )}
                   </div>
