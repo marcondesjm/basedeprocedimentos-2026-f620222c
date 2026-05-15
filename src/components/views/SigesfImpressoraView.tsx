@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import {
   Printer,
   Copy,
@@ -11,6 +12,7 @@ import {
   Settings2,
   FileCode,
   Lightbulb,
+  ZoomIn,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -69,6 +71,7 @@ const ERROS = [
 
 export const SigesfImpressoraView = () => {
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [zoomImg, setZoomImg] = useState<string | null>(null);
 
   const handleCopy = (text: string, id: string) => {
     navigator.clipboard.writeText(text);
@@ -76,6 +79,22 @@ export const SigesfImpressoraView = () => {
     toast.success("Copiado!");
     setTimeout(() => setCopiedId(null), 2000);
   };
+
+  const Figure = ({ src, alt }: { src: string; alt: string }) => (
+    <button
+      type="button"
+      onClick={() => setZoomImg(src)}
+      className="group relative block w-full overflow-hidden rounded-lg border border-border bg-muted/30 hover:border-primary transition-colors"
+    >
+      <img src={src} alt={alt} loading="lazy" className="w-full h-auto" />
+      <span className="absolute top-2 right-2 bg-background/80 backdrop-blur p-1.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
+        <ZoomIn className="h-4 w-4" />
+      </span>
+      <span className="block text-[11px] text-muted-foreground px-2 py-1 text-left bg-muted/40">
+        {alt}
+      </span>
+    </button>
+  );
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
@@ -120,6 +139,9 @@ export const SigesfImpressoraView = () => {
             <li key={i}>{p}</li>
           ))}
         </ol>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+          <Figure src="/sigesf/p1-impressoras.jpg" alt="Impressoras instaladas (XPS Writer e SIGESF)" />
+        </div>
       </Card>
 
       {/* P2 - Ajuste config.properties */}
@@ -145,6 +167,12 @@ export const SigesfImpressoraView = () => {
             <li key={i}>{p}</li>
           ))}
         </ol>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <Figure src="/sigesf/p2-7zip-jar.jpg" alt="Abrir sigesfEmissorDeSenhas.jar com 7-Zip" />
+          <Figure src="/sigesf/p2-7zip-config.jpg" alt="Editar config.properties dentro do 7-Zip" />
+          <Figure src="/sigesf/p2-config-properties.jpg" alt="Linha tipoImpressao no Bloco de Notas" />
+        </div>
 
         <div className="space-y-2">
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
@@ -208,6 +236,7 @@ export const SigesfImpressoraView = () => {
                 )}
               </Button>
             </div>
+            <Figure src="/sigesf/p2-tipo-interna.jpg" alt="config.properties com ImpressoraTermicaSIGESF (Interna)" />
           </div>
 
           <div className="border-l-4 border-l-amber-500 pl-3 space-y-2">
@@ -234,6 +263,7 @@ export const SigesfImpressoraView = () => {
                 )}
               </Button>
             </div>
+            <Figure src="/sigesf/p2-tipo-externa.jpg" alt="config.properties com ImpressoraTermicaEscPos (Externa)" />
           </div>
         </div>
       </Card>
@@ -252,11 +282,22 @@ export const SigesfImpressoraView = () => {
             </div>
           ))}
         </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+          <Figure src="/sigesf/erro-7zip.jpg" alt="Erro do 7-Zip ao salvar com SIGESF aberto" />
+          <Figure src="/sigesf/logoff-sigesf.jpg" alt="Forçar logoff do usuário SIGESF no Gerenciador de Tarefas" />
+        </div>
       </Card>
 
       <p className="text-[11px] text-muted-foreground text-center pt-2">
         Fonte: POP SIGESF — TOTEM Windows 7 v2.0 (Hepta · 12/2024)
       </p>
+
+      {/* Lightbox */}
+      <Dialog open={!!zoomImg} onOpenChange={(o) => !o && setZoomImg(null)}>
+        <DialogContent className="max-w-5xl w-[95vw] p-2 bg-background">
+          {zoomImg && <img src={zoomImg} alt="Visualização ampliada" className="w-full h-auto rounded" />}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
