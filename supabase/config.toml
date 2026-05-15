@@ -1,1 +1,4 @@
 project_id = "ctbxsagrexxqpajjeqga"
+
+[functions.wellness-tip]
+verify_jwt = false
