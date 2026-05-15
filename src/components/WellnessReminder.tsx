@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Card } from "@/components/ui/card";
 import { Droplets, StretchHorizontal, Eye, Coffee, Wind, Heart, Footprints, Smile } from "lucide-react";
 import { SupervisorMessages } from "@/components/SupervisorMessages";
+import { supabase } from "@/integrations/supabase/client";
 
 type ReminderCategory = "water" | "stretch" | "general";
 
@@ -42,6 +43,27 @@ const pickRandom = (cat: ReminderCategory) => {
 
 const pickGeneral = () => pickRandom("general");
 
+const iconForCategory = (cat: ReminderCategory) => {
+  switch (cat) {
+    case "water": return { icon: <Droplets className="w-6 h-6" />, color: "text-sky-400" };
+    case "stretch": return { icon: <StretchHorizontal className="w-6 h-6" />, color: "text-emerald-400" };
+    default: return { icon: <Heart className="w-6 h-6" />, color: "text-rose-400" };
+  }
+};
+
+const fetchAITip = async (category: ReminderCategory): Promise<Reminder | null> => {
+  try {
+    const { data, error } = await supabase.functions.invoke("wellness-tip", {
+      body: { category },
+    });
+    if (error || !data?.tip) return null;
+    const { icon, color } = iconForCategory(category);
+    return { icon, color, message: data.tip, category };
+  } catch {
+    return null;
+  }
+};
+
 export const WellnessReminder = () => {
   const [current, setCurrent] = useState<Reminder>(() => pickGeneral());
   const [isVisible, setIsVisible] = useState(true);
@@ -54,20 +76,28 @@ export const WellnessReminder = () => {
     }, 1300);
   }, []);
 
+  const showTip = useCallback(async (cat: ReminderCategory) => {
+    const ai = await fetchAITip(cat);
+    transition(ai ?? pickRandom(cat));
+  }, [transition]);
+
   useEffect(() => {
+    // Primeira dica IA logo após carregar
+    const initial = setTimeout(() => showTip("general"), 4000);
     // Água a cada 1h
-    const waterTimer = setInterval(() => transition(pickRandom("water")), WATER_INTERVAL);
+    const waterTimer = setInterval(() => showTip("water"), WATER_INTERVAL);
     // Alongamento a cada 1h30
-    const stretchTimer = setInterval(() => transition(pickRandom("stretch")), STRETCH_INTERVAL);
+    const stretchTimer = setInterval(() => showTip("stretch"), STRETCH_INTERVAL);
     // Mensagens gerais entre os ciclos (a cada 5 min)
-    const generalTimer = setInterval(() => transition(pickGeneral()), 5 * 60 * 1000);
+    const generalTimer = setInterval(() => showTip("general"), 5 * 60 * 1000);
 
     return () => {
+      clearTimeout(initial);
       clearInterval(waterTimer);
       clearInterval(stretchTimer);
       clearInterval(generalTimer);
     };
-  }, [transition]);
+  }, [showTip]);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
