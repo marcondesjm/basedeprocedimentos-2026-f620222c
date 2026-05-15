@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Plus, Search, FileText, Calendar, Tag, Upload, Save, Shield, X, ChevronDown, ChevronLeft, ChevronRight, CheckCircle2 } from "lucide-react";
+  import { Plus, Search, FileText, Calendar, Tag, Upload, Save, Shield, X, ChevronDown, ChevronLeft, ChevronRight, CheckCircle2, BookOpen } from "lucide-react";
 import { Procedure, NoteType, CATEGORIES, FILA_REMOTA_CATEGORIES, FILA_PRESENCIAL_CATEGORIES } from "@/types/procedure";
 import type { BackupInfo } from "@/hooks/useProcedures";
 
@@ -43,6 +43,7 @@ export const ProcedimentosView = ({
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [expandedProcedures, setExpandedProcedures] = useState<Set<string>>(new Set());
+  const [readingProcedures, setReadingProcedures] = useState<Set<string>>(new Set());
   const [currentPage, setCurrentPage] = useState(1);
   const [letterFilter, setLetterFilter] = useState<string | null>(null);
   const ITEMS_PER_PAGE = 10;
@@ -388,9 +389,11 @@ export const ProcedimentosView = ({
 
                     {isOpen && (
                       <div className="px-4 pb-4 pt-1 border-t space-y-3">
-                        <div className="bg-muted/50 p-3 rounded-lg">
-                          <p className="text-sm text-foreground whitespace-pre-wrap">{procedure.solution}</p>
-                        </div>
+                        {readingProcedures.has(procedure.id) && (
+                          <div className="bg-muted/50 p-3 rounded-lg">
+                            <p className="text-sm text-foreground whitespace-pre-wrap">{procedure.solution}</p>
+                          </div>
+                        )}
                         <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
                           <div className="flex items-center gap-1">
                             <Calendar className="w-4 h-4" />
@@ -411,6 +414,16 @@ export const ProcedimentosView = ({
                             if (updated) onSelectProcedure(updated);
                           }}>
                             <FileText className="w-3 h-3 mr-1" />Abrir
+                          </Button>
+                          <Button size="sm" variant="outline" className="text-xs" onClick={(e) => {
+                            e.stopPropagation();
+                            const next = new Set(readingProcedures);
+                            if (next.has(procedure.id)) next.delete(procedure.id);
+                            else next.add(procedure.id);
+                            setReadingProcedures(next);
+                          }}>
+                            <BookOpen className="w-3 h-3 mr-1" />
+                            {readingProcedures.has(procedure.id) ? "Ocultar leitura" : "Leitura do procedimento"}
                           </Button>
                           <div className="flex-1" onClick={(e) => e.stopPropagation()}>
                             <Select
