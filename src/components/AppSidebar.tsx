@@ -1,4 +1,4 @@
-import { Clock, FileText, Monitor, Users, CheckSquare, BookOpen, Sun, Moon, LogOut, RefreshCw, FileCode, Megaphone, Terminal, HardDrive } from "lucide-react";
+import { Clock, FileText, Monitor, Users, CheckSquare, BookOpen, Sun, Moon, LogOut, RefreshCw, FileCode, Megaphone, Terminal, HardDrive, Printer } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -91,6 +91,13 @@ const menuItems = [
     icon: HardDrive,
     description: "Política de backup e LGPD",
     shortcut: "9",
+  },
+  {
+    title: "Impressora SIGESF",
+    id: "sigesf-impressora",
+    icon: Printer,
+    description: "POP TOTEM Windows 7",
+    shortcut: "i",
   },
   {
     title: "Mensagens",

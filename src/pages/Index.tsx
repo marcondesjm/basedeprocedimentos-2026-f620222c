@@ -12,6 +12,7 @@ import { ManualView } from "@/components/views/ManualView";
 import { SupervisorMessagesView } from "@/components/views/SupervisorMessagesView";
 import { RobocopyView } from "@/components/views/RobocopyView";
 import { FormatacaoView } from "@/components/views/FormatacaoView";
+import { SigesfImpressoraView } from "@/components/views/SigesfImpressoraView";
 import { DocumentationPage } from "@/components/DocumentationPage";
 import { ProcedureDetailDialog } from "@/components/ProcedureDetailDialog";
 import { useProcedures } from "@/hooks/useProcedures";
@@ -209,6 +210,10 @@ const Index = () => {
 
             <div className={activeView === "formatacao" ? "" : "hidden"}>
               <FormatacaoView />
+            </div>
+
+            <div className={activeView === "sigesf-impressora" ? "" : "hidden"}>
+              <SigesfImpressoraView />
             </div>
 
             <div className={activeView === "mensagens-supervisores" ? "" : "hidden"}>
