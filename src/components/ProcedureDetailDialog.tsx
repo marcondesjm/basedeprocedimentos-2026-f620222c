@@ -103,7 +103,10 @@ export const ProcedureDetailDialog = ({ selectedProcedure, onClose, onUpdate }: 
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="edit-pib">PIB do Equipamento</Label>
-                      <Input id="edit-pib" value={editedProcedure.pibEquipamento || ""} onChange={(e) => setEditedProcedure({ ...editedProcedure, pibEquipamento: e.target.value })} />
+                      <div className="flex gap-2">
+                        <Input id="edit-pib" value={editedProcedure.pibEquipamento || ""} onChange={(e) => setEditedProcedure({ ...editedProcedure, pibEquipamento: e.target.value })} />
+                        <Button type="button" onClick={handleUpdateProcedure} className="shrink-0">Salvar</Button>
+                      </div>
                     </div>
                     <div className="space-y-2">
                       <Label>Técnico Responsável</Label>
