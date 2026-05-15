@@ -73,20 +73,20 @@ export const ProcedureDetailDialog = ({ selectedProcedure, onClose, onUpdate }: 
               {!isEditMode && (
                 <div className="space-y-2">
                   {selectedProcedure.noteType === "diagnostico" ? (
-                    <Button size="lg" variant="secondary" className="w-full bg-amber-100 hover:bg-amber-200 text-amber-800" onClick={() => {
+                    <Button size="lg" className="w-full h-14 text-base font-bold bg-amber-500 hover:bg-amber-600 text-white shadow-lg shadow-amber-500/30 ring-2 ring-amber-300 animate-pulse" onClick={() => {
                       const nota = `FAVOR DIRECIONAR AO SETOR ${selectedProcedure.setorDirecionado || '_____________'}\n\n==================\n\nPIB do equipamento: ${selectedProcedure.pibEquipamento || '_____________'}\n\n==================\n\nEM CONTATO COM O USUÁRIO ${selectedProcedure.usuarioAtendido || '_____________'}, FORAM REALIZADOS OS PROCEDIMENTOS DE:\n\n${selectedProcedure.solution.split('\n').map(line => line.trim() ? `- ${line.trim()}` : '').filter(Boolean).join('\n')}\n\nAPÓS PROCEDIMENTOS FOI VERIFICADO QUE:\n\n${selectedProcedure.justificativa || '< JUSTIFICATIVA >'}\n\nPossui procedimento no BC-Suporte? ( ${selectedProcedure.possuiProcedimentoBC === 'sim' ? 'X' : ' '} ) SIM ( ${selectedProcedure.possuiProcedimentoBC === 'nao' ? 'X' : ' '} ) Não\n\n${selectedProcedure.possuiProcedimentoBC === 'sim' && selectedProcedure.nomeArquivoBC ? `Se sim, Nome do arquivo: ${selectedProcedure.nomeArquivoBC}` : 'Se sim, Nome do arquivo:_____________________'}\n\nATENCIOSAMENTE,\nSUPORTE TÉCNICO HEPTA`;
                       navigator.clipboard.writeText(nota);
                       toast.success('Nota de Diagnóstico copiada!');
                     }}>
-                      <Copy className="w-4 h-4 mr-2" />Copiar Nota de Diagnóstico
+                      <Copy className="w-5 h-5 mr-2" />Copiar Nota de Diagnóstico
                     </Button>
                   ) : (
-                    <Button size="lg" variant="secondary" className="w-full" onClick={() => {
+                    <Button size="lg" className="w-full h-14 text-base font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/40 ring-2 ring-primary/40" onClick={() => {
                       const nota = `EM CONTATO COM O USUÁRIO: ${selectedProcedure.usuarioAtendido || '_____________'},FOI REALIZADO ACESSO REMOTO AO MICRO E \nFORAM EXECUTADOS OS PROCEDIMENTOS DE: ${selectedProcedure.title}\n\n================== \n\nPIB do equipamento: ${selectedProcedure.pibEquipamento || '_____________'}\n\n================== \n\n${selectedProcedure.solution}\n\nAPÓS PROCEDIMENTOS FORAM REALIZADOS TESTES DE: \n\n${selectedProcedure.description}\n\nQUE CONFIRMARAM A SOLUÇÃO DO PROBLEMA.\n\n\nATENCIOSAMENTE, \nSUPORTE TÉCNICO HEPTA`;
                       navigator.clipboard.writeText(nota);
                       toast.success('Nota oficial copiada!');
                     }}>
-                      <Copy className="w-4 h-4 mr-2" />Copiar Nota no Formato Oficial
+                      <Copy className="w-5 h-5 mr-2" />Copiar Nota no Formato Oficial
                     </Button>
                   )}
                 </div>
