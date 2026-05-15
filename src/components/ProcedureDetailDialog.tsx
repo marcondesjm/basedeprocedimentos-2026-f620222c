@@ -20,10 +20,12 @@ interface ProcedureDetailDialogProps {
 export const ProcedureDetailDialog = ({ selectedProcedure, onClose, onUpdate }: ProcedureDetailDialogProps) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [editedProcedure, setEditedProcedure] = useState<Procedure | null>(null);
+  const [openedId, setOpenedId] = useState<string | null>(null);
 
-  // Ao abrir um procedimento, já entra direto em modo edição (foco em PIB e Usuário)
+  // Ao abrir um NOVO procedimento, já entra em modo edição (foco em Usuário)
   useEffect(() => {
-    if (selectedProcedure) {
+    if (selectedProcedure && selectedProcedure.id !== openedId) {
+      setOpenedId(selectedProcedure.id);
       setIsEditMode(true);
       setEditedProcedure(selectedProcedure);
       setTimeout(() => {
@@ -31,8 +33,10 @@ export const ProcedureDetailDialog = ({ selectedProcedure, onClose, onUpdate }: 
         el?.focus();
         el?.select();
       }, 100);
+    } else if (!selectedProcedure) {
+      setOpenedId(null);
     }
-  }, [selectedProcedure]);
+  }, [selectedProcedure, openedId]);
 
   const handleClose = () => {
     setIsEditMode(false);
