@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
   Shield, Clock, ListChecks, BookOpen, Inbox, Users, Printer,
-  HardDrive, Copy, Bell, Activity, LogIn, ArrowRight, CheckCircle2, Sparkles,
+  HardDrive, Copy, Bell, Activity, LogIn, ArrowRight, CheckCircle2, Sparkles, MessageCircle,
 } from "lucide-react";
 
 const features = [
@@ -119,6 +119,18 @@ const Landing = () => {
             <a href="#recursos">
               <Button size="lg" variant="outline" className="gap-2 h-12 px-6 text-base hover:bg-primary/5 hover:border-primary transition-colors">
                 Ver recursos
+              </Button>
+            </a>
+            <a
+              href="https://wa.me/5548996029392?text=Ol%C3%A1%2C%20gostaria%20de%20saber%20mais%20sobre%20a%20plataforma%20Gest%C3%A3o%20de%20Procedimentos."
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button
+                size="lg"
+                className="gap-2 h-12 px-6 text-base font-semibold bg-[#25D366] hover:bg-[#1ebe5a] text-white shadow-elevated hover:scale-105 transition-transform"
+              >
+                <MessageCircle className="w-5 h-5" /> Saiba mais
               </Button>
             </a>
           </div>
