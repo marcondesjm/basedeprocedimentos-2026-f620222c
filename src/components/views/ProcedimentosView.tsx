@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Plus, Search, FileText, Calendar, Tag, Upload, Save, Shield, X, ChevronDown, ChevronLeft, ChevronRight, CheckCircle2 } from "lucide-react";
+  import { Plus, Search, FileText, Calendar, Tag, Upload, Save, Shield, X, ChevronDown, ChevronLeft, ChevronRight, CheckCircle2, BookOpen } from "lucide-react";
 import { Procedure, NoteType, CATEGORIES, FILA_REMOTA_CATEGORIES, FILA_PRESENCIAL_CATEGORIES } from "@/types/procedure";
 import type { BackupInfo } from "@/hooks/useProcedures";
 
