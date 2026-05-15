@@ -519,7 +519,7 @@ const Login = () => {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) navigate("/");
+      if (session) navigate("/app");
     });
   }, [navigate]);
 
@@ -537,7 +537,7 @@ const Login = () => {
         toast.error("Email ou senha incorretos");
       } else {
         toast.success("Login realizado com sucesso!");
-        navigate("/");
+        navigate("/app");
       }
     } catch {
       toast.error("Erro ao fazer login");
