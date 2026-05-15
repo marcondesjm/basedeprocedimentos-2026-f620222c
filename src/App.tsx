@@ -20,9 +20,10 @@ const App = () => (
       <DeveloperContextMenu />
       <BrowserRouter>
         <Routes>
-          <Route path="/landing" element={<Landing />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/" element={<AuthGuard><Index /></AuthGuard>} />
+          <Route path="/" element={<Landing />} />
+          <Route path="/landing" element={<Landing />} />
+          <Route path="/app" element={<AuthGuard><Index /></AuthGuard>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
