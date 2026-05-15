@@ -389,9 +389,11 @@ export const ProcedimentosView = ({
 
                     {isOpen && (
                       <div className="px-4 pb-4 pt-1 border-t space-y-3">
-                        <div className="bg-muted/50 p-3 rounded-lg">
-                          <p className="text-sm text-foreground whitespace-pre-wrap">{procedure.solution}</p>
-                        </div>
+                        {readingProcedures.has(procedure.id) && (
+                          <div className="bg-muted/50 p-3 rounded-lg">
+                            <p className="text-sm text-foreground whitespace-pre-wrap">{procedure.solution}</p>
+                          </div>
+                        )}
                         <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
                           <div className="flex items-center gap-1">
                             <Calendar className="w-4 h-4" />
@@ -412,6 +414,16 @@ export const ProcedimentosView = ({
                             if (updated) onSelectProcedure(updated);
                           }}>
                             <FileText className="w-3 h-3 mr-1" />Abrir
+                          </Button>
+                          <Button size="sm" variant="outline" className="text-xs" onClick={(e) => {
+                            e.stopPropagation();
+                            const next = new Set(readingProcedures);
+                            if (next.has(procedure.id)) next.delete(procedure.id);
+                            else next.add(procedure.id);
+                            setReadingProcedures(next);
+                          }}>
+                            <BookOpen className="w-3 h-3 mr-1" />
+                            {readingProcedures.has(procedure.id) ? "Ocultar leitura" : "Leitura do procedimento"}
                           </Button>
                           <div className="flex-1" onClick={(e) => e.stopPropagation()}>
                             <Select
