@@ -70,6 +70,28 @@ export const ProcedureDetailDialog = ({ selectedProcedure, onClose, onUpdate }: 
                 ))}
               </div>
 
+              {!isEditMode && (
+                <div className="space-y-2">
+                  {selectedProcedure.noteType === "diagnostico" ? (
+                    <Button size="lg" variant="secondary" className="w-full bg-amber-100 hover:bg-amber-200 text-amber-800" onClick={() => {
+                      const nota = `FAVOR DIRECIONAR AO SETOR ${selectedProcedure.setorDirecionado || '_____________'}\n\n==================\n\nPIB do equipamento: ${selectedProcedure.pibEquipamento || '_____________'}\n\n==================\n\nEM CONTATO COM O USUÁRIO ${selectedProcedure.usuarioAtendido || '_____________'}, FORAM REALIZADOS OS PROCEDIMENTOS DE:\n\n${selectedProcedure.solution.split('\n').map(line => line.trim() ? `- ${line.trim()}` : '').filter(Boolean).join('\n')}\n\nAPÓS PROCEDIMENTOS FOI VERIFICADO QUE:\n\n${selectedProcedure.justificativa || '< JUSTIFICATIVA >'}\n\nPossui procedimento no BC-Suporte? ( ${selectedProcedure.possuiProcedimentoBC === 'sim' ? 'X' : ' '} ) SIM ( ${selectedProcedure.possuiProcedimentoBC === 'nao' ? 'X' : ' '} ) Não\n\n${selectedProcedure.possuiProcedimentoBC === 'sim' && selectedProcedure.nomeArquivoBC ? `Se sim, Nome do arquivo: ${selectedProcedure.nomeArquivoBC}` : 'Se sim, Nome do arquivo:_____________________'}\n\nATENCIOSAMENTE,\nSUPORTE TÉCNICO HEPTA`;
+                      navigator.clipboard.writeText(nota);
+                      toast.success('Nota de Diagnóstico copiada!');
+                    }}>
+                      <Copy className="w-4 h-4 mr-2" />Copiar Nota de Diagnóstico
+                    </Button>
+                  ) : (
+                    <Button size="lg" variant="secondary" className="w-full" onClick={() => {
+                      const nota = `EM CONTATO COM O USUÁRIO: ${selectedProcedure.usuarioAtendido || '_____________'},FOI REALIZADO ACESSO REMOTO AO MICRO E \nFORAM EXECUTADOS OS PROCEDIMENTOS DE: ${selectedProcedure.title}\n\n================== \n\nPIB do equipamento: ${selectedProcedure.pibEquipamento || '_____________'}\n\n================== \n\n${selectedProcedure.solution}\n\nAPÓS PROCEDIMENTOS FORAM REALIZADOS TESTES DE: \n\n${selectedProcedure.description}\n\nQUE CONFIRMARAM A SOLUÇÃO DO PROBLEMA.\n\n\nATENCIOSAMENTE, \nSUPORTE TÉCNICO HEPTA`;
+                      navigator.clipboard.writeText(nota);
+                      toast.success('Nota oficial copiada!');
+                    }}>
+                      <Copy className="w-4 h-4 mr-2" />Copiar Nota no Formato Oficial
+                    </Button>
+                  )}
+                </div>
+              )}
+
               {selectedProcedure.noteType === "diagnostico" && (
                 <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg space-y-2">
                   <p className="text-sm text-amber-800 font-semibold">Informações de Diagnóstico</p>
@@ -152,26 +174,6 @@ export const ProcedureDetailDialog = ({ selectedProcedure, onClose, onUpdate }: 
                     <div><p className="text-sm text-muted-foreground">PIB do Equipamento</p><p className="font-medium text-foreground">{selectedProcedure.pibEquipamento || "Não informado"}</p></div>
                     <div><p className="text-sm text-muted-foreground">Técnico Responsável</p><p className="font-medium text-foreground">{selectedProcedure.createdBy}</p></div>
                     <div><p className="text-sm text-muted-foreground">Data de Registro</p><p className="font-medium text-foreground">{new Date(selectedProcedure.createdAt).toLocaleString('pt-BR')}</p></div>
-                  </div>
-
-                  <div className="pt-2 space-y-2">
-                    {selectedProcedure.noteType === "diagnostico" ? (
-                      <Button variant="secondary" className="w-full bg-amber-100 hover:bg-amber-200 text-amber-800" onClick={() => {
-                        const nota = `FAVOR DIRECIONAR AO SETOR ${selectedProcedure.setorDirecionado || '_____________'}\n\n==================\n\nPIB do equipamento: ${selectedProcedure.pibEquipamento || '_____________'}\n\n==================\n\nEM CONTATO COM O USUÁRIO ${selectedProcedure.usuarioAtendido || '_____________'}, FORAM REALIZADOS OS PROCEDIMENTOS DE:\n\n${selectedProcedure.solution.split('\n').map(line => line.trim() ? `- ${line.trim()}` : '').filter(Boolean).join('\n')}\n\nAPÓS PROCEDIMENTOS FOI VERIFICADO QUE:\n\n${selectedProcedure.justificativa || '< JUSTIFICATIVA >'}\n\nPossui procedimento no BC-Suporte? ( ${selectedProcedure.possuiProcedimentoBC === 'sim' ? 'X' : ' '} ) SIM ( ${selectedProcedure.possuiProcedimentoBC === 'nao' ? 'X' : ' '} ) Não\n\n${selectedProcedure.possuiProcedimentoBC === 'sim' && selectedProcedure.nomeArquivoBC ? `Se sim, Nome do arquivo: ${selectedProcedure.nomeArquivoBC}` : 'Se sim, Nome do arquivo:_____________________'}\n\nATENCIOSAMENTE,\nSUPORTE TÉCNICO HEPTA`;
-                        navigator.clipboard.writeText(nota);
-                        toast.success('Nota de Diagnóstico copiada!');
-                      }}>
-                        <Copy className="w-4 h-4 mr-2" />Copiar Nota de Diagnóstico
-                      </Button>
-                    ) : (
-                      <Button variant="secondary" className="w-full" onClick={() => {
-                        const nota = `EM CONTATO COM O USUÁRIO: ${selectedProcedure.usuarioAtendido || '_____________'},FOI REALIZADO ACESSO REMOTO AO MICRO E \nFORAM EXECUTADOS OS PROCEDIMENTOS DE: ${selectedProcedure.title}\n\n================== \n\nPIB do equipamento: ${selectedProcedure.pibEquipamento || '_____________'}\n\n================== \n\n${selectedProcedure.solution}\n\nAPÓS PROCEDIMENTOS FORAM REALIZADOS TESTES DE: \n\n${selectedProcedure.description}\n\nQUE CONFIRMARAM A SOLUÇÃO DO PROBLEMA.\n\n\nATENCIOSAMENTE, \nSUPORTE TÉCNICO HEPTA`;
-                        navigator.clipboard.writeText(nota);
-                        toast.success('Nota oficial copiada!');
-                      }}>
-                        <Copy className="w-4 h-4 mr-2" />Copiar Nota no Formato Oficial
-                      </Button>
-                    )}
                   </div>
                 </div>
               )}
