@@ -46,6 +46,11 @@ const PASSOS_P2 = [
 
 const ERROS = [
   {
+    title: "Driver da impressora não instalado",
+    solution:
+      "Antes de qualquer coisa, instalar o driver da impressora. Sem o driver nada funciona.",
+  },
+  {
     title: "7-Zip não atualiza o arquivo",
     solution:
       "O perfil SIGESF está em uso. Forçar logoff do usuário SIGESF e fechar o app antes de salvar.",
