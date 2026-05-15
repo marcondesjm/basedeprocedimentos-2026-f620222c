@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,6 +20,19 @@ interface ProcedureDetailDialogProps {
 export const ProcedureDetailDialog = ({ selectedProcedure, onClose, onUpdate }: ProcedureDetailDialogProps) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [editedProcedure, setEditedProcedure] = useState<Procedure | null>(null);
+
+  // Ao abrir um procedimento, já entra direto em modo edição (foco em PIB e Usuário)
+  useEffect(() => {
+    if (selectedProcedure) {
+      setIsEditMode(true);
+      setEditedProcedure(selectedProcedure);
+      setTimeout(() => {
+        const el = document.getElementById("edit-usuario") as HTMLInputElement | null;
+        el?.focus();
+        el?.select();
+      }, 100);
+    }
+  }, [selectedProcedure]);
 
   const handleClose = () => {
     setIsEditMode(false);
